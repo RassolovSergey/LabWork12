@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using ClassLibraryLab10;
 
 namespace LabWork12
@@ -19,6 +20,7 @@ namespace LabWork12
             Console.ForegroundColor = ConsoleColor.White;
         }
 
+
         // Функция вывода главного меню
         public static void PrintMainMenu()
         {
@@ -31,8 +33,9 @@ namespace LabWork12
             Console.WriteLine("=================================================================");
         }
 
-        // Функция вывода второстепенного меню меню v1 
-        public static void PrintSecondMenuV1()
+
+        // Функция вывода меню ( Первое: 1 )
+        public static void Print_FirstMenu1()
         {
             Console.WriteLine("\n\n============ Меню работы с однонаправленным списком ============");
             Console.WriteLine("1 - Формирование однонаправленного списка");
@@ -45,57 +48,182 @@ namespace LabWork12
             Console.WriteLine("================================================================");
         }
 
-        // Функция вывода второстепенного меню меню v2
-        public static void PrintSecondMenuV2()
+        // Функция обработки меню ( Первое: 1 )
+        public static void Process_FirstMenu1()
         {
-            int point = 1;
-            while (point != 0)
+
+        }
+
+
+
+
+
+        // Функция вывода  меню ( Первое: 2) - Вывод
+        public static void Print_FirstMenu2()
+        {
+            Console.WriteLine("\n\n=========== Меню работы с двунаправленными списком ===========");
+            Console.WriteLine("1 - Формирование двунаправленного списка");
+            Console.WriteLine("2 - Добавление элемента в список");
+            Console.WriteLine("3 - Удаление элемента из списка");
+            Console.WriteLine("4 - Печать списка");
+            Console.WriteLine("5 - Удаление списка из памяти");
+            Console.WriteLine("0 - Назад");
+            Console.WriteLine("==================================================================");
+        }
+
+        // Функция обработки меню ( Первое: 2) - Обработка
+        public static void Process_FirstMenu2()
+        {
+            bool flag = true;
+            BiList<Card> myBiList = new BiList<Card>(); // Создание списка
+
+            while (flag)
             {
-                Console.WriteLine("\n\n=========== Меню работы с двунаправленными списком ===========");
-                Console.WriteLine("1 - Формирование двунаправленного списка");
-                Console.WriteLine("2 - Добавление элемента в список");
-                Console.WriteLine("3 - Удаление элемента из списка");
-                Console.WriteLine("4 - Печать списка");
-                Console.WriteLine("5 - Удаление из списка всех четных элементов");
-                Console.WriteLine("6 - Удаление списка из памяти");
-                Console.WriteLine("0 - Выход из меню");
-                Console.WriteLine("================================================================");
-
-                point = (int)InputHelper.InputUintNumber("");
-
-                switch (point)
+                // Поиск исключений
+                try
                 {
-                    case 1:
-                        Console.WriteLine("============= Формирование двунаправленного списка =============");
-                        BiList_01<Card> myList = new BiList_01<Card>(5); // Создание списка длинной 5
-                        break;
-                    case 2:
-                        Console.WriteLine("================= Добавление элемента в список =================");
-                        break;
-                    case 3:
-                        Console.WriteLine("================== Удаление элемента из списка ==================");
-                        break;
-                    case 4:
-                        Console.WriteLine("========================= Печать списка =========================");
-                        break;
-                    case 5:
-                        Console.WriteLine("============ Удаление из списка всех четных элементов ===========");
-                        break;
-                    case 6:
-                        Console.WriteLine("=================== Удаление списка из памяти ===================");
-                        break;
-                    case 0:
-                        Console.WriteLine("Выход...");
-                        break;
-                    default:    // Прочие значения: Ошибка!
-                        PrintError("Некорректное значение.");
-                        break;
+                    Print_FirstMenu2();
+                    int choice = (int)InputHelper.InputUintNumber(""); // Считываем выбор пользователя
+
+                    switch (choice)
+                    {
+                        case 1:
+                            // Формирование двунаправленного списка
+                            myBiList = Process_FirstMenu2_SecondMenu1();
+                            break;
+                        case 2:
+                            // Добавление элемента в список
+
+                            break;
+                        case 3:
+                            // Удаление элемента из списка
+
+                            break;
+                        case 4:
+                            // Печать списка
+                            myBiList.PrintList();
+                            break;
+                        case 0:
+                            // Назад
+                            flag = false;
+                            break;
+                        default:
+                            // Прочий ввод
+                            PrintError("Ошибка! Данного номера не существует");
+                            break;
+                    }
+                }
+                // Вывод исключений
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Ошибка: {ex.Message}");
                 }
             }
         }
 
-        // Функция вывода второстепенного меню меню v3
-        public static void PrintSecondMenuV3()
+
+        // Функция вывода меню ( Первое: 2 | Второе: 1) - Вывод
+        public static void Print_FirstMenu2_SecondMenu1()
+        {
+            Console.WriteLine("\n\n============ Формирование двунаправленного списка ============");
+            Console.WriteLine("1 - Пустой список");
+            Console.WriteLine("2 - Список определенной длинны. (ДСЧ)");
+            Console.WriteLine("3 - Список определенной длинны. (Ручной ввод)");
+            Console.WriteLine("0 - Назад");
+            Console.WriteLine("==================================================================");
+        }
+
+        // Функция обработки меню ( Первое: 2 | Второе: 1 ) - Обработка
+        public static BiList<Card> Process_FirstMenu2_SecondMenu1()
+        {
+            bool flag = true;
+            int length;
+            BiList<Card> myBiListTime = new BiList<Card>(); // Создаем новый список
+
+            while (flag)
+            {
+                // Поиск исключений
+                try
+                {
+                    Print_FirstMenu2_SecondMenu1();
+                    int choice = (int)InputHelper.InputUintNumber(""); // Считываем выбор пользователя
+
+                    switch (choice)
+                    {
+                        case 1: // +
+                            // Пустой список
+                            Console.WriteLine("Список создан!");
+                            break;
+                        case 2:
+                            // Список определенной длинны. (ДСЧ)
+                            length = (int)InputHelper.InputUintNumber("Введите желаемую длинну списка: \t");
+                            myBiListTime = new BiList<Card>(length); // Создание нового двунаправленного списка с случайными данными
+                            Console.WriteLine("Список создан!");
+                            break;
+                        case 3:
+                            // Список определенной длинны. (Ручной ввод)
+                            length = (int)InputHelper.InputUintNumber("Введите желаемую длинну списка: \t");
+                            myBiListTime.CreateListInit(length);    // Заполняем список данными, введенными пользователем
+                            Console.WriteLine("Список создан!");
+                            break;
+                        case 0:
+                            // Назад
+                            flag = false;
+                            break;
+                        default:
+                            // Прочий ввод
+                            PrintError("Ошибка! Данного номера не существует");
+                            break;
+                    }
+                }
+                // Вывод исключений
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Ошибка: {ex.Message}");
+                }
+            }
+            return myBiListTime;
+        }
+
+
+        // Функция вывода меню  ( Первое: 2 | Второе: 2 ) - Вывод
+        public static void Print_FirstMenu2_SecondMenu2()
+        {
+            Console.WriteLine("\n\n============== Добавление элемента в список ==============");
+            Console.WriteLine("1 - Добавить элемент в конец списка (ДСЧ)");
+            Console.WriteLine("2 - Добавить элемент в конец списка (Ручной ввод)");
+            Console.WriteLine("3 - Добавить элемент в начало списка (ДСЧ)");
+            Console.WriteLine("4 - Добавить элемент в начало списка (Ручной ввод)");
+            Console.WriteLine("4 - Добавить элемент в начало списка (Ручной ввод)");
+            Console.WriteLine("5 - Добавить элемент в список после элемента с отределенным значением");
+            Console.WriteLine("0 - Назад");
+        }
+
+        // Функция обработки меню ( Первое: 2 | Второе: 2 ) - Обработка
+        public static void Process_FirstMenu2_SecondMenu2()
+        {
+
+        }
+
+
+        // Функция вывода меню  ( Первое: 2 | Второе: 3 ) - Вывод
+        public static void Print_FirstMenu2_hirdMenu3()
+        {
+            Console.WriteLine("\n\n============ Удаление элемента из списка ============");
+            Console.WriteLine("1 - Удалить элемент с определынным значением");
+            Console.WriteLine("2 - Удалить все четные элементы из списка");
+            Console.WriteLine("0 - Назад");
+        }
+
+        // Функция обработки меню ( Первое: 2 | Второе: 3 ) - Обработка
+        public static void Process_FirstMenu2_ThirdMenu3()
+        {
+
+        }
+
+
+        // Функция вывода меню  ( Первое: 3 ) - Вывод
+        public static void Print_FirstMenu2_SecondMenu3()
         {
             Console.WriteLine("\n\n======== Меню работы с идеально сбалансированным деревом ========");
             Console.WriteLine("1 - Формирование дерева");
@@ -108,8 +236,16 @@ namespace LabWork12
             Console.WriteLine("0 - Выход из меню");
         }
 
-        // Функция вывода второстепенного меню меню v4
-        public static void PrintSecondMenuV4()
+        // Фукция обработки меню ( Первое: 3 )  - Обработка
+        public static void Process_FirstMenu2_SecondMenu3()
+        {
+
+        }
+
+
+
+        // Функция вывода меню  ( Первое: 4 ) - Вывод
+        public static void Print_FirstMenu2_SecondMenu4()
         {
             Console.WriteLine("\n\n============== Меню работы с обобщенной коллекцией =============");
             Console.WriteLine("1 - Формирование дерева");
@@ -123,117 +259,60 @@ namespace LabWork12
             Console.WriteLine("9 - Очистка истории");
             Console.WriteLine("0 - Выход из меню");
         }
+
+        // Фукция обработки меню  ( Первое: 4 ) - Обработка
+        public static void Process_FirstMenu2_SecondMenu4()
+        {
+
+        }
+
+
         static void Main(string[] args)
         {
             {
-                // Декор
                 Console.WriteLine("==================== Лабораторная работа №12 ====================");
                 Console.WriteLine("=================================================================");
 
-                int answer = 1; // Переменная для работы с меню 1 уровня
-                bool flag = true; // Переменная для работы меню
+                BiList<Card> myBiList = new BiList<Card>(); // Создаем новый список
+                bool flagMainMenu = true;
 
-                // Цикл - Главное меню
-                while (answer != 0)
+                while (flagMainMenu)
                 {
-                    // Поиска ошибок
-                    try     
+                    // Поиск исключений
+                    try
                     {
-                        PrintMainMenu();        // Вывод Главного меню
-                        answer = (int)InputHelper.InputUintNumber("");  // Считываем число пользователя
+                        PrintMainMenu(); // Вывод Главного меню
+                        int choice = (int)InputHelper.InputUintNumber(""); // Считываем выбор пользователя
 
-                        //   switch - Главное меню
-                        switch (answer)
+
+                        switch (choice)
                         {
-                            case 1: // Хеш-Таблица
-                                PrintSecondMenuV1();                                    // Вывод второго меню
-                                int answerV2 = (int)InputHelper.InputUintNumber("");    // Считываем число пользователя
-                                flag = true;                                       // Флаг для Цикла
-                                while (flag)
-                                {
-                                    //   switch - Второстепенное меню
-                                    switch (answerV2)
-                                    {
-                                        case 1:
-                                            Console.WriteLine("============ Формирование однонаправленного списка =============");
-                                            break;
-                                        case 2:
-                                            Console.WriteLine("================= Добавление элемента в список =================");
-                                            break;
-                                        case 3:
-                                            Console.WriteLine("================== Удаление элемента из списка ==================");
-                                            break;
-                                        case 4:
-                                            Console.WriteLine("========================= Печать списка =========================");
-                                            break;
-                                        case 5:
-                                            Console.WriteLine("=================== Удаление списка из памяти ===================");
-                                            break;
-                                        case 6:
-                                            Console.WriteLine("======================== Очистка истории ========================");
-                                            break;
-                                        case 0:
-                                            Console.WriteLine("Выход...");
-                                            flag = false;
-                                            break;
-                                        default:    // Прочие значения: Ошибка!
-                                            PrintError("Некорректное значение.");
-                                            break;
-                                    }
-                                }
+                            case 1:
+                                Process_FirstMenu1(); // Вывод Второстпенного меню - 1
                                 break;
                             case 2:
-                                PrintSecondMenuV2();                                // Вывод второго меню
-                                int answerV3 = (int)InputHelper.InputUintNumber("");    // Считываем число пользователя
-                                flag = true;                                       // Флаг для Цикла
-                                while (flag)
-                                {
-                                    //   switch - Второстепенное меню
-                                    switch (answerV3)
-                                    {
-                                        case 1:
-                                            Console.WriteLine("============= Формирование двунаправленного списка =============");
-                                            break;
-                                        case 2:
-                                            Console.WriteLine("================= Добавление элемента в список =================");
-                                            break;
-                                        case 3:
-                                            Console.WriteLine("================== Удаление элемента из списка ==================");
-                                            break;
-                                        case 4:
-                                            Console.WriteLine("======================= Печать списка ===========================");
-                                            break;
-                                        case 5:
-                                            Console.WriteLine("======================= Удаление списка =========================");
-                                            break;
-                                        case 6:
-                                            Console.WriteLine("=================== Удаление списка из памяти ===================");
-                                            break;
-                                        case 0:
-                                            Console.WriteLine("Выход...");
-                                            flag = false;
-                                            break;
-                                        default:    // Прочие значения: Ошибка!
-                                            PrintError("Некорректное значение.");
-                                            break;
-                                    }
-                                }
+                                Process_FirstMenu2(); // Вывод Второстпенного меню - 2
                                 break;
                             case 3:
-                                PrintSecondMenuV3();
+                                Process_FirstMenu2_SecondMenu3(); // Вывод Второстпенного меню - 3
                                 break;
                             case 4:
-                                PrintSecondMenuV4();
+                                Process_FirstMenu2_SecondMenu4(); // Вывод Второстпенного меню - 4
                                 break;
-                            case 0:     // Завершение работы
-                                Console.WriteLine("Завершение...");
+                            case 0:
+                                flagMainMenu = false; // Завершение работы программы...
                                 break;
-                            default:    // Прочие значения: Ошибка!
-                                PrintError("Некорректное значение.");
+                            default:
+                                PrintError("Ошибка! Такого пункта не существует.");
                                 break;
                         }
                     }
-                    catch (Exception ex) { Console.WriteLine(ex); } // Выводим системную ошибку
+                    // Вывод исключений
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Ошибка: {ex.Message}");
+                    }
+
                 }
             }
         }

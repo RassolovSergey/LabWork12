@@ -31,12 +31,31 @@ namespace LabWork12
             if (size <= 0) throw new ArgumentException("Размер должен быть больше нуля.", nameof(size));
             for (int i = 0; i < size; i++)
             {
-                AddToEnd(MakeRandomItem());
+                AddToEnd(MakeRandomData());
+            }
+        }
+
+        // Метод для создания списка из данных, введенных вручную
+        public void CreateListInit(int size)
+        {
+            if (size <= 0)
+            {
+                throw new ArgumentException("Размер должен быть больше нуля.", nameof(size));
+            }
+
+            Console.WriteLine($"Введите {size} элементов для списка:");
+            for (int i = 0; i < size; i++)
+            {
+                Console.Write($"Элемент {i + 1}: ");
+                // Считываем данные с консоли и добавляем их в список
+                T inputData = new T();  // Создаем новый объект
+                inputData.Init();       // Заполняем его вручную    
+                AddToEnd(inputData);    // Добавляем объект в конец списка
             }
         }
 
         // Создание радномного объекта:     data
-        public T MakeRandomItem()
+        public T MakeRandomData()
         {
             T data = new T();   // Конструктор без параметров
             data.RandomInit();  // Заполнение ДСЧ
@@ -44,7 +63,7 @@ namespace LabWork12
         }
 
         // Создание радномного объекта + ссылки
-        public BiList<T> MakeRandomData()
+        public BiList<T> MakeRandomItem()
         {
             T data = new T();               // Конструктор без параметров
             data.RandomInit();              // Заполнение ДСЧ
@@ -137,6 +156,7 @@ namespace LabWork12
         // Печать списка
         public void PrintList()
         {
+            if (beg == end) { throw new Exception("Ваш список пуст!"); }
             PointBiList<T> current = beg;   // Назначает текущий узел - первым в списке
             while (current != null)         // Перебираем все элементы списка, пока он не кончится
             {
@@ -192,7 +212,7 @@ namespace LabWork12
         }
 
 
-        // Отчистка счиска
+        // Отчистка списка
         public void RemoveAll()
         {
             beg = null;

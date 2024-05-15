@@ -50,7 +50,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BiList.cs" />
-    <Compile Include="BiList_01.cs" />
     <Compile Include="MonoList.cs" />
     <Compile Include="PointBiList.cs" />
     <Compile Include="Program.cs" />
