@@ -131,6 +131,7 @@ namespace LabWork12
                 Console.WriteLine("=================================================================");
 
                 int answer = 1; // Переменная для работы с меню 1 уровня
+                bool flag = true; // Переменная для работы меню
 
                 // Цикл - Главное меню
                 while (answer != 0)
@@ -147,7 +148,7 @@ namespace LabWork12
                             case 1: // Хеш-Таблица
                                 PrintSecondMenuV1();                                    // Вывод второго меню
                                 int answerV2 = (int)InputHelper.InputUintNumber("");    // Считываем число пользователя
-                                bool flag = true;                                       // Флаг для Цикла
+                                flag = true;                                       // Флаг для Цикла
                                 while (flag)
                                 {
                                     //   switch - Второстепенное меню
@@ -182,7 +183,41 @@ namespace LabWork12
                                 }
                                 break;
                             case 2:
-                                PrintSecondMenuV2();
+                                PrintSecondMenuV2();                                // Вывод второго меню
+                                int answerV3 = (int)InputHelper.InputUintNumber("");    // Считываем число пользователя
+                                flag = true;                                       // Флаг для Цикла
+                                while (flag)
+                                {
+                                    //   switch - Второстепенное меню
+                                    switch (answerV3)
+                                    {
+                                        case 1:
+                                            Console.WriteLine("============= Формирование двунаправленного списка =============");
+                                            break;
+                                        case 2:
+                                            Console.WriteLine("================= Добавление элемента в список =================");
+                                            break;
+                                        case 3:
+                                            Console.WriteLine("================== Удаление элемента из списка ==================");
+                                            break;
+                                        case 4:
+                                            Console.WriteLine("======================= Печать списка ===========================");
+                                            break;
+                                        case 5:
+                                            Console.WriteLine("======================= Удаление списка =========================");
+                                            break;
+                                        case 6:
+                                            Console.WriteLine("=================== Удаление списка из памяти ===================");
+                                            break;
+                                        case 0:
+                                            Console.WriteLine("Выход...");
+                                            flag = false;
+                                            break;
+                                        default:    // Прочие значения: Ошибка!
+                                            PrintError("Некорректное значение.");
+                                            break;
+                                    }
+                                }
                                 break;
                             case 3:
                                 PrintSecondMenuV3();

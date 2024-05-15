@@ -16,11 +16,23 @@ namespace LabWork12
         private int count = 0;      // Счетчик элементов
         public int Count => count;  // Функция чтения переменной count
 
-        // Конструктор без параметров
+        // Конструктор без параметров: Пустой список
         public BiList()
         {
             beg = null;     // Инициализация начала списка как null
             end = null;     // Инициализация конца списка как null
+        }
+        // Конструктор с параметром:    Только информация
+        public BiList(T data) { }
+
+        // Конструктор, инициализирующий список случайными элементами
+        public BiList(int size)
+        {
+            if (size <= 0) throw new ArgumentException("Размер должен быть больше нуля.", nameof(size));
+            for (int i = 0; i < size; i++)
+            {
+                AddToEnd(MakeRandomItem());
+            }
         }
 
         // Создание радномного объекта:     data
@@ -32,11 +44,11 @@ namespace LabWork12
         }
 
         // Создание радномного объекта + ссылки
-        public BiList_01<T> MakeRandomData()
+        public BiList<T> MakeRandomData()
         {
             T data = new T();               // Конструктор без параметров
             data.RandomInit();              // Заполнение ДСЧ
-            return new BiList_01<T>(data); // Возвращаем новый узел
+            return new BiList<T>(data); // Возвращаем новый узел
         }
 
         // Создание глубокой копии
