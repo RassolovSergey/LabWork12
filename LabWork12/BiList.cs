@@ -136,20 +136,18 @@ namespace LabWork12
         }
 
         // Метод поиска элемента списка
-        public void FindItem(T data)
+        public bool FindItem(T data)
         {
             PointBiList<T> current = beg;   // Создаем переменную и ставим её в начало списка
             while (current != null)     // Пока она не равна null ( До конца списка )
             {
-                // 
                 if (current.Data.Equals(data)) // Сравниваем data и current.Data
                 {
-                    Console.WriteLine($"Элемент найден: {current.Data}");
-                    return;
+                    return true;
                 }
                 current = current.Next; // Переход а следующий элемент списка
             }
-            Console.WriteLine("Элемент не найден");
+            return false;
         }
 
 
@@ -170,6 +168,35 @@ namespace LabWork12
         {
             // Проверка, первым элементом списка?
             if (nodeToRemove == beg)  
+            {
+                beg = nodeToRemove.Next; // Обновляем начало списка, указывая на следующий элемент
+
+                // Проверяем, не является ли новое начало списка null.
+                if (beg != null)
+                {
+                    beg.Prev = null; // Обнуляем ссылку на предыдущий элемент для нового начала списка
+                }
+            }
+            else
+            {
+                nodeToRemove.Prev.Next = nodeToRemove.Next; // Обновляем ссылку на следующий элемент предыдущего узла так, чтобы она указывала на следующий элемент узла для удаления.
+                if (nodeToRemove.Next != null) // Проверяем, существует ли следующий элемент узла для удаления.
+                {
+                    nodeToRemove.Next.Prev = nodeToRemove.Prev; // Если да, то обновляем ссылку на предыдущий элемент следующего узла, чтобы она указывала на предыдущий элемент узла для удаления.
+                }
+                if (nodeToRemove == end) // Проверяем, является ли узел для удаления последним элементом списка.
+                {
+                    end = nodeToRemove.Prev; // Если да, то обновляем конец списка, указывая на предыдущий элемент узла для удаления.
+                }
+            }
+            count--; // Уменьшаем счетчик элементов списка.
+        }
+
+        // Метод удаления узла
+        public void RemoveT(PointBiList<T> nodeToRemove)
+        {
+            // Проверка, первым элементом списка?
+            if (nodeToRemove == beg)
             {
                 beg = nodeToRemove.Next; // Обновляем начало списка, указывая на следующий элемент
 

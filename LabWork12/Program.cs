@@ -93,11 +93,11 @@ namespace LabWork12
                             break;
                         case 2:
                             // Добавление элемента в список
-
+                            myBiList = Process_FirstMenu2_SecondMenu2(myBiList);
                             break;
                         case 3:
                             // Удаление элемента из списка
-
+                            myBiList = Process_FirstMenu2_ThirdMenu3(myBiList);
                             break;
                         case 4:
                             // Печать списка
@@ -192,17 +192,82 @@ namespace LabWork12
             Console.WriteLine("\n\n============== Добавление элемента в список ==============");
             Console.WriteLine("1 - Добавить элемент в конец списка (ДСЧ)");
             Console.WriteLine("2 - Добавить элемент в конец списка (Ручной ввод)");
-            Console.WriteLine("3 - Добавить элемент в начало списка (ДСЧ)");
-            Console.WriteLine("4 - Добавить элемент в начало списка (Ручной ввод)");
-            Console.WriteLine("4 - Добавить элемент в начало списка (Ручной ввод)");
-            Console.WriteLine("5 - Добавить элемент в список после элемента с отределенным значением");
+            Console.WriteLine("3 - Добавить элемент в список после элемента с определенным значением (ДСЧ)");
+            Console.WriteLine("4 - Добавить элемент в список после элемента с определенным значением (Ручной ввод)");
             Console.WriteLine("0 - Назад");
         }
 
         // Функция обработки меню ( Первое: 2 | Второе: 2 ) - Обработка
-        public static void Process_FirstMenu2_SecondMenu2()
+        public static BiList<Card> Process_FirstMenu2_SecondMenu2(BiList<Card> biList)
         {
+            bool flag = true;
+            Card timeCard = new Card();
+            Card afterCad = new Card();
 
+            while (flag)
+            {
+                // Поиск исключений
+                try
+                {
+                    Print_FirstMenu2_SecondMenu2();
+                    int choice = (int)InputHelper.InputUintNumber(""); // Считываем выбор пользователя
+
+                    switch (choice)
+                    {
+                        case 1:
+                            // Добавление в конец списка ( ДСЦ )
+
+                            timeCard.RandomInit();
+                            biList.AddToEnd(timeCard);
+                            Console.WriteLine("Элемент добавлен!");
+                            break;
+                        case 2:
+                            // Добавление в конец списка ( Ручной ввод )
+                            timeCard.Init();
+                            biList.AddToEnd(timeCard);
+                            Console.WriteLine("Элемент добавлен!");
+                            break;
+                        case 3:
+                            // Добавление в список после эл. с опр. значением ( data ) ДСЧ
+                            timeCard.RandomInit();
+                            Console.WriteLine("Данные элемента после которого необходимо вставить новый элемент:");
+                            afterCad.Init();
+                            if (biList.FindItem(afterCad))
+                            {
+                                biList.AddAfter(afterCad, timeCard);
+                                Console.WriteLine("Элемент добавлен!");
+                            }
+                            else
+                            {
+                                PrintError("Данный объект не был найден!");
+                            }
+                            break;
+                        case 4:
+                            // Добавление в список после эл. с опр. значением ( data ) Ручной ввод
+                            timeCard.RandomInit();
+                            Console.WriteLine("Данные элемента после которого необходимо вставить новый элемент:");
+                            afterCad.Init();
+                            timeCard.Init();
+                            biList.AddAfter(afterCad, timeCard);
+                            Console.WriteLine("Элемент добавлен!");
+                            break;
+                        case 0:
+                            // Назад
+                            flag = false;
+                            break;
+                        default:
+                            // Прочий ввод
+                            PrintError("Ошибка! Данного номера не существует");
+                            break;
+                    }
+                }
+                // Вывод исключений
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Ошибка: {ex.Message}");
+                }
+            }
+            return biList;
         }
 
 
@@ -216,9 +281,49 @@ namespace LabWork12
         }
 
         // Функция обработки меню ( Первое: 2 | Второе: 3 ) - Обработка
-        public static void Process_FirstMenu2_ThirdMenu3()
+        public static BiList<Card> Process_FirstMenu2_ThirdMenu3(BiList<Card> biList)
         {
+            bool flag = true;
 
+            while (flag)
+            {
+                // Поиск исключений
+                try
+                {
+                    Print_FirstMenu2_hirdMenu3();
+                    int choice = (int)InputHelper.InputUintNumber(""); // Считываем выбор пользователя
+
+                    switch (choice)
+                    {
+                        case 1:
+                            // Удалить элемент с определынным значением
+                            Console.WriteLine("Введите данные элемента для удаления: ");
+                            Card timeCard = new Card();
+                            timeCard.Init();
+                            PointBiList<Card> pointRemove = new PointBiList<Card>(timeCard);
+                            biList.RemoveT(pointRemove); // Удаляем найденный узел
+                            break;
+                        case 2:
+                            // Удалить все четные элементы из списка
+                            biList.RemoveEven();
+                            break;
+                        case 0:
+                            // Назад
+                            flag = false;
+                            break;
+                        default:
+                            // Прочий ввод
+                            PrintError("Ошибка! Данного номера не существует");
+                            break;
+                    }
+                }
+                // Вывод исключений
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Ошибка: {ex.Message}");
+                }
+            }
+            return biList;
         }
 
 
