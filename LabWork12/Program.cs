@@ -42,8 +42,6 @@ namespace LabWork12
             Console.WriteLine("2 - Добавление элемента в список");
             Console.WriteLine("3 - Удаление элемента из списка");
             Console.WriteLine("4 - Печать списка");
-            Console.WriteLine("5 - Удаление списка из памяти");
-            Console.WriteLine("6 - Очистка истории");
             Console.WriteLine("0 - Выход из меню");
             Console.WriteLine("================================================================");
         }
@@ -51,7 +49,64 @@ namespace LabWork12
         // Функция обработки меню ( Первое: 1 )
         public static void Process_FirstMenu1()
         {
+            bool flag = true;
+            HTable<Card> myBiList = new HTable<Card>(); // Создание новой хеш-Таблицы
 
+            while (flag)
+            {
+                // Поиск исключений
+                try
+                {
+                    Print_FirstMenu1();
+                    int choice = (int)InputHelper.InputUintNumber(""); // Считываем выбор пользователя
+
+                    switch (choice)
+                    {
+                        case 1:
+                            // Формирование однонаправленного списка
+                            int length = (int)InputHelper.InputUintNumber("Введите желаемую длинну спик:");
+                            LPoint<Card>[] arr = new LPoint<Card>[length];
+                            for (int i = 0; i < length; i++)
+                            {
+                                Card timeCard = new Card();
+                                timeCard.RandomInit();
+                                arr[i] = new LPoint<Card>(timeCard);
+                            }
+                            // Создаем новую хеш-таблицу
+                            HTable<Card> newHTable = new HTable<Card>();
+
+                            // Добавляем элементы массива в хеш-таблицу
+                            foreach (Card item in arr)
+                            {
+                                newHTable.Add(item);
+                            }
+                            newHTable.Print();
+                            break;
+                        case 2:
+                            // Добавление элемента в список
+                            break;
+                        case 3:
+                            // Удаление элемента из списка
+                            break;
+                        case 4:
+                            // Печать списка
+                            break;
+                        case 0:
+                            // Назад
+                            flag = false;
+                            break;
+                        default:
+                            // Прочий ввод
+                            PrintError("Ошибка! Данного номера не существует");
+                            break;
+                    }
+                }
+                // Вывод исключений
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Ошибка: {ex.Message}");
+                }
+            }
         }
 
 

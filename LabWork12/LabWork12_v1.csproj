@@ -50,6 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BiList.cs" />
+    <Compile Include="HTTable.cs" />
+    <Compile Include="LPoint.cs" />
     <Compile Include="MonoList.cs" />
     <Compile Include="PointBiList.cs" />
     <Compile Include="Program.cs" />
