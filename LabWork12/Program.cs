@@ -26,9 +26,9 @@ namespace LabWork12
         {
             Console.WriteLine("\n\n======================== Меню приложения ========================");
             Console.WriteLine("1 - Меню работы с Хеш-таблицей");
-            Console.WriteLine("2 - Меню работы с двунаправленным списком");
-            Console.WriteLine("3 - Меню работы с идеально сбалансированным деревом");
-            Console.WriteLine("4 - Меню работы с обобщенной коллекцией");
+            Console.WriteLine("2 - Меню работы с Двунаправленным списком");
+            Console.WriteLine("3 - Меню работы с Идеально сбалансированным деревом");
+            Console.WriteLine("4 - Меню работы с Обобщенной коллекцией");
             Console.WriteLine("0 - Выйти из приложения");
             Console.WriteLine("=================================================================");
         }
@@ -42,6 +42,7 @@ namespace LabWork12
             Console.WriteLine("2 - Добавление элемента в список");
             Console.WriteLine("3 - Удаление элемента из списка");
             Console.WriteLine("4 - Печать списка");
+            Console.WriteLine("5 - Удалить список из памяти");
             Console.WriteLine("0 - Выход из меню");
             Console.WriteLine("================================================================");
         }
@@ -64,23 +65,7 @@ namespace LabWork12
                     {
                         case 1:
                             // Формирование однонаправленного списка
-                            int length = (int)InputHelper.InputUintNumber("Введите желаемую длинну спик:");
-                            LPoint<Card>[] arr = new LPoint<Card>[length];
-                            for (int i = 0; i < length; i++)
-                            {
-                                Card timeCard = new Card();
-                                timeCard.RandomInit();
-                                arr[i] = new LPoint<Card>(timeCard);
-                            }
-                            // Создаем новую хеш-таблицу
-                            HTable<Card> newHTable = new HTable<Card>();
 
-                            // Добавляем элементы массива в хеш-таблицу
-                            foreach (Card item in arr)
-                            {
-                                newHTable.Add(item);
-                            }
-                            newHTable.Print();
                             break;
                         case 2:
                             // Добавление элемента в список
@@ -90,6 +75,11 @@ namespace LabWork12
                             break;
                         case 4:
                             // Печать списка
+                            break;
+                        case 5:
+                            // Удалить список из памяти
+                            Console.WriteLine("============= Удаление списка из памяти =============");
+                            
                             break;
                         case 0:
                             // Назад
@@ -111,8 +101,6 @@ namespace LabWork12
 
 
 
-
-
         // Функция вывода  меню ( Первое: 2) - Вывод
         public static void Print_FirstMenu2()
         {
@@ -122,6 +110,7 @@ namespace LabWork12
             Console.WriteLine("3 - Удаление элемента из списка");
             Console.WriteLine("4 - Печать списка");
             Console.WriteLine("5 - Удаление списка из памяти");
+            Console.WriteLine("6 - Демонстрация клонирования списка");
             Console.WriteLine("0 - Назад");
             Console.WriteLine("==================================================================");
         }
@@ -157,6 +146,30 @@ namespace LabWork12
                         case 4:
                             // Печать списка
                             myBiList.PrintList();
+                            break;
+                        case 5:
+                            // Удаление списка из памяти
+                            myBiList.Dispose();
+                            break;
+                        case 6:
+                            // Демонстрация клонирования списка
+                            BiList<Card> CloneBiList = myBiList.DeepClone(); // Создаем клон списка
+                            Console.WriteLine("Исходный список:");
+                            myBiList.PrintList();
+
+                            Console.WriteLine("\nГлубокая копия списка:");
+                            CloneBiList.PrintList();
+
+                            Console.WriteLine("\nСписок изменяется....\n");
+
+                            Card timeCard = new Card();
+                            myBiList.beg.Data = timeCard;
+
+                            Console.WriteLine("Исходный список:");
+                            myBiList.PrintList();
+
+                            Console.WriteLine("\nГлубокая копия списка:");
+                            CloneBiList.PrintList();
                             break;
                         case 0:
                             // Назад
@@ -271,7 +284,6 @@ namespace LabWork12
                     {
                         case 1:
                             // Добавление в конец списка ( ДСЦ )
-
                             timeCard.RandomInit();
                             biList.AddToEnd(timeCard);
                             Console.WriteLine("Элемент добавлен!");
@@ -339,51 +351,63 @@ namespace LabWork12
         public static BiList<Card> Process_FirstMenu2_ThirdMenu3(BiList<Card> biList)
         {
             bool flag = true;
-
-            while (flag)
+            if (biList.beg != biList.end)
             {
-                // Поиск исключений
-                try
+                while (flag)
                 {
-                    Print_FirstMenu2_hirdMenu3();
-                    int choice = (int)InputHelper.InputUintNumber(""); // Считываем выбор пользователя
-
-                    switch (choice)
+                    // Поиск исключений
+                    try
                     {
-                        case 1:
-                            // Удалить элемент с определынным значением
-                            Console.WriteLine("Введите данные элемента для удаления: ");
-                            Card timeCard = new Card();
-                            timeCard.Init();
-                            PointBiList<Card> pointRemove = new PointBiList<Card>(timeCard);
-                            biList.RemoveT(pointRemove); // Удаляем найденный узел
-                            break;
-                        case 2:
-                            // Удалить все четные элементы из списка
-                            biList.RemoveEven();
-                            break;
-                        case 0:
-                            // Назад
-                            flag = false;
-                            break;
-                        default:
-                            // Прочий ввод
-                            PrintError("Ошибка! Данного номера не существует");
-                            break;
+                        Print_FirstMenu2_hirdMenu3();
+                        int choice = (int)InputHelper.InputUintNumber(""); // Считываем выбор пользователя
+                        switch (choice)
+                        {
+                            case 1:
+                                // Удалить элемент с определынным значением
+                                Console.WriteLine("Введите данные элемента для удаления: ");
+                                Card timeCard = new Card();
+                                timeCard.Init();
+                                PointBiList<Card> pointRemove = new PointBiList<Card>(timeCard);
+                                biList.RemoveT(pointRemove); // Удаляем найденный узел
+                                break;
+                            case 2:
+                                // Удалить все четные элементы из списка
+                                if (biList.Length() == 1)
+                                {
+                                    Console.WriteLine("В списке всего 1 элемент");
+                                }
+                                else
+                                {
+                                    biList.RemoveEven();
+                                }
+                                break;
+                            case 0:
+                                // Назад
+                                flag = false;
+                                break;
+                            default:
+                                // Прочий ввод
+                                PrintError("Ошибка! Данного номера не существует");
+                                break;
+                        }
+                    }
+                    // Вывод исключений
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Ошибка: {ex.Message}");
                     }
                 }
-                // Вывод исключений
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Ошибка: {ex.Message}");
-                }
+            }
+            else
+            {
+                Console.WriteLine("Ошибка: Список Пуст");
             }
             return biList;
         }
 
 
         // Функция вывода меню  ( Первое: 3 ) - Вывод
-        public static void Print_FirstMenu2_SecondMenu3()
+        public static void Print_FirstMenu3()
         {
             Console.WriteLine("\n\n======== Меню работы с идеально сбалансированным деревом ========");
             Console.WriteLine("1 - Формирование дерева");
@@ -397,7 +421,7 @@ namespace LabWork12
         }
 
         // Фукция обработки меню ( Первое: 3 )  - Обработка
-        public static void Process_FirstMenu2_SecondMenu3()
+        public static void Process_FirstMenu3()
         {
 
         }
@@ -405,7 +429,7 @@ namespace LabWork12
 
 
         // Функция вывода меню  ( Первое: 4 ) - Вывод
-        public static void Print_FirstMenu2_SecondMenu4()
+        public static void Print_FirstMenu4()
         {
             Console.WriteLine("\n\n============== Меню работы с обобщенной коллекцией =============");
             Console.WriteLine("1 - Формирование дерева");
@@ -421,7 +445,7 @@ namespace LabWork12
         }
 
         // Фукция обработки меню  ( Первое: 4 ) - Обработка
-        public static void Process_FirstMenu2_SecondMenu4()
+        public static void Process_FirstMenu4()
         {
 
         }
@@ -454,10 +478,10 @@ namespace LabWork12
                                 Process_FirstMenu2(); // Вывод Второстпенного меню - 2
                                 break;
                             case 3:
-                                Process_FirstMenu2_SecondMenu3(); // Вывод Второстпенного меню - 3
+                                Process_FirstMenu3(); // Вывод Второстпенного меню - 3
                                 break;
                             case 4:
-                                Process_FirstMenu2_SecondMenu4(); // Вывод Второстпенного меню - 4
+                                Process_FirstMenu4(); // Вывод Второстпенного меню - 4
                                 break;
                             case 0:
                                 flagMainMenu = false; // Завершение работы программы...

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LabWork12
@@ -11,8 +12,8 @@ namespace LabWork12
     // Обобщённый класс двунаправленного списка
     internal class BiList<T> where T : IInit, ICloneable, new()
     {
-        private PointBiList<T> beg;      // Начальный узел списка
-        private PointBiList<T> end;      // Конечный узел списка
+        public PointBiList<T> beg;      // Начальный узел списка
+        public PointBiList<T> end;      // Конечный узел списка
         private int count = 0;      // Счетчик элементов
         public int Count => count;  // Функция чтения переменной count
 
@@ -35,6 +36,23 @@ namespace LabWork12
             }
         }
 
+        // Создание радномного объекта:     data
+        public T MakeRandomData()
+        {
+            T data = new T();   // Конструктор без параметров
+            data.RandomInit();  // Заполнение ДСЧ
+            return data;        // Возвращаем значение нового объека
+        }
+
+        // Создание радномного объекта + ссылки
+        public BiList<T> MakeRandomItem()
+        {
+            T data = new T();               // Конструктор без параметров
+            data.RandomInit();              // Заполнение ДСЧ
+            return new BiList<T>(data); // Возвращаем новый узел
+        }
+
+
         // Метод для создания списка из данных, введенных вручную
         public void CreateListInit(int size)
         {
@@ -52,22 +70,6 @@ namespace LabWork12
                 inputData.Init();       // Заполняем его вручную    
                 AddToEnd(inputData);    // Добавляем объект в конец списка
             }
-        }
-
-        // Создание радномного объекта:     data
-        public T MakeRandomData()
-        {
-            T data = new T();   // Конструктор без параметров
-            data.RandomInit();  // Заполнение ДСЧ
-            return data;        // Возвращаем значение нового объека
-        }
-
-        // Создание радномного объекта + ссылки
-        public BiList<T> MakeRandomItem()
-        {
-            T data = new T();               // Конструктор без параметров
-            data.RandomInit();              // Заполнение ДСЧ
-            return new BiList<T>(data); // Возвращаем новый узел
         }
 
         // Создание глубокой копии
@@ -224,17 +226,26 @@ namespace LabWork12
         // Метод удаления каждого четного элемента из коллекции
         public void RemoveEven()
         {
-            int index = 0;                  // Порядковый номер текущего элемента в коллекции
+            int number = 1;                 // Порядковый номер текущего элемента в коллекции
             PointBiList<T> current = beg;   // Инициализация current - текущий объект, ставим его в начало
+            int timeCount = 0;
+
             while (current != null)         // Перебор всего списка
             {
+
+                if (current.Next.Next == null && timeCount == 0)
+                {
+                    current.Next = null;
+                    break;
+                }
                 PointBiList<T> next = current.Next; // Инициализация переменной next значением ссылки на следующий элемент коллекции.
-                if (index % 2 == 0)     // Проверка четности
+                if (number % 2 == 0)     // Проверка четности
                 {
                     Remove(current);    // Удаляем узел
                 }
-                index++;        // Переход на следующий индекс (Следующий эллемент)
+                number++;        // Переход на следующий индекс (Следующий эллемент)
                 current = next; // Переменная current присваивает значение next для перехода к следующему элементу коллекции.
+                timeCount++;
             }
         }
 
@@ -245,6 +256,45 @@ namespace LabWork12
             beg = null;
             end = null;
             count = 0;  // Сброс счетчика
+        }
+
+
+        // Удаление списка из памяти
+        public void Dispose()
+        {
+            PointBiList<T> current = beg;   // Указатель на начало списка
+
+            while (current != null)
+            {
+                PointBiList<T> next = current.Next; // Сохраняем ссылку на следующий узел перед удалением текущего
+
+                // Освобождаем ресурсы текущего узла
+                current.Data = default; // Сбрасываем данные в null или значение по умолчанию
+                current.Next = null;    // Обнуляем ссылку на следующий узел
+                current.Prev = null;    // Обнуляем ссылку на предыдущий узел
+
+                // Удаляем текущий узел
+                current = next; // Переходим к следующему узлу
+            }
+
+            // После удаления всех узлов, список теперь пустой
+            beg = null; // Обнуляем ссылку на начальный узел
+            end = null; // Обнуляем ссылку на конечный узел
+            count = 0;  // Сбрасываем счетчик элементов
+        }
+
+
+        // Метод поиска длины двунаправленного списка
+        public int Length()
+        {
+            int length = 0;                  // Переменная для хранения длины списка
+            PointBiList<T> current = beg;    // Инициализация current - текущий объект, ставим его в начало
+            while (current != null)          // Перебор всего списка
+            {
+                length++;                    // Увеличение счетчика элементов
+                current = current.Next;      // Переход к следующему узлу
+            }
+            return length;                   // Возвращаем длину списка
         }
     }
 }
