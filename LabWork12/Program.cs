@@ -218,7 +218,7 @@ namespace LabWork12
 
                     switch (choice)
                     {
-                        case 1: // +
+                        case 1: //
                             // Пустой список
                             Console.WriteLine("Список создан!");
                             break;

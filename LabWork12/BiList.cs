@@ -49,7 +49,7 @@ namespace LabWork12
         {
             T data = new T();               // Конструктор без параметров
             data.RandomInit();              // Заполнение ДСЧ
-            return new BiList<T>(data); // Возвращаем новый узел
+            return new BiList<T>(data);     // Возвращаем новый узел
         }
 
 
@@ -119,22 +119,23 @@ namespace LabWork12
         }
 
 
-        // Метод для добавления нового узла в конец списка
+        // Метод для добавления элемента в конец списка
         public void AddToEnd(T data)
         {
-            PointBiList<T> newNode = new PointBiList<T>(data);
-            if (beg == null)
+            T newData = (T)data.Clone();
+            PointBiList<T> newItem = new PointBiList<T>(newData);
+            count++;
+            if (end != null)
             {
-                beg = newNode;
-                end = newNode;
+                end.Next = newItem;
+                newItem.Prev = end;
+                end = newItem;
             }
             else
             {
-                end.Next = newNode;
-                newNode.Prev = end;
-                end = newNode;
+                beg = newItem;
+                end = beg;
             }
-            count++;  // Увеличение счетчика
         }
 
         // Метод поиска элемента списка
@@ -156,7 +157,7 @@ namespace LabWork12
         // Печать списка
         public void PrintList()
         {
-            if (beg == end) { throw new Exception("Ваш список пуст!"); }
+            if (beg == null) { throw new Exception("Ваш список пуст!"); }
             PointBiList<T> current = beg;   // Назначает текущий узел - первым в списке
             while (current != null)         // Перебираем все элементы списка, пока он не кончится
             {
@@ -248,16 +249,6 @@ namespace LabWork12
                 timeCount++;
             }
         }
-
-
-        // Отчистка списка
-        public void RemoveAll()
-        {
-            beg = null;
-            end = null;
-            count = 0;  // Сброс счетчика
-        }
-
 
         // Удаление списка из памяти
         public void Dispose()
