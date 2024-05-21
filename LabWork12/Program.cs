@@ -436,19 +436,99 @@ namespace LabWork12
         {
             Console.WriteLine("\n\n======== Меню работы с идеально сбалансированным деревом ========");
             Console.WriteLine("1 - Формирование дерева");
-            Console.WriteLine("2 - Добавление элемента в дерево");
+            Console.WriteLine("2 - Демонстрация глубокого копирования");
             Console.WriteLine("3 - Печать дерева");
-            Console.WriteLine("4 - Поиск максимального элемента в дереве");
+            Console.WriteLine("4 - Поиск среднего ID");
             Console.WriteLine("5 - Удаление дерева из памяти");
             Console.WriteLine("6 - Создание дерева поиска");
-            Console.WriteLine("7 - Очистка истории");
             Console.WriteLine("0 - Выход из меню");
+            Console.WriteLine("=================================================================");
         }
 
         // Фукция обработки меню ( Первое: 3 )  - Обработка
         public static void Process_FirstMenu3()
         {
+            bool flag = true;
+            MyTree<Card> myTree = new MyTree<Card>(4); // Дерево для дальнейшей работы (базовое значение - 4)
+            int size;
 
+            while (flag)
+            {
+                // Поиск исключений
+                try
+                {
+                    Print_FirstMenu3();
+                    int choice = (int)InputHelper.InputUintNumber(""); // Считываем выбор пользователя
+
+                    switch (choice)
+                    {
+                        case 1: //
+                            // Формирование дерева
+                            size = (int)InputHelper.InputUintNumber("Введите желаемую длину списка: \t");
+                            myTree = new MyTree<Card>(size);
+                            break;
+                        case 2:
+                            // Демонстрация глубокого копирования
+
+                            Console.WriteLine("Исходное дерево:");
+                            myTree.PrintTree();
+
+                            MyTree<Card> copiedTree = myTree.DeepCopy(); // Глубокое копирование дерева
+
+                            // Внесем изменения в копию дерева
+                            Console.WriteLine("\nИзменим данные в копии дерева:");
+                            copiedTree.ChangeTreeData();
+
+                            Console.WriteLine("\nИсходное дерево (без изменений):");
+                            myTree.PrintTree();
+
+                            Console.WriteLine("\nИзмененная копия дерева:");
+                            copiedTree.PrintTree();
+                            break;
+                        case 3:
+                            // Печать дерева
+                            if (myTree.Count <= 0)
+                            {
+                                Console.WriteLine("Ошибка: Ваше дерево не содержит элементов!");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"====== Идеально сбалансированное Бинарное Дерево ======\t");
+                                myTree.PrintTree();
+                            }
+                            break;
+                        case 4:
+                            // Поиск среднего ID
+                            Console.WriteLine($"================== Поиск среднего ID ==================\t");
+
+                            // Вычисление среднего значения
+                            double average = myTree.CalculateAverage();
+                            Console.WriteLine($"\nСреднее значение num.number: {average}");
+                            break;
+                        case 5:
+                            // Удаление дерева из памяти
+                            Console.WriteLine("\nУдаление дерева:");
+                            myTree.DeleteTree();
+
+                            Console.WriteLine("\nПопытка вывода удаленного дерева:");
+                            myTree.PrintTree();
+                            break;
+                        case 0:
+                            // Назад
+                            flag = false;
+                            break;
+                        default:
+                            // Прочий ввод
+                            PrintError("Ошибка! Данного номера не существует");
+                            break;
+                    }
+                }
+                // Вывод исключений
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Ошибка: {ex.Message}");
+                }
+            }
         }
 
 
