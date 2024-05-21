@@ -42,7 +42,6 @@ namespace LabWork12
             Console.WriteLine("2 - Добавление элемента в список");
             Console.WriteLine("3 - Удаление элемента из списка");
             Console.WriteLine("4 - Печать списка");
-            Console.WriteLine("5 - Удалить список из памяти");
             Console.WriteLine("0 - Выход из меню");
             Console.WriteLine("================================================================");
         }
@@ -51,50 +50,76 @@ namespace LabWork12
         public static void Process_FirstMenu1()
         {
             bool flag = true;
-            HTable<Card> myBiList = new HTable<Card>(); // Создание новой хеш-Таблицы
+            HashTable<Card> hashTable = new HashTable<Card>(10); // Создание новой хеш-Таблицы
+            Card timeCard;
+            int size;
 
             while (flag)
             {
-                // Поиск исключений
                 try
                 {
                     Print_FirstMenu1();
-                    int choice = (int)InputHelper.InputUintNumber(""); // Считываем выбор пользователя
+                    int choice = (int)InputHelper.InputUintNumber("Выберите действие: ");
 
                     switch (choice)
                     {
                         case 1:
-                            // Формирование однонаправленного списка
-
+                            // Формирование Хеш-Таблицы
+                            size = (int)InputHelper.InputUintNumber($"Введите размер Хеш-Таблицы: ");
+                            if (size <= 0)
+                            {
+                                Console.WriteLine("Ошибка: Размер Хеш-Таблицы должен быть больше 0.");
+                                break;
+                            }
+                            hashTable = new HashTable<Card>(size);
                             break;
                         case 2:
-                            // Добавление элемента в список
+                            // Добавление элементов в Хеш-Таблицу
+                            size = (int)InputHelper.InputUintNumber($"Сколько элементов хотите добавить? ");
+                            for (int i = 0; i < size; i++)
+                            {
+                                timeCard = new Card();
+                                timeCard.RandomInit();
+                                hashTable.AddPoint(timeCard);
+                            }
                             break;
                         case 3:
-                            // Удаление элемента из списка
+                            // Удаление элемента из Хеш-Таблицы
+                            Console.WriteLine($"Введите элемент для удаления:");
+                            timeCard = new Card();
+                            timeCard.Init(); // Инициализация объекта Card для удаления
+                            bool isRemoved = hashTable.RemoveData(timeCard);
+                            if (isRemoved)
+                            {
+                                Console.WriteLine($"Элемент {timeCard} успешно удален.");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Элемент {timeCard} не найден для удаления.");
+                            }
                             break;
                         case 4:
-                            // Печать списка
-                            break;
-                        case 5:
-                            // Удалить список из памяти
-                            Console.WriteLine("============= Удаление списка из памяти =============");
-                            
+                            // Печать Хеш-Таблицы
+                            Console.WriteLine($"\n============ Хеш-Таблицы ============");
+                            hashTable.PrintTable();
                             break;
                         case 0:
                             // Назад
                             flag = false;
                             break;
                         default:
-                            // Прочий ввод
-                            PrintError("Ошибка! Данного номера не существует");
+                            // Обработка некорректного ввода
+                            Console.WriteLine("Ошибка! Введите корректный номер операции.");
                             break;
                     }
                 }
-                // Вывод исключений
+                catch (FormatException)
+                {
+                    Console.WriteLine("Ошибка! Некорректный ввод числа.");
+                }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Ошибка: {ex.Message}");
+                    Console.WriteLine($"Произошла ошибка: {ex.Message}");
                 }
             }
         }
