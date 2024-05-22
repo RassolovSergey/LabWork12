@@ -1,5 +1,4 @@
-﻿
-using ClassLibraryLab10;
+﻿using ClassLibraryLab10;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +15,8 @@ namespace LabWork12
         public PointBiList<T> end;      // Конечный узел списка
         private int count = 0;      // Счетчик элементов
         public int Count => count;  // Функция чтения переменной count
+
+        public T[] Collection { get; }
 
         // Конструктор без параметров: Пустой список
         public BiList()
@@ -36,6 +37,11 @@ namespace LabWork12
             }
         }
 
+        public BiList(T[] collection)
+        {
+            Collection = collection;
+        }
+
         // Создание радномного объекта:     data
         public T MakeRandomData()
         {
@@ -51,7 +57,6 @@ namespace LabWork12
             data.RandomInit();              // Заполнение ДСЧ
             return new BiList<T>(data);     // Возвращаем новый узел
         }
-
 
         // Метод для создания списка из данных, введенных вручную
         public void CreateListInit(int size)
@@ -118,7 +123,6 @@ namespace LabWork12
             }
         }
 
-
         // Метод для добавления элемента в конец списка
         public void AddToEnd(T data)
         {
@@ -153,7 +157,6 @@ namespace LabWork12
             return false;
         }
 
-
         // Печать списка
         public void PrintList()
         {
@@ -165,7 +168,6 @@ namespace LabWork12
                 current = current.Next;             // Записываем в текущий следующий объект
             }
         }
-
         // Метод удаления узла
         private void Remove(PointBiList<T> nodeToRemove) 
         {

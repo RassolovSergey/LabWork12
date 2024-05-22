@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using ClassLibraryLab10;
+using LabWork12.Part_4;
 
 namespace LabWork12
 {
@@ -662,22 +663,54 @@ namespace LabWork12
         public static void Print_FirstMenu4()
         {
             Console.WriteLine("\n\n============== Меню работы с обобщенной коллекцией =============");
-            Console.WriteLine("1 - Формирование дерева");
-            Console.WriteLine("2 - Добавление элемента в дерево");
-            Console.WriteLine("3 - Добавление элементов в дерево");
-            Console.WriteLine("4 - Печать дерева");
-            Console.WriteLine("5 - Поиск элемента по значению в дереве");
-            Console.WriteLine("6 - Поверхностное клонирование дерева");
-            Console.WriteLine("7 - Идеальное клонирование дерева");
-            Console.WriteLine("8 - Удаление дерева из памяти");
-            Console.WriteLine("9 - Очистка истории");
-            Console.WriteLine("0 - Выход из меню");
+            Console.WriteLine("1 - Пример работы");
+            Console.WriteLine("0 - Назад");
         }
 
         // Фукция обработки меню  ( Первое: 4 ) - Обработка
         public static void Process_FirstMenu4()
         {
+            // Создание коллекции карт
+            MyCollectionTree<Card> cardCollection = new MyCollectionTree<Card>();
 
+            Card timeCard1 = new Card();
+            Card timeCard2 = new Card();
+            Card timeCard3 = new Card();
+
+            // Добавление карт в коллекцию
+            timeCard1.RandomInit();
+            cardCollection.Add(timeCard1);
+            timeCard2.RandomInit();
+            cardCollection.Add(timeCard2);
+            timeCard3.RandomInit();
+            cardCollection.Add(timeCard3);
+
+            // Вывод элементов коллекции карт
+            Console.WriteLine("Элементы коллекции карт:");
+            foreach (var card in cardCollection)
+            {
+                Console.WriteLine(card);
+            }
+
+            // Вывод количества карт в коллекции
+            Console.WriteLine($"Количество карт в коллекции: {cardCollection.Count}");
+            Console.WriteLine();
+
+            // Добавление новой карты в коллекцию
+            Card newCard = new Card();
+            newCard.Init(); // Инициализация новой карты с помощью пользовательского ввода
+            cardCollection.Add(newCard);
+
+            // Вывод обновленных элементов коллекции карт
+            Console.WriteLine("Обновленные элементы коллекции карт:");
+            foreach (var card in cardCollection)
+            {
+                Console.WriteLine(card);
+            }
+
+            // Вывод обновленного количества карт в коллекции
+            Console.WriteLine($"Обновленное количество карт в коллекции: {cardCollection.Count}");
+            Console.WriteLine();
         }
 
 

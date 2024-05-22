@@ -49,15 +49,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BiList.cs" />
-    <Compile Include="HashTable.cs" />
-    <Compile Include="HPoint.cs" />
-    <Compile Include="MonoList.cs" />
-    <Compile Include="MyTree.cs" />
-    <Compile Include="PointBiList.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Part_1\BiList.cs" />
+    <Compile Include="Part_2\HashTable.cs" />
+    <Compile Include="Part_2\HPoint.cs" />
+    <Compile Include="FromLecture\MonoList.cs" />
+    <Compile Include="Part_3\MyTree.cs" />
+    <Compile Include="Part_1\PointBiList.cs" />
+    <Compile Include="Main Program\Program.cs" />
+    <Compile Include="FromLecture\MyCollection.cs" />
+    <Compile Include="Part_4\MyCollectionTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TreePoint.cs" />
+    <Compile Include="Part_3\TreePoint.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
