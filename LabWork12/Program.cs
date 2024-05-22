@@ -439,8 +439,8 @@ namespace LabWork12
             Console.WriteLine("2 - Демонстрация глубокого копирования");
             Console.WriteLine("3 - Печать дерева");
             Console.WriteLine("4 - Поиск среднего ID");
-            Console.WriteLine("5 - Удаление дерева из памяти");
-            Console.WriteLine("6 - Преобразование дерева поиска");
+            Console.WriteLine("5 - Удаление дерево из памяти");
+            Console.WriteLine("6 - Преобразование ИСБД в дерево поиска");
             Console.WriteLine("0 - Выход из меню");
             Console.WriteLine("=================================================================");
         }
@@ -449,7 +449,8 @@ namespace LabWork12
         public static void Process_FirstMenu3()
         {
             bool flag = true;
-            MyTree<Card> myTree = new MyTree<Card>(4); // Дерево для дальнейшей работы (базовое значение - 4)
+            MyTree<Card> myTree = new MyTree<Card>(0); // Дерево для дальнейшей работы (базовое значение - 4)
+            MyTree<Card> searchTree = new MyTree<Card>(0); // Дерево поиска для дальнейшей работы (базовое значение - 4)
             int size;
 
             while (flag)
@@ -458,7 +459,7 @@ namespace LabWork12
                 try
                 {
                     Print_FirstMenu3();
-                    int choice = (int)InputHelper.InputUintNumber(""); // Считываем выбор пользователя
+                    int choice = (int)InputHelper.InputUintNumber("Выберите действие: \t"); // Считываем выбор пользователя
 
                     switch (choice)
                     {
@@ -468,50 +469,127 @@ namespace LabWork12
                             myTree = new MyTree<Card>(size);
                             break;
                         case 2:
-                            // Демонстрация глубокого копирования
-
-                            Console.WriteLine("Исходное дерево:");
-                            myTree.PrintTree();
-
-                            MyTree<Card> copiedTree = myTree.DeepCopy(); // Глубокое копирование дерева
-
-                            // Внесем изменения в копию дерева
-                            Console.WriteLine("\nИзменим данные в копии дерева:");
-                            copiedTree.ChangeTreeData();
-
-                            Console.WriteLine("\nИсходное дерево (без изменений):");
-                            myTree.PrintTree();
-
-                            Console.WriteLine("\nИзмененная копия дерева:");
-                            copiedTree.PrintTree();
-                            break;
-                        case 3:
-                            // Печать дерева
-                            if (myTree.Count <= 0)
+                            if (myTree.Count > 0)
                             {
-                                Console.WriteLine("Ошибка: Ваше дерево не содержит элементов!");
+                                // Демонстрация глубокого копирования
+
+                                Console.WriteLine("Исходное дерево:");
+                                myTree.PrintTree();
+
+                                MyTree<Card> copiedTree = myTree.DeepCopy(); // Глубокое копирование дерева
+
+                                // Внесем изменения в копию дерева
+                                Console.WriteLine("\nИзменим данные в копии дерева:");
+                                copiedTree.ChangeTreeData();
+
+                                Console.WriteLine("\nИсходное дерево (без изменений):");
+                                myTree.PrintTree();
+
+                                Console.WriteLine("\nИзмененная копия дерева:");
+                                copiedTree.PrintTree();
                             }
                             else
                             {
-                                Console.WriteLine($"====== Идеально сбалансированное Бинарное Дерево ======\t");
-                                myTree.PrintTree();
+                                PrintError("Ошибка: Ваше дерево не содержит элементов!");
+                            }
+                            break;
+                        case 3:
+                            // Печать дерева
+                            bool flagPrint = true;
+                            while (flagPrint)
+                            {
+                                Console.WriteLine("\n\n================= Печать  =================");
+                                Console.WriteLine("1 - Распечатать: Идеально сбалансированное дерево");
+                                Console.WriteLine("2 - Распечатать: Дерево поиска");
+                                Console.WriteLine("0 - Назад");
+                                Console.WriteLine("===========================================");
+                                int choicePrint = (int)InputHelper.InputUintNumber("Выберите действие: \t");
+                                switch (choicePrint)
+                                {
+                                    case 1:
+                                        if (myTree.Count <= 0)
+                                        {
+                                            PrintError("Ошибка: Ваше дерево не содержит элементов!");
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine($"====== Идеально сбалансированное Бинарное Дерево ======\t");
+                                            myTree.PrintTree();
+                                        }
+                                        break;
+                                    case 2:
+                                        if (searchTree.Count <= 0)
+                                        {
+                                            PrintError("Ошибка: Ваше дерево не содержит элементов!");
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine($"====== Идеально сбалансированное Бинарное Дерево ======\t");
+                                            searchTree.PrintTree();
+                                        }
+                                        break;
+                                    case 0:
+                                        // Назад
+                                        flagPrint = false;
+                                        break;
+                                    default:
+                                        // Прочий ввод
+                                        PrintError("Ошибка! Данного номера не существует");
+                                        break;
+                                }
                             }
                             break;
                         case 4:
                             // Поиск среднего ID
-                            Console.WriteLine($"================== Поиск среднего ID ==================\t");
+                            if (myTree.Count > 0)
+                            {
+                                // Поиск среднего ID
+                                Console.WriteLine($"================== Поиск среднего ID ==================\t");
 
-                            // Вычисление среднего значения
-                            double average = myTree.CalculateAverage();
-                            Console.WriteLine($"\nСреднее значение num.number: {average}");
+                                // Вычисление среднего значения
+                                double average = myTree.CalculateAverage();
+                                Console.WriteLine($"\nСреднее значение num.number: {average}");
+                            }
+                            else
+                            {
+                                PrintError("Ошибка: Ваше дерево не содержит элементов!");
+                            }
                             break;
                         case 5:
                             // Удаление дерева из памяти
-                            Console.WriteLine("\nУдаление дерева:");
-                            myTree.DeleteTree();
+                            if (myTree.Count > 0)
+                            {
+                                Console.WriteLine("\nУдаление дерева:");
+                                myTree.DeleteTree();
+                            }
+                            else
+                            {
+                                PrintError("Ошибка: Ваше дерево не содержит элементов!");
+                            }
+                            break;
+                        case 6:
+                            // Преобразование ИСБД в дерево поиска
+                            if (myTree.Count > 0)
+                            {
+                                Console.WriteLine("Идеально сбалансированное дерево:");
+                                myTree.PrintTree();
 
-                            Console.WriteLine("\nПопытка вывода удаленного дерева:");
-                            myTree.PrintTree();
+                                // Преобразование идеально сбалансированного дерева в дерево поиска
+                                searchTree = myTree.CreateSearchTree();
+
+
+                                // Вывод идеально сбалансированного дерева
+                                Console.WriteLine("\nДерево поиска:");
+                                searchTree.PrintTree();
+
+                                // Вывод дерева поиска
+                                Console.WriteLine("\nИдеально сбалансированное дерево:");
+                                myTree.PrintTree();
+                            }
+                            else
+                            {
+                                PrintError("Ошибка: Ваше дерево не содержит элементов!");
+                            }
                             break;
                         case 0:
                             // Назад
