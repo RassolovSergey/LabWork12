@@ -211,5 +211,103 @@ namespace LabWork12
                 AddPoint(element);
             }
         }
+
+
+        // Метод удаления опр. элемента из Дерева поиска
+        public void Delete(T key)
+        {
+            // Вызываем приватный метод Delete, начиная с корня дерева
+            root = Delete(root, key);
+        }
+
+        // Метод удаления опр. элемента из Дерева поиска - Вспомогательный
+        private TreePoint<T>? Delete(TreePoint<T>? node, T key)
+        {
+            // Если дерево пустое или узел для удаления не найден, возвращаем узел без изменений
+            if (node == null)
+            {
+                return node;
+            }
+
+            // Рекурсивно ищем узел для удаления
+            if (key.CompareTo(node.Data) < 0)
+            {
+                // Если ключ меньше ключа текущего узла, идем в левое поддерево
+                node.Left = Delete(node.Left, key);
+            }
+            else if (key.CompareTo(node.Data) > 0)
+            {
+                // Если ключ больше ключа текущего узла, идем в правое поддерево
+                node.Right = Delete(node.Right, key);
+            }
+            else
+            {
+                // Узел найден, начинаем его удаление
+                // Узел с одним или без детей
+                if (node.Left == null)
+                {
+                    // Если у узла нет левого ребенка, возвращаем правого ребенка (или null)
+                    return node.Right;
+                }
+                else if (node.Right == null)
+                {
+                    // Если у узла нет правого ребенка, возвращаем левого ребенка
+                    return node.Left;
+                }
+
+                // Узел с двумя детьми: найдем наименьший элемент в правом поддереве
+                node.Data = MinValue(node.Right);
+
+                // Удалить найденный элемент из правого поддерева
+                node.Right = Delete(node.Right, node.Data);
+            }
+
+            // Возвращаем измененный узел
+            return node;
+        }
+
+        // Метод поиска минимального элемента
+        private T MinValue(TreePoint<T>? node)
+        {
+            // Находим наименьший элемент в дереве (самый левый элемент)
+            T minv = node.Data!;
+            while (node.Left != null)
+            {
+                minv = node.Left.Data!;
+                node = node.Left;
+            }
+            return minv;
+        }
+
+
+        public void DeleteTreeFind()
+        {
+            // Вызываем вспомогательный метод для удаления всех узлов дерева
+            DeleteNodeTreefind(root);
+
+            // Устанавливаем корень в null и сбрасываем счетчик элементов
+            root = null;
+            count = 0;
+
+            // Вызываем сборщик мусора для освобождения памяти
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
+
+        private void DeleteNodeTreefind(TreePoint<T>? node)
+        {
+            // Рекурсивно обходим все узлы дерева и удаляем их
+            if (node != null)
+            {
+                // Удаляем левое поддерево
+                DeleteNodeTreefind(node.Left);
+                // Удаляем правое поддерево
+                DeleteNodeTreefind(node.Right);
+                // Освобождаем данные узла и обнуляем ссылки на дочерние узлы
+                node.Data = default(T);
+                node.Left = null;
+                node.Right = null;
+            }
+        }
     }
 }

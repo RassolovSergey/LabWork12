@@ -441,6 +441,7 @@ namespace LabWork12
             Console.WriteLine("4 - Поиск среднего ID");
             Console.WriteLine("5 - Удаление дерево из памяти");
             Console.WriteLine("6 - Преобразование ИСБД в дерево поиска");
+            Console.WriteLine("7 - Удаление элемент с заданым ключом из дерева поиска");
             Console.WriteLine("0 - Выход из меню");
             Console.WriteLine("=================================================================");
         }
@@ -524,7 +525,7 @@ namespace LabWork12
                                         }
                                         else
                                         {
-                                            Console.WriteLine($"====== Идеально сбалансированное Бинарное Дерево ======\t");
+                                            Console.WriteLine($"============ Дерево Поиска ======\t");
                                             searchTree.PrintTree();
                                         }
                                         break;
@@ -557,14 +558,49 @@ namespace LabWork12
                             break;
                         case 5:
                             // Удаление дерева из памяти
-                            if (myTree.Count > 0)
+                            // Печать дерева
+                            bool flagDel = true;
+                            while (flagDel)
                             {
-                                Console.WriteLine("\nУдаление дерева:");
-                                myTree.DeleteTree();
-                            }
-                            else
-                            {
-                                PrintError("Ошибка: Ваше дерево не содержит элементов!");
+                                Console.WriteLine("\n\n================= Удаление  =================");
+                                Console.WriteLine("1 - Удалить: Идеально сбалансированное дерево");
+                                Console.WriteLine("2 - Удалить: Дерево поиска");
+                                Console.WriteLine("0 - Назад");
+                                Console.WriteLine("===========================================");
+                                int choicePrint = (int)InputHelper.InputUintNumber("Выберите действие: \t");
+                                switch (choicePrint)
+                                {
+                                    case 1:
+                                        if (myTree.Count <= 0)
+                                        {
+                                            PrintError("Ошибка: Ваше дерево не содержит элементов!");
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("\nУдаление дерева...");
+                                            myTree.DeleteTree();
+                                        }
+                                        break;
+                                    case 2:
+                                        if (searchTree.Count <= 0)
+                                        {
+                                            PrintError("Ошибка: Ваше дерево не содержит элементов!");
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("\nУдаление дерева...");
+                                            searchTree.DeleteTree();
+                                        }
+                                        break;
+                                    case 0:
+                                        // Назад
+                                        flagDel = false;
+                                        break;
+                                    default:
+                                        // Прочий ввод
+                                        PrintError("Ошибка! Данного номера не существует");
+                                        break;
+                                }
                             }
                             break;
                         case 6:
@@ -590,6 +626,17 @@ namespace LabWork12
                             {
                                 PrintError("Ошибка: Ваше дерево не содержит элементов!");
                             }
+                            break;
+                        case 7:
+                            // Удаление элемент с заданым ключом из дерева поиска
+                            if (searchTree.Count > 0)
+                            {
+                                Console.WriteLine("Введите элемент для удаления:");
+                                Card timeCard = new Card();
+                                timeCard.Init();
+                                searchTree.Delete(timeCard);
+                            }
+
                             break;
                         case 0:
                             // Назад
