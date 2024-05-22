@@ -440,7 +440,7 @@ namespace LabWork12
             Console.WriteLine("3 - Печать дерева");
             Console.WriteLine("4 - Поиск среднего ID");
             Console.WriteLine("5 - Удаление дерева из памяти");
-            Console.WriteLine("6 - Создание дерева поиска");
+            Console.WriteLine("6 - Преобразование дерева поиска");
             Console.WriteLine("0 - Выход из меню");
             Console.WriteLine("=================================================================");
         }

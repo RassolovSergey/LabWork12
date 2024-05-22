@@ -60,6 +60,7 @@ namespace LabWork12
             ChangeNodeData(root);
         }
 
+        // Метод для изменения данных дерева - ( Вспомогательный )
         private void ChangeNodeData(TreePoint<T>? node)
         {
             if (node != null)
@@ -134,6 +135,7 @@ namespace LabWork12
             GC.WaitForPendingFinalizers(); // Ожидание завершения финализации
         }
 
+        // Метод для полного удаления узла дерева
         private void DeleteNode(TreePoint<T>? node)
         {
             if (node != null)
@@ -145,5 +147,145 @@ namespace LabWork12
                 node.Right = null;
             }
         }
+
+        // Дерево поиска - Добавление элемента
+        void AddPoint(T data)
+        {
+            TreePoint<T>? point = root;
+            TreePoint<T>? current = null;
+            bool isExist = false;
+            while(point != null && !isExist)
+            {
+                current = point;
+                if (point.Data.CompareTo(data) == 0)
+                {
+                    isExist = true;
+                }
+                else
+                {
+                    if (point.Data.CompareTo(data) < 0)
+                    {
+                        point = point.Left;
+                    }
+                    else    // Ищем место
+                    {
+                        if (point.Data.CompareTo(data) < 0)
+                        {
+                            point = point.Left;
+                        }
+                        else
+                        {
+                            point = point.Right;
+                        }
+                    }
+                }
+                // Нашли место
+                if (isExist)
+                {
+                    return; // Ничего не добавили
+                }
+                TreePoint<T> newPoint = new TreePoint<T>(data);
+                if (current.Data.CompareTo(data) < 0)
+                {
+                    current.Left = newPoint;
+                }
+                else
+                {
+                    current.Right = newPoint;
+                }
+            }
+        }
+
+        // Метод для создания дерева поиска из идеально сбалансированного дерева
+        public MyTree<T> CreateSearchTree()
+        {
+            List<T> elements = new List<T>();
+            InOrderTraversal(root, elements);
+
+            MyTree<T> searchTree = new MyTree<T>(0);
+            foreach (var element in elements)
+            {
+                searchTree.AddPoint(element);
+            }
+
+            return searchTree;
+        }
+
+        // Вспомогательный метод для in-order обхода дерева и сохранения элементов в список
+        private void InOrderTraversal(TreePoint<T>? node, List<T> elements)
+        {
+            if (node == null) return;
+
+            InOrderTraversal(node.Left, elements);
+            elements.Add(node.Data);
+            InOrderTraversal(node.Right, elements);
+        }
+
+        // Метод для добавления элемента в дерево поиска
+        private void AddPointTreeFind(T data)
+        {
+            TreePoint<T>? newPoint = new TreePoint<T>(data);
+            if (root == null)
+            {
+                root = newPoint;
+            }
+            else
+            {
+                TreePoint<T>? current = root;
+                TreePoint<T>? parent = null;
+
+                while (current != null)
+                {
+                    parent = current;
+                    if (data.CompareTo(current.Data) < 0)
+                    {
+                        current = current.Left;
+                    }
+                    else
+                    {
+                        current = current.Right;
+                    }
+                }
+
+                if (data.CompareTo(parent.Data) < 0)
+                {
+                    parent.Left = newPoint;
+                }
+                else
+                {
+                    parent.Right = newPoint;
+                }
+            }
+
+            count++;
+        }
+
+        // Метод перехода от идеал. сбалан. БД к дереву Поиска
+        public void TransformToFindTree()
+        {
+            T[] array = new T[count];
+            int current = 0;
+            TransformArray(root, array, ref current);
+
+            root = new TreePoint<T>(array[0]);
+            count = 0;
+            for (int i = 0; i < array.Length; i++)
+            {
+                AddPoint(array[i]);
+            }
+        }
+
+        // Метод перехода от идеал. сбалан. БД к дереву Поиска - Вспомогательный
+        private void TransformArray(TreePoint<T>? point, T[] array, ref int current)
+        {
+            if (point != null)  // Проверка корня на пустоту
+            {
+                TransformArray(point.Left, array, ref current);     // Идём в левое поддерево
+                array[current] = point.Data;    // Записываем информацию
+                current++;
+                TransformArray(point.Right, array, ref current);    // Идём в правые подъузел - повторяем дейтвия
+            }
+        }
+
     }
 }
