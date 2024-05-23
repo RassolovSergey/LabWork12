@@ -621,7 +621,10 @@ namespace LabWork12
                                 timeCard.Init();
                                 searchTree.Delete(timeCard);
                             }
-
+                            else
+                            {
+                                PrintError("Ошибка: Ваше дерево не содержит элементов!");
+                            }
                             break;
                         case 0:
                             // Назад
