@@ -221,8 +221,7 @@ namespace LabWork12
         {
             Console.WriteLine("\n\n============ Формирование двунаправленного списка ============");
             Console.WriteLine("1 - Пустой список");
-            Console.WriteLine("2 - Список определенной длинны. (ДСЧ)");
-            Console.WriteLine("3 - Список определенной длинны. (Ручной ввод)");
+            Console.WriteLine("2 - Список определенной длинны.");
             Console.WriteLine("0 - Назад");
             Console.WriteLine("==================================================================");
         }
@@ -254,12 +253,6 @@ namespace LabWork12
                             myBiListTime = new BiList<Card>(length); // Создание нового двунаправленного списка с случайными данными
                             Console.WriteLine("Список создан!");
                             break;
-                        case 3:
-                            // Список определенной длинны. (Ручной ввод)
-                            length = (int)InputHelper.InputUintNumber("Введите желаемую длинну списка: \t");
-                            myBiListTime.CreateListInit(length);    // Заполняем список данными, введенными пользователем
-                            Console.WriteLine("Список создан!");
-                            break;
                         case 0:
                             // Назад
                             flag = false;
@@ -285,9 +278,7 @@ namespace LabWork12
         {
             Console.WriteLine("\n\n============== Добавление элемента в список ==============");
             Console.WriteLine("1 - Добавить элемент в конец списка (ДСЧ)");
-            Console.WriteLine("2 - Добавить элемент в конец списка (Ручной ввод)");
-            Console.WriteLine("3 - Добавить элемент в список после элемента с определенным значением (ДСЧ)");
-            Console.WriteLine("4 - Добавить элемент в список после элемента с определенным значением (Ручной ввод)");
+            Console.WriteLine("2 - Добавить элемент в список после элемента с определенным значением (ДСЧ)");
             Console.WriteLine("0 - Назад");
         }
 
@@ -315,34 +306,27 @@ namespace LabWork12
                             Console.WriteLine("Элемент добавлен!");
                             break;
                         case 2:
-                            // Добавление в конец списка ( Ручной ввод )
-                            timeCard.Init();
-                            biList.AddToEnd(timeCard);
-                            Console.WriteLine("Элемент добавлен!");
-                            break;
-                        case 3:
-                            // Добавление в список после эл. с опр. значением ( data ) ДСЧ
-                            timeCard.RandomInit();
-                            Console.WriteLine("Данные элемента после которого необходимо вставить новый элемент:");
-                            afterCad.Init();
-                            if (biList.FindItem(afterCad))
+                            if (biList.beg != null && biList.end != null)
                             {
-                                biList.AddAfter(afterCad, timeCard);
-                                Console.WriteLine("Элемент добавлен!");
+                                // Добавление в список после эл. с опр. значением ( data ) ДСЧ
+                                timeCard.RandomInit();
+                                Console.WriteLine("Данные элемента после которого необходимо вставить новый элемент:");
+                                afterCad.Init();
+                                if (biList.FindItem(afterCad))
+                                {
+                                    biList.AddAfter(afterCad, timeCard);
+                                    Console.WriteLine("Элемент добавлен!");
+                                }
+                                else
+                                {
+                                    PrintError("Данный объект не был найден!");
+                                }
                             }
                             else
                             {
-                                PrintError("Данный объект не был найден!");
+                                PrintError("Ошибка: Список пуст!");
                             }
-                            break;
-                        case 4:
-                            // Добавление в список после эл. с опр. значением ( data ) Ручной ввод
-                            timeCard.RandomInit();
-                            Console.WriteLine("Данные элемента после которого необходимо вставить новый элемент:");
-                            afterCad.Init();
-                            timeCard.Init();
-                            biList.AddAfter(afterCad, timeCard);
-                            Console.WriteLine("Элемент добавлен!");
+                            
                             break;
                         case 0:
                             // Назад
@@ -377,7 +361,7 @@ namespace LabWork12
         public static BiList<Card> Process_FirstMenu2_ThirdMenu3(BiList<Card> biList)
         {
             bool flag = true;
-            if (biList.beg != biList.end)
+            if (biList.beg != null && biList.end != null)
             {
                 while (flag)
                 {
@@ -394,11 +378,11 @@ namespace LabWork12
                                 Card timeCard = new Card();
                                 timeCard.Init();
                                 PointBiList<Card> pointRemove = new PointBiList<Card>(timeCard);
-                                biList.RemoveT(pointRemove); // Удаляем найденный узел
+                                biList.Remove(pointRemove);
                                 break;
                             case 2:
                                 // Удалить все четные элементы из списка
-                                if (biList.Length() == 1)
+                                if (biList.beg == biList.end)
                                 {
                                     Console.WriteLine("В списке всего 1 элемент");
                                 }
@@ -451,8 +435,8 @@ namespace LabWork12
         public static void Process_FirstMenu3()
         {
             bool flag = true;
-            MyTree<Card> myTree = new MyTree<Card>(0); // Дерево для дальнейшей работы (базовое значение - 4)
-            MyTree<Card> searchTree = new MyTree<Card>(0); // Дерево поиска для дальнейшей работы (базовое значение - 4)
+            MyTree<Card> myTree = new MyTree<Card>(0);      // Дерево для дальнейшей работы (базовое значение - 0)
+            MyTree<Card> searchTree = new MyTree<Card>(0);  // Дерево поиска для дальнейшей работы (базовое значение - 0)
             int size;
 
             while (flag)
