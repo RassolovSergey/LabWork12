@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace LabWork12
 {
     // Узел двунаправленного списка
-    internal class PointBiList<T> where T : IInit, ICloneable, new()
+    public class PointBiList<T> where T : IInit, ICloneable, new()
     {
         public T Data { get; set; }                 // Поле для хранения данных
         public PointBiList<T> Next { get; set; }    // Ссылка на следующий узел  

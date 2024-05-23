@@ -15,23 +15,27 @@ namespace LabWork12
         public int Count => count;  // Метод вывода кол-ва элементов
         public TreePoint<T>? Root => root;  // Публичное свойство для получения корня
 
+        // Конструктор, создающий дерево заданной длины и заполняющий его случайными данными
         public MyTree(int length)
         {
             count = length;
             root = MakeTree(length, root);
         }
 
+        // Приватный конструктор для создания глубокой копии дерева
         private MyTree(TreePoint<T>? root, int count)
         {
             this.root = root;
             this.count = count;
         }
 
+        // Метод для печати дерева
         public void PrintTree()
         {
             Print(root);
         }
 
+        // Метод для создания глубокой копии дерева
         public MyTree<T> DeepCopy()
         {
             TreePoint<T>? newRoot = DeepCopyTreePoint(root);
@@ -49,11 +53,13 @@ namespace LabWork12
             return newPoint;
         }
 
+        // Метод для изменения данных в каждом узле дерева
         public void ChangeTreeData()
         {
             ChangeNodeData(root);
         }
 
+        // Приватный метод для изменения данных в каждом узле дерева
         private void ChangeNodeData(TreePoint<T>? node)
         {
             if (node != null)
@@ -64,6 +70,7 @@ namespace LabWork12
             }
         }
 
+        // Приватный метод для создания дерева определенной длины
         private TreePoint<T>? MakeTree(int length, TreePoint<T>? point)
         {
             if (length == 0) return null;
@@ -79,6 +86,7 @@ namespace LabWork12
             return newItem;
         }
 
+        // Приватный метод для печати дерева с указанием отступов между уровнями
         private void Print(TreePoint<T>? point, int spaces = 5)
         {
             if (point != null)
@@ -92,6 +100,7 @@ namespace LabWork12
             }
         }
 
+        // Метод для вычисления среднего значения всех элементов в дереве
         public double CalculateAverage()
         {
             if (root == null) return 0;
@@ -99,6 +108,7 @@ namespace LabWork12
             return sum / count;
         }
 
+        // Приватный метод для вычисления суммы всех элементов и их количества в дереве
         private (double, int) CalculateSumAndCount(TreePoint<T>? node)
         {
             if (node == null) return (0, 0);
@@ -114,6 +124,7 @@ namespace LabWork12
             return (totalSum, totalCount);
         }
 
+        // Метод для удаления дерева из памяти
         public void DeleteTree()
         {
             DeleteNode(root);
@@ -123,6 +134,7 @@ namespace LabWork12
             GC.WaitForPendingFinalizers();
         }
 
+        // Приватный метод для рекурсивного удаления узлов дерева
         private void DeleteNode(TreePoint<T>? node)
         {
             if (node != null)
@@ -135,6 +147,7 @@ namespace LabWork12
             }
         }
 
+        // Метод для добавления нового узла в дерево
         public void AddPoint(T data)
         {
             TreePoint<T> newPoint = new TreePoint<T>(data);
@@ -176,51 +189,66 @@ namespace LabWork12
             count++;
         }
 
+        // Метод для создания дерева поиска из текущего дерева
         public MyTree<T> CreateSearchTree()
         {
+            // Создаем список для хранения элементов дерева
             List<T> elements = new List<T>();
+
+            // Выполняем обход в порядке возрастания значений (in-order traversal) и сохраняем элементы в список
             InOrderTraversal(root, elements);
 
+            // Создаем новое дерево поиска
             MyTree<T> searchTree = new MyTree<T>(0);
+
+            // Добавляем каждый элемент из списка в новое дерево поиска
             foreach (var element in elements)
             {
                 searchTree.AddPoint(element);
             }
 
+            // Возвращаем новое дерево поиска
             return searchTree;
         }
 
+        // Приватный метод для обхода дерева в порядке возрастания значений и сохранения элементов в список
         private void InOrderTraversal(TreePoint<T>? node, List<T> elements)
         {
             if (node == null) return;
 
-            InOrderTraversal(node.Left, elements);
-            elements.Add(node.Data);
-            InOrderTraversal(node.Right, elements);
+            InOrderTraversal(node.Left, elements);   // Рекурсивный обход левого поддерева
+            elements.Add(node.Data);                 // Добавление значения текущего узла в список
+            InOrderTraversal(node.Right, elements);  // Рекурсивный обход правого поддерева
         }
 
+        // Метод для преобразования текущего дерева в дерево поиска
         public void TransformToFindTree()
         {
+            // Создаем список для хранения элементов дерева
             List<T> elements = new List<T>();
+
+            // Выполняем обход в порядке возрастания значений (in-order traversal) и сохраняем элементы в список
             InOrderTraversal(root, elements);
 
+            // Очищаем текущее дерево
             root = null;
             count = 0;
+
+            // Добавляем каждый элемент из списка в текущее дерево (уже в виде дерева поиска)
             foreach (var element in elements)
             {
                 AddPoint(element);
             }
         }
 
-
-        // Метод удаления опр. элемента из Дерева поиска
+        // Метод для удаления определенного элемента из дерева поиска
         public void Delete(T key)
         {
             // Вызываем приватный метод Delete, начиная с корня дерева
             root = Delete(root, key);
         }
 
-        // Метод удаления опр. элемента из Дерева поиска - Вспомогательный
+        // Вспомогательный метод для удаления определенного элемента из дерева поиска
         private TreePoint<T>? Delete(TreePoint<T>? node, T key)
         {
             // Если дерево пустое или узел для удаления не найден, возвращаем узел без изменений
@@ -232,41 +260,34 @@ namespace LabWork12
             // Рекурсивно ищем узел для удаления
             if (key.CompareTo(node.Data) < 0)
             {
-                // Если ключ меньше ключа текущего узла, идем в левое поддерево
-                node.Left = Delete(node.Left, key);
+                node.Left = Delete(node.Left, key);     // Рекурсивное удаление в левом поддереве
             }
             else if (key.CompareTo(node.Data) > 0)
             {
-                // Если ключ больше ключа текущего узла, идем в правое поддерево
-                node.Right = Delete(node.Right, key);
+                node.Right = Delete(node.Right, key);   // Рекурсивное удаление в правом поддереве
             }
             else
             {
-                // Узел найден, начинаем его удаление
-                // Узел с одним или без детей
+                // Узел для удаления найден
                 if (node.Left == null)
                 {
-                    // Если у узла нет левого ребенка, возвращаем правого ребенка (или null)
-                    return node.Right;
+                    return node.Right;                  // Если у узла нет левого потомка, возвращаем правого потомка
                 }
                 else if (node.Right == null)
                 {
-                    // Если у узла нет правого ребенка, возвращаем левого ребенка
-                    return node.Left;
+                    return node.Left;                   // Если у узла нет правого потомка, возвращаем левого потомка
                 }
 
-                // Узел с двумя детьми: найдем наименьший элемент в правом поддереве
-                node.Data = MinValue(node.Right);
-
-                // Удалить найденный элемент из правого поддерева
-                node.Right = Delete(node.Right, node.Data);
+                // Узел для удаления имеет обоих потомков
+                node.Data = MinValue(node.Right);       // Находим минимальное значение в правом поддереве
+                node.Right = Delete(node.Right, node.Data); // Удаляем найденное минимальное значение из правого поддерева
             }
 
             // Возвращаем измененный узел
             return node;
         }
 
-        // Метод поиска минимального элемента
+        // Метод для поиска минимального элемента в дереве
         private T MinValue(TreePoint<T>? node)
         {
             // Находим наименьший элемент в дереве (самый левый элемент)
@@ -279,10 +300,10 @@ namespace LabWork12
             return minv;
         }
 
-
+        // Метод для удаления всего дерева поиска
         public void DeleteTreeFind()
         {
-            // Вызываем вспомогательный метод для удаления всех узлов дерева
+            // Рекурсивно удаляем все узлы дерева
             DeleteNodeTreefind(root);
 
             // Устанавливаем корень в null и сбрасываем счетчик элементов
@@ -294,6 +315,7 @@ namespace LabWork12
             GC.WaitForPendingFinalizers();
         }
 
+        // Вспомогательный метод для удаления всех узлов дерева
         private void DeleteNodeTreefind(TreePoint<T>? node)
         {
             // Рекурсивно обходим все узлы дерева и удаляем их
