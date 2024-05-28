@@ -38,8 +38,8 @@ namespace LabWork12
         // Функция вывода меню ( Первое: 1 )
         public static void Print_FirstMenu1()
         {
-            Console.WriteLine("\n\n============ Меню работы с однонаправленным списком ============");
-            Console.WriteLine("1 - Формирование однонаправленного списка");
+            Console.WriteLine("\n\n================== Меню работы с Хеш-Таблицей ==================");
+            Console.WriteLine("1 - Формирование Хеш-Таблицы");
             Console.WriteLine("2 - Добавление элемента в список");
             Console.WriteLine("3 - Удаление элемента из списка");
             Console.WriteLine("4 - Печать списка");
@@ -103,6 +103,14 @@ namespace LabWork12
                             // Печать Хеш-Таблицы
                             Console.WriteLine($"\n============ Хеш-Таблицы ============");
                             hashTable.PrintTable();
+                            break;
+                        case 5:
+                            // Поиск элемента в таблице
+                            Console.WriteLine("================= Поиск Таблицы =================");
+                            timeCard = new Card();
+                            timeCard.Init();        // Инициализация объекта Card для удаления
+                            Card foundCard = hashTable.Find(timeCard);
+                            Console.WriteLine(foundCard != null ? $"Результат поиска: {foundCard}" : "Карта не найдена");
                             break;
                         case 0:
                             // Назад

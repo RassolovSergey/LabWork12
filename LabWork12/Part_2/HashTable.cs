@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace LabWork12
 {
-    public class HashTable<T> where T : IInit, ICloneable, IKey, new()
+    public class HashTable<T> where T : IInit, ICloneable, new()
     {
-        HPoint<T>?[] table; // Массив из лементов типа HPoint<T> (элементы могут быть null)
+        HPoint<T>?[] table; // Массив из элементов типа HPoint<T> (элементы могут быть null)
         public int Capacity => table.Length;    // Размер таблицы
 
-        // Конструктор - ( Параметр - длина ) (Можно использовать как констр. без параметров)
+        // Конструктор - ( Параметр: Длина ) (Можно использовать как констр. без параметров)
         public HashTable(int lenght = 10)
         {
             table = new HPoint<T>[lenght];
@@ -21,15 +21,17 @@ namespace LabWork12
         // Вывод таблицы
         public void PrintTable()
         {
-            for (int i = 0; i < table.Length; i++)
+            for (int i = 0; i < table.Length; i++)  // Проход по всей таблице
             {
-                Console.WriteLine($"{i+1}:");
-                if (table[i] != null) // Если строка не пустая
+                Console.WriteLine($"{i+1}:");       // Выводим номер
+                if (table[i] != null)               // Если строка не пустая, то...
                 {
-                    Console.WriteLine(table[i].Data);   // Вывод информации
-                    if (table[i].Next != null)          // Если есть следующий элемент
+                    Console.WriteLine(table[i].Data);   // Вывод информации из ячейки
+                    if (table[i].Next != null)          // Проверяем наличие сылки на следующий объект
                     {
-                        HPoint<T>? current = table[i].Next; // Идём по цепочке
+                        HPoint<T>? current = table[i].Next; // Встаём на цепочку
+
+                        // Проходим по цепочке
                         while (current != null)
                         {
                             Console.WriteLine(current.Data);
@@ -40,12 +42,12 @@ namespace LabWork12
             }
         }
 
-
-        // Метод - Добавления
+        // Метод - Добавление
         public void AddPoint(T data)
         {
-            int index = GetIndex(data);
-            // Позиция пуста
+            int index = GetIndex(data); // Вычисляем индекс объекта
+
+            // Ячейка пусна
             if (table[index] == null)
             {
                 table[index] = new HPoint<T>(data); // Добавляем новый объект в цепочку
@@ -54,52 +56,76 @@ namespace LabWork12
             {
                 HPoint<T>? current = table[index]; // Ставим объект на нужный индекс (||)
 
-                // Идём до конца списка
-                while (current.Next != null)
+                // Проверка на наличие элемента в цепочке
+                // Идем до свободной ячейки таблицы
+                while (current != null)
                 {
-                    if (current.Equals(data)) { return; }   // Если одинаковые, то заканчиваем
-                    current = current.Next; // Переставляем объект на следующее место
+                    if (current.Data.Equals(data)) { return; }  // Если элемент уже существует, заканчиваем метод
+                    if (current.Next == null) break;            // Выходим
+                    current = current.Next;                     // Переставляем объект на следующее место
                 }
-                current.Next = new HPoint<T>(data); // Присваеваем объекту ссылку но новый последний объект
+
+                current.Next = new HPoint<T>(data); // Записываем объект в новую пустую ячейку
                 current.Next.Prev = current;        // Даём предпоследнему объекту ссылку на последний
             }
         }
 
-
-        // Метод поиска
+        // Метод поиска (проверка на наличие)
         public bool Contains(T data)
         {
             int index = GetIndex(data); // Вычисляем индекс для data
             if (table == null) { throw new Exception("Ошибка: Данной таблицы не существует."); } // Проверка на пустоту таблицы
-            if (table[index] == null) { return false; } // Проверка на пустоту индекса
-            if (table[index].Data.Equals(data)) { return true; } // Попали на нужный элемент
+            if (table[index] == null) { return false; }             // Проверка на пустоту строки
+            if (table[index].Data.Equals(data)) { return true; }    // Попали на нужный элемент
             else
             {
-                HPoint<T>? current = table[index]; // Ставим объект на нужный индекс
+                HPoint<T>? current = table[index]; // Ставим объект на нужную строку
+
+                // Идем до последнего объекта цепочки
                 while (current != null)
                 {
                     if (current.Data.Equals(data)) { return true; } // Сравниваем
-                    current = current.Next; // Переставляем на следующий элемент
+                    current = current.Next;                         // Переставляем на следующий элемент
                 }
             }
             return false; // Если дошли до сюда => ничего не нашли
         }
 
+        // Новый метод поиска (Возвращает сам элемент)
+        public T? Find(T data)
+        {
+            int index = GetIndex(data); // Вычисляем индекс для data
+            if (table == null) { throw new Exception("Ошибка: Данной таблицы не существует."); } // Проверка на пустоту таблицы
+            if (table[index] == null) { return default; }             // Проверка на пустоту строки
+            if (table[index].Data.Equals(data)) { return table[index].Data; }    // Попали на нужный элемент
+            else
+            {
+                HPoint<T>? current = table[index]; // Ставим объект на нужную строку
+
+                // Идем до последнего объекта цепочки
+                while (current != null)
+                {
+                    if (current.Data.Equals(data)) { return current.Data; } // Сравниваем
+                    current = current.Next;                         // Переставляем на следующий элемент
+                }
+            }
+            return default; // Если дошли до сюда => ничего не нашли
+        }
 
         // Удаление из цепочки
         public bool RemoveData(T data)
         {
             HPoint<T>? current;
             int index = GetIndex(data); // Считаем индекс
-            if (table[index] == null) // Проверяем на наличие
+            if (table[index] == null)   // Проверяем на наличие строки
             {
                 return false;
             }
             if (table[index].Data.Equals(data)) // Проверяем на совпадения
             {
-                if (table[index].Next == null) // Проверка на пустоту
+                if (table[index].Next == null)  // Проверка на пустоту
                 {
-                    table[index] = null; // Удаляем пустоту (очищаем память)
+                    table[index] = null;        // Удаляем пустоту (очищаем память)
                 }
                 else
                 {
@@ -111,9 +137,11 @@ namespace LabWork12
             else
             {
                 current = table[index]; // Ставим объект на нужный индекс
+
+                // Проходим по всеё цепочке
                 while (current != null)
                 {
-                    if (current.Data.Equals(data)) // Нашли совпадение и удаляем
+                    if (current.Data.Equals(data)) // Если нашли совпадение
                     {
                         HPoint<T>? prev = current.Prev; // Создаем переменную prev - записываем предыдущий элемент
                         HPoint<T>? next = current.Next; // Создаем переменную next - записываем следующий элемент
@@ -132,9 +160,10 @@ namespace LabWork12
         }
 
 
-        // Метод - GetIndex
+        // Метод - Вычисления индекса объекта
         private int GetIndex(T data)
         {
+            // Используем хэш-код объекта, который должен учитывать все необходимые поля
             return Math.Abs(data.GetHashCode()) % Capacity;
         }
     }

@@ -14,8 +14,6 @@ namespace LabWork12
         public HPoint<T>? Next { get; set; }    // Поле - ссылка на следующий элемент
         public HPoint<T>? Prev { get; set; }    // Поле - ссылка на предыдущий элемент
 
-        static Random rnd = new Random();       // Статический генератор случайных чисел
-
         // Конструктор - ( Без параметров )
         public HPoint()
         {

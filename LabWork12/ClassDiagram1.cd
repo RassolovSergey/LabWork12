@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="LabWork12.Program">
+    <Position X="10" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAACAAAAAACHAAAAoAAAAAAghAAAADA=</HashCode>
+      <FileName>Main Program\Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LabWork12.BiList&lt;T&gt;">
+    <Position X="4.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACCBAAACgCAARAAABAAABgRAAIAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Part_1\BiList.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LabWork12.PointBiList&lt;T&gt;">
+    <Position X="4.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAAAAAAAAAAA=</HashCode>
+      <FileName>Part_1\PointBiList.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LabWork12.HashTable&lt;T&gt;">
+    <Position X="6.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAQAABQAAAAAAACAAAAAAAAEAAAAAAQAAA=</HashCode>
+      <FileName>Part_2\HashTable.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LabWork12.HPoint&lt;T&gt;">
+    <Position X="8.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAEAAAAAAAAAAAEAAAAAAAAAAAAANAAAAAAAAAAAAA=</HashCode>
+      <FileName>Part_2\HPoint.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LabWork12.MyTree&lt;T&gt;">
+    <Position X="6.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIQCGgABAAqAAQWAAEKAIIAAAIQQAAEAAA=</HashCode>
+      <FileName>Part_3\MyTree.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LabWork12.TreePoint&lt;T&gt;">
+    <Position X="8.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQEAAAAAAAAAAAAABAACACAAAAAAAA=</HashCode>
+      <FileName>Part_3\TreePoint.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LabWork12.Part_4.MyCollection&lt;T&gt;">
+    <Position X="2.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAAAAAAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>FromLecture\MyCollection.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="LabWork12.Part_4.MyEnumerator&lt;T&gt;" BaseTypeListCollapsed="true">
+    <Position X="1.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAABAAAAACAAgAAgAAAAAAAoAAAAAAAAAA=</HashCode>
+      <FileName>FromLecture\MyCollection.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="LabWork12.Part_4.MyCollectionTree&lt;T&gt;" BaseTypeListCollapsed="true">
+    <Position X="3" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAIAAAAAAAAEABAQiAAABAQCAAAAAAAEAAAgAABQIAA=</HashCode>
+      <FileName>Part_4\MyCollectionTree.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
