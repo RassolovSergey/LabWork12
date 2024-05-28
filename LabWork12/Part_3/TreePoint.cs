@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LabWork12
 {
-    internal class TreePoint<T> where T: IComparable
+    public class TreePoint<T> where T: IComparable
     {
         public T? Data { get; set; }
         public TreePoint<T>? Left { get; set; }

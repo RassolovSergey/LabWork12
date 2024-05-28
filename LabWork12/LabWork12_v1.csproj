@@ -52,7 +52,6 @@
     <Compile Include="Part_1\BiList.cs" />
     <Compile Include="Part_2\HashTable.cs" />
     <Compile Include="Part_2\HPoint.cs" />
-    <Compile Include="FromLecture\MonoList.cs" />
     <Compile Include="Part_3\MyTree.cs" />
     <Compile Include="Part_1\PointBiList.cs" />
     <Compile Include="Main Program\Program.cs" />

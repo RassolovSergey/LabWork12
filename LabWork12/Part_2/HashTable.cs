@@ -9,7 +9,7 @@ namespace LabWork12
 {
     public class HashTable<T> where T : IInit, ICloneable, new()
     {
-        HPoint<T>?[] table; // Массив из элементов типа HPoint<T> (элементы могут быть null)
+        public HPoint<T>?[] table; // Массив из элементов типа HPoint<T> (элементы могут быть null)
         public int Capacity => table.Length;    // Размер таблицы
 
         // Конструктор - ( Параметр: Длина ) (Можно использовать как констр. без параметров)
@@ -161,7 +161,7 @@ namespace LabWork12
 
 
         // Метод - Вычисления индекса объекта
-        private int GetIndex(T data)
+        public int GetIndex(T data)
         {
             // Используем хэш-код объекта, который должен учитывать все необходимые поля
             return Math.Abs(data.GetHashCode()) % Capacity;

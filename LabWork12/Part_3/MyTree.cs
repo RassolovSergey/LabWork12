@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LabWork12
 {
-    internal class MyTree<T> where T : IInit, ICloneable, IComparable, new()
+    public class MyTree<T> where T : IInit, ICloneable, IComparable, new()
     {
         private TreePoint<T>? root = null;  // Корень
         private int count = 0;  // Счетчик кол-ва элементов
@@ -331,5 +331,7 @@ namespace LabWork12
                 node.Right = null;
             }
         }
+
+
     }
 }
