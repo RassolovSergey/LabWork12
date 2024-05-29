@@ -47,6 +47,7 @@ namespace LabWork12
             Console.WriteLine("================================================================");
         }
 
+
         // Функция обработки меню ( Первое: 1 )
         public static void Process_FirstMenu1()
         {
@@ -134,7 +135,6 @@ namespace LabWork12
         }
 
 
-
         // Функция вывода  меню ( Первое: 2) - Вывод
         public static void Print_FirstMenu2()
         {
@@ -148,6 +148,7 @@ namespace LabWork12
             Console.WriteLine("0 - Назад");
             Console.WriteLine("==================================================================");
         }
+
 
         // Функция обработки меню ( Первое: 2) - Обработка
         public static void Process_FirstMenu2()
@@ -234,6 +235,7 @@ namespace LabWork12
             Console.WriteLine("==================================================================");
         }
 
+
         // Функция обработки меню ( Первое: 2 | Второе: 1 ) - Обработка
         public static BiList<Card> Process_FirstMenu2_SecondMenu1()
         {
@@ -289,6 +291,7 @@ namespace LabWork12
             Console.WriteLine("2 - Добавить элемент в список после элемента с определенным значением (ДСЧ)");
             Console.WriteLine("0 - Назад");
         }
+
 
         // Функция обработки меню ( Первое: 2 | Второе: 2 ) - Обработка
         public static BiList<Card> Process_FirstMenu2_SecondMenu2(BiList<Card> biList)
@@ -365,6 +368,7 @@ namespace LabWork12
             Console.WriteLine("0 - Назад");
         }
 
+
         // Функция обработки меню ( Первое: 2 | Второе: 3 ) - Обработка
         public static BiList<Card> Process_FirstMenu2_ThirdMenu3(BiList<Card> biList)
         {
@@ -438,6 +442,7 @@ namespace LabWork12
             Console.WriteLine("0 - Выход из меню");
             Console.WriteLine("=================================================================");
         }
+
 
         // Фукция обработки меню ( Первое: 3 )  - Обработка
         public static void Process_FirstMenu3()
@@ -653,7 +658,6 @@ namespace LabWork12
         }
 
 
-
         // Функция вывода меню  ( Первое: 4 ) - Вывод
         public static void Print_FirstMenu4()
         {
@@ -661,6 +665,7 @@ namespace LabWork12
             Console.WriteLine("1 - Пример работы");
             Console.WriteLine("0 - Назад");
         }
+
 
         // Фукция обработки меню  ( Первое: 4 ) - Обработка
         public static void Process_FirstMenu4()

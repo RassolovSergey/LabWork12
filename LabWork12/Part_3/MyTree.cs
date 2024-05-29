@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LabWork12
 {
-    public class MyTree<T> where T : IInit, ICloneable, IComparable, new()
+    public class MyTree<T> where T : IInit, ICloneable, IComparable,  new()
     {
         private TreePoint<T>? root = null;  // Корень
         private int count = 0;  // Счетчик кол-ва элементов
@@ -60,7 +60,7 @@ namespace LabWork12
         }
 
         // Приватный метод для изменения данных в каждом узле дерева
-        private void ChangeNodeData(TreePoint<T>? node)
+        public void ChangeNodeData(TreePoint<T>? node)
         {
             if (node != null)
             {
@@ -87,7 +87,7 @@ namespace LabWork12
         }
 
         // Приватный метод для печати дерева с указанием отступов между уровнями
-        private void Print(TreePoint<T>? point, int spaces = 5)
+        public void Print(TreePoint<T>? point, int spaces = 5)
         {
             if (point != null)
             {
@@ -331,7 +331,5 @@ namespace LabWork12
                 node.Right = null;
             }
         }
-
-
     }
 }

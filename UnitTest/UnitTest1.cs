@@ -3,6 +3,8 @@ using System;
 using LabWork12;
 using ClassLibraryLab10;
 using System.IO;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace UnitTest
 {
@@ -774,5 +776,210 @@ namespace UnitTest
 
     }
 
+    [TestClass]
+    public class TreePointTests
+    {
+        [TestMethod]
+        public void TreePointCreation_Test()
+        {
+            // Arrange
+            Card card = new Card("1234 5678 9012 3456", "John Doe", "12/25", 123);
+            TreePoint<Card> treePoint = new TreePoint<Card>(card);
 
+            // Act
+
+            // Assert
+            Assert.IsNotNull(treePoint);
+            Assert.AreEqual(card, treePoint.Data);
+            Assert.IsNull(treePoint.Left);
+            Assert.IsNull(treePoint.Right);
+        }
+
+        [TestMethod]
+        public void TreePointChildren_Test()
+        {
+            // Arrange
+            Card parentCard = new Card("1234 5678 9012 3456", "John Doe", "12/25", 123);
+            Card leftChildCard = new Card("5678 1234 9012 3456", "Jane Doe", "06/24", 456);
+            Card rightChildCard = new Card("9012 5678 1234 3456", "Michael Smith", "09/23", 789);
+
+            TreePoint<Card> parentNode = new TreePoint<Card>(parentCard);
+            TreePoint<Card> leftChildNode = new TreePoint<Card>(leftChildCard);
+            TreePoint<Card> rightChildNode = new TreePoint<Card>(rightChildCard);
+
+            // Act
+            parentNode.Left = leftChildNode;
+            parentNode.Right = rightChildNode;
+
+            // Assert
+            Assert.AreEqual(parentNode.Left, leftChildNode);
+            Assert.AreEqual(parentNode.Right, rightChildNode);
+            Assert.IsNull(leftChildNode.Left);
+            Assert.IsNull(leftChildNode.Right);
+            Assert.IsNull(rightChildNode.Left);
+            Assert.IsNull(rightChildNode.Right);
+        }
+
+        [TestMethod]
+        public void TreePointDataModification_Test()
+        {
+            // Arrange
+            Card originalCard = new Card("1234 5678 9012 3456", "John Doe", "12/25", 123);
+            Card modifiedCard = new Card("5678 1234 9012 3456", "Jane Doe", "06/24", 456);
+            TreePoint<Card> treePoint = new TreePoint<Card>(originalCard);
+
+            // Act
+            treePoint.Data = modifiedCard;
+
+            // Assert
+            Assert.AreEqual(modifiedCard, treePoint.Data);
+        }
+
+        [TestMethod]
+        public void TreePointConstructorDefault_Test()
+        {
+            // Arrange & Act
+            TreePoint<Card> treePoint = new TreePoint<Card>();
+
+            // Assert
+            Assert.IsNotNull(treePoint);
+            Assert.IsNull(treePoint.Data);
+            Assert.IsNull(treePoint.Left);
+            Assert.IsNull(treePoint.Right);
+        }
+
+        [TestMethod]
+        public void TreePointToString_Test()
+        {
+            // Arrange
+            Card card = new Card("1234 5678 9012 3456", "John Doe", "12/25", 123);
+            TreePoint<Card> treePoint = new TreePoint<Card>(card);
+
+            // Act
+            string result = treePoint.ToString();
+
+            // Assert
+            string expected = "1234 5678 9012 3456 | John Doe | 12/25 | 123";
+            Assert.AreEqual(expected, result);
+        }
+    }
+
+    [TestClass]
+    public class MyTreeTests
+    {
+        [TestMethod]
+        public void MyTreeConstructor_Test()
+        {
+            // Arrange
+            int length = 5;
+
+            // Act
+            MyTree<Card> myTree = new MyTree<Card>(length);
+
+            // Assert
+            Assert.IsNotNull(myTree);
+            Assert.AreEqual(length, myTree.Count);
+            Assert.IsNotNull(myTree.Root);
+        }
+
+
+        [TestMethod]
+        public void MyTreeDeepCopy_Test()
+        {
+            // Arrange
+            MyTree<Card> myTree = new MyTree<Card>(5);
+
+            // Act
+            MyTree<Card> copyTree = myTree.DeepCopy();
+
+            // Assert
+            Assert.IsNotNull(copyTree);
+            Assert.AreNotSame(myTree, copyTree);
+            Assert.AreEqual(myTree.Count, copyTree.Count);
+        }
+
+        [TestMethod]
+        public void MyTree_CalculateAverage()
+        {
+            // Arrange
+            MyTree<Card> myTree = new MyTree<Card>(0);
+
+            // Создаем несколько карт с известными значениями номера
+            Card card1 = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
+            Card card2 = new Card("9876 5432 1098 7654", "Jane Smith", "05/23", 2);
+            Card card3 = new Card("1111 2222 3333 4444", "Alice Brown", "03/24", 3);
+
+            // Добавляем карты в дерево
+            myTree.AddPoint(card1);
+            myTree.AddPoint(card2);
+            myTree.AddPoint(card3);
+
+            // Act
+            double average = myTree.CalculateAverage();
+
+            // Assert
+            Assert.AreEqual(2.0, average); // Среднее значение для номеров 1, 2, 3 должно быть 2.0
+        }
+
+        [TestMethod]
+        public void MyTree_DeleteTree()
+        {
+            // Arrange
+            MyTree<Card> myTree = new MyTree<Card>(0);
+
+            // Создаем несколько карт с известными значениями номера
+            Card card1 = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
+            Card card2 = new Card("9876 5432 1098 7654", "Jane Smith", "05/23", 2);
+            Card card3 = new Card("1111 2222 3333 4444", "Alice Brown", "03/24", 3);
+
+            // Добавляем карты в дерево
+            myTree.AddPoint(card1);
+            myTree.AddPoint(card2);
+            myTree.AddPoint(card3);
+
+            // Act
+            myTree.DeleteTree();
+
+            // Assert
+            Assert.AreEqual(0, myTree.Count);  // Проверяем, что количество элементов в дереве равно 0
+            Assert.IsNull(myTree.Root);         // Проверяем, что корень дерева равен null
+        }
+
+        [TestMethod]
+        public void TransformToFindTree_TransformsToSearchTree()
+        {
+            // Arrange
+            MyTree<Card> tree = new MyTree<Card>(0);
+
+            Card card1 = new Card();
+            tree.AddPoint(new Card(card1));
+            Card card2 = new Card();
+            tree.AddPoint(new Card(card2));
+            Card card3 = new Card();
+            tree.AddPoint(new Card(card3));
+
+            // Act
+            tree.TransformToFindTree();
+
+            // Assert
+            Assert.IsTrue(IsSearchTree(tree.Root));
+        }
+
+        private bool IsSearchTree(TreePoint<Card> node)
+        {
+            if (node == null) return true;
+
+            // Проверяем, что в левом поддереве все значения меньше текущего узла
+            if (node.Left != null && node.Left.Data.CompareTo(node.Data) >= 0)
+                return false;
+
+            // Проверяем, что в правом поддереве все значения больше текущего узла
+            if (node.Right != null && node.Right.Data.CompareTo(node.Data) <= 0)
+                return false;
+
+            // Рекурсивно проверяем поддеревья
+            return IsSearchTree(node.Left) && IsSearchTree(node.Right);
+        }
+
+    }
 }
