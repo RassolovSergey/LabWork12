@@ -10,16 +10,18 @@ namespace LabWork12
     public class MyTree<T> where T : IInit, ICloneable, IComparable,  new()
     {
         private TreePoint<T>? root = null;  // Корень
-        private int count = 0;  // Счетчик кол-ва элементов
+        private int count = 0;  // Счетчик кол-ва элементов ИСБД
+        private int countFindTree = 0;  // Счетчик кол-ва элементов Дерева поиска
 
         public int Count => count;  // Метод вывода кол-ва элементов
+        public int CountFindTree => countFindTree;  // Метод вывода кол-ва элементов Дерева поиска
         public TreePoint<T>? Root => root;  // Публичное свойство для получения корня
 
         // Конструктор, создающий дерево заданной длины и заполняющий его случайными данными
         public MyTree(int length)
         {
             count = length;
-            root = MakeTree(length, root);
+            root = MakeTree(length);
         }
 
         // Приватный конструктор для создания глубокой копии дерева
@@ -46,7 +48,9 @@ namespace LabWork12
         {
             if (point == null) return null;
 
-            TreePoint<T> newPoint = new TreePoint<T>((T)point.Data.Clone());
+            T clonedData = (T)((ICloneable)point.Data).Clone(); // Клонируем данные узла
+
+            TreePoint<T> newPoint = new TreePoint<T>(clonedData);
             newPoint.Left = DeepCopyTreePoint(point.Left);
             newPoint.Right = DeepCopyTreePoint(point.Right);
 
@@ -71,7 +75,7 @@ namespace LabWork12
         }
 
         // Приватный метод для создания дерева определенной длины
-        private TreePoint<T>? MakeTree(int length, TreePoint<T>? point)
+        private TreePoint<T>? MakeTree(int length)
         {
             if (length == 0) return null;
 
@@ -81,8 +85,8 @@ namespace LabWork12
 
             int nl = length / 2;
             int nr = length - nl - 1;
-            newItem.Left = MakeTree(nl, newItem.Left);
-            newItem.Right = MakeTree(nr, newItem.Right);
+            newItem.Left = MakeTree(nl);
+            newItem.Right = MakeTree(nr);
             return newItem;
         }
 
@@ -108,7 +112,7 @@ namespace LabWork12
             return sum / count;
         }
 
-        // Приватный метод для вычисления суммы всех элементов и их количества в дереве
+        // Метод для вычисления суммы всех элементов и их количества в дереве
         private (double, int) CalculateSumAndCount(TreePoint<T>? node)
         {
             if (node == null) return (0, 0);
@@ -116,7 +120,18 @@ namespace LabWork12
             (double leftSum, int leftCount) = CalculateSumAndCount(node.Left);
             (double rightSum, int rightCount) = CalculateSumAndCount(node.Right);
 
-            double nodeValue = ((Card)(object)node.Data).num.number;
+            double nodeValue = 0;
+
+            if (node.Data is Card card)
+            {
+                // Используем значение поля num объекта Card для вычислений
+                nodeValue = card.num.number;
+            }
+            else
+            {
+                // Если тип данных не является Card или поле num недоступно, возвращаем 0
+                return (leftSum + rightSum, leftCount + rightCount + 1);
+            }
 
             double totalSum = leftSum + rightSum + nodeValue;
             int totalCount = leftCount + rightCount + 1;
@@ -195,7 +210,7 @@ namespace LabWork12
             // Создаем список для хранения элементов дерева
             List<T> elements = new List<T>();
 
-            // Выполняем обход в порядке возрастания значений (in-order traversal) и сохраняем элементы в список
+            // Выполняем обход в порядке возрастания значений и сохраняем элементы в список
             InOrderTraversal(root, elements);
 
             // Создаем новое дерево поиска
@@ -208,6 +223,7 @@ namespace LabWork12
             }
 
             // Возвращаем новое дерево поиска
+            countFindTree = count;
             return searchTree;
         }
 
@@ -221,31 +237,12 @@ namespace LabWork12
             InOrderTraversal(node.Right, elements);  // Рекурсивный обход правого поддерева
         }
 
-        // Метод для преобразования текущего дерева в дерево поиска
-        public void TransformToFindTree()
-        {
-            // Создаем список для хранения элементов дерева
-            List<T> elements = new List<T>();
-
-            // Выполняем обход в порядке возрастания значений (in-order traversal) и сохраняем элементы в список
-            InOrderTraversal(root, elements);
-
-            // Очищаем текущее дерево
-            root = null;
-            count = 0;
-
-            // Добавляем каждый элемент из списка в текущее дерево (уже в виде дерева поиска)
-            foreach (var element in elements)
-            {
-                AddPoint(element);
-            }
-        }
-
         // Метод для удаления определенного элемента из дерева поиска
         public void Delete(T key)
         {
             // Вызываем приватный метод Delete, начиная с корня дерева
             root = Delete(root, key);
+            countFindTree--;
         }
 
         // Вспомогательный метод для удаления определенного элемента из дерева поиска
@@ -283,7 +280,6 @@ namespace LabWork12
                 node.Right = Delete(node.Right, node.Data); // Удаляем найденное минимальное значение из правого поддерева
             }
 
-            // Возвращаем измененный узел
             return node;
         }
 

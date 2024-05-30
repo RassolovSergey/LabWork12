@@ -32,14 +32,39 @@ namespace LabWork12
         // Метод - ToString
         public override string ToString()
         {
-            if (Data == null) { return ""; }
-            else { return Data.ToString(); }
+            if (Data == null)
+            {
+                return "";
+            }
+            else
+            {
+                return Data.ToString();
+            }
         }
 
-        // Метод - CompareTo
-        public int CompareTo(TreePoint<T> other)
+        public override bool Equals(object obj)
         {
-            return Data.CompareTo(other);
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            TreePoint<T> other = (TreePoint<T>)obj;
+            return Equals(Data, other.Data) &&
+                   Equals(Left, other.Left) &&
+                   Equals(Right, other.Right);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked // Overflow is fine, just wrap
+            {
+                int hash = 17;
+                hash = hash * 23 + (Data != null ? Data.GetHashCode() : 0);
+                hash = hash * 23 + (Left != null ? Left.GetHashCode() : 0);
+                hash = hash * 23 + (Right != null ? Right.GetHashCode() : 0);
+                return hash;
+            }
         }
     }
 }

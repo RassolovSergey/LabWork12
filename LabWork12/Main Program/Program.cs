@@ -43,6 +43,7 @@ namespace LabWork12
             Console.WriteLine("2 - Добавление элемента в список");
             Console.WriteLine("3 - Удаление элемента из списка");
             Console.WriteLine("4 - Печать списка");
+            Console.WriteLine("5 - Найти элемент в Хеш-Таблице");
             Console.WriteLine("0 - Выход из меню");
             Console.WriteLine("================================================================");
         }
@@ -87,17 +88,24 @@ namespace LabWork12
                             break;
                         case 3:
                             // Удаление элемента из Хеш-Таблицы
-                            Console.WriteLine($"Введите элемент для удаления:");
-                            timeCard = new Card();
-                            timeCard.Init(); // Инициализация объекта Card для удаления
-                            bool isRemoved = hashTable.RemoveData(timeCard);
-                            if (isRemoved)
+                            if (hashTable.Count > 0)
                             {
-                                Console.WriteLine($"Элемент {timeCard} успешно удален.");
+                                Console.WriteLine($"Введите элемент для удаления:");
+                                timeCard = new Card();
+                                timeCard.Init(); // Инициализация объекта Card для удаления
+                                bool isRemoved = hashTable.RemoveData(timeCard);
+                                if (isRemoved)
+                                {
+                                    Console.WriteLine($"Элемент {timeCard} успешно удален.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Элемент {timeCard} не найден для удаления.");
+                                }
                             }
                             else
                             {
-                                Console.WriteLine($"Элемент {timeCard} не найден для удаления.");
+                                Console.WriteLine("Ошибка: Ваша таблица пуста!");
                             }
                             break;
                         case 4:
@@ -107,11 +115,25 @@ namespace LabWork12
                             break;
                         case 5:
                             // Поиск элемента в таблице
-                            Console.WriteLine("================= Поиск Таблицы =================");
-                            timeCard = new Card();
-                            timeCard.Init();        // Инициализация объекта Card для удаления
-                            Card foundCard = hashTable.Find(timeCard);
-                            Console.WriteLine(foundCard != null ? $"Результат поиска: {foundCard}" : "Карта не найдена");
+                            if (hashTable.Count > 0)
+                            {
+                                Console.WriteLine("============== Поиск элемента Таблицы ==============");
+                                timeCard = new Card();
+                                timeCard.Init();        // Инициализация объекта Card для удаления
+                                Card foundCard = hashTable.Find(timeCard);
+                                if (foundCard != null)
+                                {
+                                    Console.WriteLine($"Результат поиска: {foundCard}");
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Карта: {timeCard} - Не была найдена");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Ошибка: Ваша таблица пуста!");
+                            }
                             break;
                         case 0:
                             // Назад
@@ -451,6 +473,7 @@ namespace LabWork12
             MyTree<Card> myTree = new MyTree<Card>(0);      // Дерево для дальнейшей работы (базовое значение - 0)
             MyTree<Card> searchTree = new MyTree<Card>(0);  // Дерево поиска для дальнейшей работы (базовое значение - 0)
             int size;
+            int countFindTree = 0;  // Счетчик кол-ва элементов Дерева поиска
 
             while (flag)
             {
@@ -517,7 +540,7 @@ namespace LabWork12
                                         }
                                         break;
                                     case 2:
-                                        if (searchTree.Count <= 0)
+                                        if (countFindTree <= 0)
                                         {
                                             PrintError("Ошибка: Ваше дерево не содержит элементов!");
                                         }
@@ -547,7 +570,7 @@ namespace LabWork12
 
                                 // Вычисление среднего значения
                                 double average = myTree.CalculateAverage();
-                                Console.WriteLine($"\nСреднее значение num.number: {average}");
+                                Console.WriteLine($"\nСреднее значение ID: {average}");
                             }
                             else
                             {
@@ -580,7 +603,7 @@ namespace LabWork12
                                         }
                                         break;
                                     case 2:
-                                        if (searchTree.Count <= 0)
+                                        if (countFindTree <= 0)
                                         {
                                             PrintError("Ошибка: Ваше дерево не содержит элементов!");
                                         }
@@ -588,6 +611,7 @@ namespace LabWork12
                                         {
                                             Console.WriteLine("\nУдаление дерева...");
                                             searchTree.DeleteTree();
+                                            countFindTree = 0;
                                         }
                                         break;
                                     case 0:
@@ -611,14 +635,10 @@ namespace LabWork12
                                 // Преобразование идеально сбалансированного дерева в дерево поиска
                                 searchTree = myTree.CreateSearchTree();
 
-
-                                // Вывод идеально сбалансированного дерева
-                                Console.WriteLine("\nДерево поиска:");
-                                searchTree.PrintTree();
-
                                 // Вывод дерева поиска
-                                Console.WriteLine("\nИдеально сбалансированное дерево:");
-                                myTree.PrintTree();
+                                Console.WriteLine("\n:");
+                                searchTree.PrintTree();
+                                countFindTree = myTree.Count;
                             }
                             else
                             {
@@ -627,12 +647,13 @@ namespace LabWork12
                             break;
                         case 7:
                             // Удаление элемент с заданым ключом из дерева поиска
-                            if (searchTree.Count > 0)
+                            if (countFindTree > 0)
                             {
                                 Console.WriteLine("Введите элемент для удаления:");
                                 Card timeCard = new Card();
                                 timeCard.Init();
                                 searchTree.Delete(timeCard);
+                                countFindTree--;
                             }
                             else
                             {
