@@ -13,13 +13,6 @@ namespace LabWork12
         public TreePoint<T>? Right { get; set; }
 
 
-        // Конструктор - ( Без параметра )
-        public TreePoint()
-        {
-            this.Data = default(T);
-            this.Left = null;
-            this.Right = null;
-        }
 
         // Конструктор -  ( Параметор - data )
         public TreePoint(T data) 

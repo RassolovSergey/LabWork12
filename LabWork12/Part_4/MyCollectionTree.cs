@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace LabWork12.Part_4
 {
+    /*
     public class MyCollectionTree<T> : IEnumerable<T>, ICollection<T> where T : ICloneable, IComparable, IInit, new()
     {
         private MyTree<T> tree;
@@ -119,4 +120,5 @@ namespace LabWork12.Part_4
                 yield return item;
         }
     }
+    */
 }

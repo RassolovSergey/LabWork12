@@ -636,7 +636,7 @@ namespace LabWork12
                                 searchTree = myTree.CreateSearchTree();
 
                                 // Вывод дерева поиска
-                                Console.WriteLine("\n:");
+                                Console.WriteLine("\nДерево поиска:");
                                 searchTree.PrintTree();
                                 countFindTree = myTree.Count;
                             }
@@ -652,7 +652,17 @@ namespace LabWork12
                                 Console.WriteLine("Введите элемент для удаления:");
                                 Card timeCard = new Card();
                                 timeCard.Init();
+                                int countTime = searchTree.Count;
                                 searchTree.Delete(timeCard);
+                                if (searchTree.Count < countTime)
+                                {
+                                    Console.WriteLine("Элемет удалён.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Ошибка: Элемент не найден!");
+                                }
+                                Console.WriteLine();
                                 countFindTree--;
                             }
                             else
@@ -687,7 +697,7 @@ namespace LabWork12
             Console.WriteLine("0 - Назад");
         }
 
-
+        /*
         // Фукция обработки меню  ( Первое: 4 ) - Обработка
         public static void Process_FirstMenu4()
         {
@@ -733,7 +743,7 @@ namespace LabWork12
             Console.WriteLine($"Обновленное количество карт в коллекции: {cardCollection.Count}");
             Console.WriteLine();
         }
-
+        */
 
         static void Main(string[] args)
         {
@@ -765,7 +775,7 @@ namespace LabWork12
                                 Process_FirstMenu3(); // Вывод Второстпенного меню - 3
                                 break;
                             case 4:
-                                Process_FirstMenu4(); // Вывод Второстпенного меню - 4
+                                //Process_FirstMenu4(); // Вывод Второстпенного меню - 4
                                 break;
                             case 0:
                                 flagMainMenu = false; // Завершение работы программы...

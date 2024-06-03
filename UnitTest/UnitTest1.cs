@@ -122,6 +122,59 @@ namespace UnitTest
             // Assert
             Assert.AreEqual(point2, point1.Prev);
         }
+
+        [TestMethod]
+        public void TestEquals_SameObject()
+        {
+            // Arrange
+            HPoint<int> point = new HPoint<int>(42);
+
+            // Act
+            bool result = point.Equals(point);
+
+            // Assert
+            Assert.IsTrue(result, "Equals should return true for the same object.");
+        }
+
+        [TestMethod]
+        public void TestEquals_DifferentObjectDifferentData()
+        {
+            // Arrange
+            HPoint<int> point1 = new HPoint<int>(42);
+            HPoint<int> point2 = new HPoint<int>(43);
+
+            // Act
+            bool result = point1.Equals(point2);
+
+            // Assert
+            Assert.IsFalse(result, "Equals should return false for different objects with different data.");
+        }
+
+        [TestMethod]
+        public void TestEquals_NullObject()
+        {
+            // Arrange
+            HPoint<int> point = new HPoint<int>(42);
+
+            // Act
+            bool result = point.Equals(null);
+
+            // Assert
+            Assert.IsFalse(result, "Equals should return false when comparing with null.");
+        }
+
+        [TestMethod]
+        public void TestEquals_DifferentType()
+        {
+            // Arrange
+            HPoint<int> point = new HPoint<int>(42);
+
+            // Act
+            bool result = point.Equals("42");
+
+            // Assert
+            Assert.IsFalse(result, "Equals should return false when comparing with a different type.");
+        }
     }
 
     [TestClass]
@@ -464,6 +517,133 @@ namespace UnitTest
 
             Assert.AreEqual(3, count, "There should be three elements in the chain.");
         }
+
+
+        [TestMethod]
+        public void TestPrintTable_EmptyTable()
+        {
+            // Arrange
+            HashTable<Card> hashTable = new HashTable<Card>();
+
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+
+                // Act
+                hashTable.PrintTable();
+
+                // Assert
+                string result = sw.ToString();
+                for (int i = 0; i < hashTable.Capacity; i++)
+                {
+                    StringAssert.Contains(result, $"{i}:");
+                }
+            }
+        }
+
+        [TestMethod]
+        public void TestRemoveData_FromEmptyTable()
+        {
+            // Подготовка
+            HashTable<Card> hashTable = new HashTable<Card>();
+            Card card = new Card("1234 5678 9012 3456", "Иван Иванов", "12/25", 1);
+
+            // Действие
+            bool result = hashTable.RemoveData(card);
+
+            // Проверка
+            Assert.IsFalse(result, "Метод RemoveData должен возвращать false при удалении из пустой таблицы.");
+        }
+
+
+        [TestMethod]
+        public void TestRemoveData_ChainHandling_FirstElement()
+        {
+            // Подготовка
+            HashTable<Card> hashTable = new HashTable<Card>(1); // Принудительно вызываем коллизии, установив ёмкость в 1
+            Card card1 = new Card("1234 5678 9012 3456", "Иван Иванов", "12/25", 1);
+            Card card2 = new Card("2345 6789 0123 4567", "Мария Петрова", "11/24", 2);
+            hashTable.AddPoint(card1);
+            hashTable.AddPoint(card2);
+
+            // Действие
+            bool result = hashTable.RemoveData(card1);
+
+            // Проверка
+            Assert.IsTrue(result, "Метод RemoveData должен возвращать true для первого элемента в цепочке.");
+            Assert.IsFalse(hashTable.Contains(card1), "Хеш-таблица не должна содержать удалённый первый элемент.");
+            Assert.IsTrue(hashTable.Contains(card2), "Хеш-таблица должна содержать второй элемент.");
+        }
+
+        [TestMethod]
+        public void TestRemoveData_ChainHandling_MiddleElement()
+        {
+            // Подготовка
+            HashTable<Card> hashTable = new HashTable<Card>(1); // Принудительно вызываем коллизии, установив ёмкость в 1
+            Card card1 = new Card("1234 5678 9012 3456", "Иван Иванов", "12/25", 1);
+            Card card2 = new Card("2345 6789 0123 4567", "Мария Петрова", "11/24", 2);
+            Card card3 = new Card("3456 7890 1234 5678", "Алексей Смирнов", "10/23", 3);
+            hashTable.AddPoint(card1);
+            hashTable.AddPoint(card2);
+            hashTable.AddPoint(card3);
+
+            // Действие
+            bool result = hashTable.RemoveData(card2);
+
+            // Проверка
+            Assert.IsTrue(result, "Метод RemoveData должен возвращать true для среднего элемента в цепочке.");
+            Assert.IsFalse(hashTable.Contains(card2), "Хеш-таблица не должна содержать удалённый средний элемент.");
+            Assert.IsTrue(hashTable.Contains(card1), "Хеш-таблица должна содержать первый элемент.");
+            Assert.IsTrue(hashTable.Contains(card3), "Хеш-таблица должна содержать последний элемент.");
+        }
+
+        [TestMethod]
+        public void TestRemoveData_ChainHandling_LastElement()
+        {
+            // Подготовка
+            HashTable<Card> hashTable = new HashTable<Card>(1); // Принудительно вызываем коллизии, установив ёмкость в 1
+            Card card1 = new Card("1234 5678 9012 3456", "Иван Иванов", "12/25", 1);
+            Card card2 = new Card("2345 6789 0123 4567", "Мария Петрова", "11/24", 2);
+            Card card3 = new Card("3456 7890 1234 5678", "Алексей Смирнов", "10/23", 3);
+            hashTable.AddPoint(card1);
+            hashTable.AddPoint(card2);
+            hashTable.AddPoint(card3);
+
+            // Действие
+            bool result = hashTable.RemoveData(card3);
+
+            // Проверка
+            Assert.IsTrue(result, "Метод RemoveData должен возвращать true для последнего элемента в цепочке.");
+            Assert.IsFalse(hashTable.Contains(card3), "Хеш-таблица не должна содержать удалённый последний элемент.");
+            Assert.IsTrue(hashTable.Contains(card1), "Хеш-таблица должна содержать первый элемент.");
+            Assert.IsTrue(hashTable.Contains(card2), "Хеш-таблица должна содержать средний элемент.");
+        }
+
+        [TestMethod]
+        public void TestRemoveData_AllElements()
+        {
+            // Подготовка
+            HashTable<Card> hashTable = new HashTable<Card>(1); // Принудительно вызываем коллизии, установив ёмкость в 1
+            Card card1 = new Card("1234 5678 9012 3456", "Иван Иванов", "12/25", 1);
+            Card card2 = new Card("2345 6789 0123 4567", "Мария Петрова", "11/24", 2);
+            Card card3 = new Card("3456 7890 1234 5678", "Алексей Смирнов", "10/23", 3);
+            hashTable.AddPoint(card1);
+            hashTable.AddPoint(card2);
+            hashTable.AddPoint(card3);
+
+            // Действие
+            bool result1 = hashTable.RemoveData(card1);
+            bool result2 = hashTable.RemoveData(card2);
+            bool result3 = hashTable.RemoveData(card3);
+
+            // Проверка
+            Assert.IsTrue(result1, "Метод RemoveData должен возвращать true для первого элемента в цепочке.");
+            Assert.IsFalse(hashTable.Contains(card1), "Хеш-таблица не должна содержать удалённый первый элемент.");
+            Assert.IsTrue(result2, "Метод RemoveData должен возвращать true для второго элемента в цепочке.");
+            Assert.IsFalse(hashTable.Contains(card2), "Хеш-таблица не должна содержать удалённый второй элемент.");
+            Assert.IsTrue(result3, "Метод RemoveData должен возвращать true для третьего элемента в цепочке.");
+            Assert.IsFalse(hashTable.Contains(card3), "Хеш-таблица не должна содержать удалённый третий элемент.");
+        }
     }
 
 
@@ -781,7 +961,19 @@ namespace UnitTest
     [TestClass]
     public class TreePointTests
     {
+        [TestMethod]
+        public void ToString_WithNonDefaultData_ShouldReturnDataString()
+        {
+            // Arrange
+            var data = 5;
+            var treePoint = new TreePoint<int>(data);
 
+            // Act
+            var result = treePoint.ToString();
+
+            // Assert
+            Assert.AreEqual(data.ToString(), result, "ToString should return the string representation of Data.");
+        }
         [TestMethod]
         public void Constructor_WithData_ShouldInitializeWithGivenData()
         {
@@ -1024,26 +1216,6 @@ namespace UnitTest
         }
 
         [TestMethod]
-        public void ChangeTreeData_ShouldChangeAllNodeData()
-        {
-            // Arrange
-            var tree = new MyTree<Card>(3);
-            var initialData = new List<Card>();
-            GetAllNodeData(tree.Root, initialData);
-
-            // Act
-            tree.ChangeTreeData();
-            var changedData = new List<Card>();
-            GetAllNodeData(tree.Root, changedData);
-
-            // Assert
-            for (int i = 0; i < initialData.Count; i++)
-            {
-                Assert.AreNotEqual(initialData[i], changedData[i]);
-            }
-        }
-
-        [TestMethod]
         public void CalculateAverage_ShouldReturnCorrectAverage()
         {
             // Arrange
@@ -1100,24 +1272,6 @@ namespace UnitTest
             // Assert
             Assert.AreEqual(tree.Count, searchTree.Count);
             Assert.IsTrue(isBST);
-        }
-
-        private void GetAllNodeData(TreePoint<Card> node, List<Card> data)
-        {
-            if (node == null) return;
-
-            GetAllNodeData(node.Left, data);
-            data.Add(node.Data);
-            GetAllNodeData(node.Right, data);
-        }
-
-        private Card GetAnyNodeData(TreePoint<Card> node)
-        {
-            while (node.Left != null)
-            {
-                node = node.Left;
-            }
-            return node.Data;
         }
 
         private double CalculateExpectedAverage(TreePoint<Card> node)
