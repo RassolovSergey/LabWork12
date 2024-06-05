@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace LabWork12
 {
     // Обобщённый класс двунаправленного списка
-    public class BiList<T> where T : IInit, ICloneable, new()
+    public class BiList<T> where T : IInit, ICloneable, IList<T>, new()
     {
         public PointBiList<T> beg;      // Начальный узел списка
         public PointBiList<T> end;      // Конечный узел списка

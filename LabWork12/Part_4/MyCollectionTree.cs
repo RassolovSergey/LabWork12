@@ -121,4 +121,114 @@ namespace LabWork12.Part_4
         }
     }
     */
+    internal class MyCollectionTree<T> : MyTree<T>, IEnumerable<T>, ICollection<T> where T : IInit, ICloneable, IComparable, ISummable, new()
+    {
+        public MyCollectionTree() : base() { }
+
+        public MyCollectionTree(int data) : base(data) { }
+
+        public MyCollectionTree(T[] collection) : base(collection) { }
+
+        // Реализация интерфейса - IEnumerable<T>
+        public IEnumerator<T> GetEnumerator()
+        {
+            return new MyTreeEnumerator(this);
+        }
+
+        // Реализация интерфейса - IEnumerable
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        // Реализация интерфейса - ICollection<T>
+        public int Count => base.Count;
+
+        public bool IsReadOnly => false;
+
+        public void Add(T item)
+        {
+            AddPoint(item);
+        }
+
+        public void Clear()
+        {
+            DeleteTree();
+        }
+
+        public bool Contains(T item)
+        {
+            return Find(item) != null;
+        }
+
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            if (array == null)
+                throw new ArgumentNullException(nameof(array));
+            if (arrayIndex < 0)
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex), "Индекс массива должен быть неотрицательным");
+            if (array.Length - arrayIndex < Count)
+                throw new ArgumentException("Данный массив недостаточно велик для размещения элементов");
+
+            foreach (var item in this)
+            {
+                array[arrayIndex++] = item;
+            }
+        }
+
+        public bool Remove(T item)
+        {
+ 
+            return Delete(item);
+        }
+
+        // Внутренний класс для реализации IEnumerator<T>
+        private class MyTreeEnumerator : IEnumerator<T>
+        {
+            private TreePoint<T>? root;
+            private TreePoint<T>? current;
+            private Stack<TreePoint<T>> stack;
+
+            public MyTreeEnumerator(MyCollectionTree<T> collection)
+            {
+                root = collection.root;
+                current = null;
+                stack = new Stack<TreePoint<T>>();
+            }
+
+            public T Current => current!.Data;
+
+            object? IEnumerator.Current => Current;
+
+            public void Dispose()
+            {
+                // Оставляем пустым
+            }
+
+            public bool MoveNext()
+            {
+                while (current != null || stack.Count > 0)
+                {
+                    if (current != null)
+                    {
+                        stack.Push(current);
+                        current = current.Left;
+                    }
+                    else
+                    {
+                        current = stack.Pop();
+                        TreePoint<T>? node = current;
+                        current = current.Right;
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            public void Reset()
+            {
+                current = null;
+            }
+        }
+    }
 }

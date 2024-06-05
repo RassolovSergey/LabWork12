@@ -1313,4 +1313,181 @@ namespace UnitTest
             return IsBinarySearchTree(node.Left, min, node.Data) && IsBinarySearchTree(node.Right, node.Data, max);
         }
     }
+
+    [TestClass]
+    public class MyTreeTests_01
+    {
+        // Вспомогательный метод для создания объекта Card
+        private Card CreateCard(string id, string name, string time, int number)
+        {
+            return new Card(id, name, time, number);
+        }
+
+        // Вспомогательный метод для создания дерева с картами
+        private MyTree<Card> CreateTreeWithCards()
+        {
+            MyTree<Card> tree = new MyTree<Card>(0);
+            tree.AddPoint(CreateCard("1234 5678 1234 5678", "Alice", "01/28", 1));
+            tree.AddPoint(CreateCard("2345 6789 2345 6789", "Bob", "02/29", 2));
+            tree.AddPoint(CreateCard("3456 7890 3456 7890", "Charlie", "03/30", 3));
+            return tree;
+        }
+
+        [TestMethod]
+        public void TestDeleteLeafNode()
+        {
+            MyTree<Card> tree = CreateTreeWithCards();
+
+            // Удаляем листовой узел
+            tree.Delete(CreateCard("3456 7890 3456 7890", "Charlie", "03/30", 3));
+
+            // Проверяем, что узел удален
+            Assert.IsNull(tree.Root.Right.Right);
+        }
+
+        [TestMethod]
+        public void TestDeleteNodeWithOneChild()
+        {
+            MyTree<Card> tree = CreateTreeWithCards();
+
+            // Добавляем узел с одним дочерним элементом
+            tree.AddPoint(CreateCard("4567 8901 4567 8901", "Dave", "04/31", 4));
+
+            // Удаляем узел с одним дочерним элементом
+            tree.Delete(CreateCard("2345 6789 2345 6789", "Bob", "02/29", 2));
+
+            // Проверяем, что узел удален и заменен дочерним элементом
+            Assert.AreEqual("4567 8901 4567 8901", tree.Root.Right.Data.Id);
+        }
+
+        [TestMethod]
+        public void TestDeleteNodeWithTwoChildren()
+        {
+            MyTree<Card> tree = CreateTreeWithCards();
+
+            // Добавляем узлы для создания двух дочерних элементов
+            tree.AddPoint(CreateCard("4567 8901 4567 8901", "Dave", "04/31", 4));
+            tree.AddPoint(CreateCard("5678 9012 5678 9012", "Eve", "05/32", 5));
+
+            // Удаляем узел с двумя дочерними элементами
+            tree.Delete(CreateCard("2345 6789 2345 6789", "Bob", "02/29", 2));
+
+            // Проверяем, что узел удален и заменен наименьшим элементом из правого поддерева
+            Assert.AreEqual("4567 8901 4567 8901", tree.Root.Right.Data.Id);
+            Assert.AreEqual("5678 9012 5678 9012", tree.Root.Right.Right.Data.Id);
+        }
+
+        [TestMethod]
+        public void TestDeleteNonExistentNode()
+        {
+            MyTree<Card> tree = CreateTreeWithCards();
+
+            // Пытаемся удалить узел, которого нет в дереве
+            tree.Delete(CreateCard("9999 9999 9999 9999", "NonExistent", "00/00", 0));
+
+            // Проверяем, что дерево осталось неизменным
+            Assert.AreEqual(3, tree.CountFindTree);
+        }
+    }
+
+    [TestClass]
+    public class MyTreeTests_02
+    {
+        [TestMethod]
+        public void Delete_NodeExists_NodeRemoved()
+        {
+            // Arrange
+            var tree = new MyTree<Card>(0);
+            var card1 = new Card("1234 5678 9012 3456", "Alice", "01/30", 1);
+            var card2 = new Card("2345 6789 0123 4567", "Bob", "02/31", 2);
+            var card3 = new Card("3456 7890 1234 5678", "Charlie", "03/32", 3);
+            tree.AddPoint(card1);
+            tree.AddPoint(card2);
+            tree.AddPoint(card3);
+
+            // Act
+            tree.Delete(card2);
+
+            // Assert
+            Assert.AreEqual(2, tree.Count);
+            Assert.IsNull(FindNode(tree.Root, card2));
+        }
+
+        [TestMethod]
+        public void Delete_NodeDoesNotExist_TreeUnchanged()
+        {
+            // Arrange
+            var tree = new MyTree<Card>(0);
+            var card1 = new Card("1234 5678 9012 3456", "Alice", "01/30", 1);
+            var card2 = new Card("2345 6789 0123 4567", "Bob", "02/31", 2);
+            var card3 = new Card("3456 7890 1234 5678", "Charlie", "03/32", 3);
+            var card4 = new Card("4567 8901 2345 6789", "Daisy", "04/33", 4);
+            tree.AddPoint(card1);
+            tree.AddPoint(card2);
+            tree.AddPoint(card3);
+
+            // Act
+            tree.Delete(card4);
+
+            // Assert
+            Assert.AreEqual(3, tree.Count);
+            Assert.IsNotNull(FindNode(tree.Root, card1));
+            Assert.IsNotNull(FindNode(tree.Root, card2));
+            Assert.IsNotNull(FindNode(tree.Root, card3));
+        }
+
+        [TestMethod]
+        public void Delete_NodeIsRoot_NodeRemoved()
+        {
+            // Arrange
+            var tree = new MyTree<Card>(0);
+            var card1 = new Card("1234 5678 9012 3456", "Alice", "01/30", 1);
+            var card2 = new Card("2345 6789 0123 4567", "Bob", "02/31", 2);
+            tree.AddPoint(card1);
+            tree.AddPoint(card2);
+
+            // Act
+            tree.Delete(card1);
+
+            // Assert
+            Assert.AreEqual(1, tree.Count);
+            Assert.IsNull(FindNode(tree.Root, card1));
+            Assert.IsNotNull(FindNode(tree.Root, card2));
+        }
+
+        [TestMethod]
+        public void Delete_NodeWithTwoChildren_NodeRemoved()
+        {
+            // Arrange
+            var tree = new MyTree<Card>(0);
+            var card1 = new Card("1234 5678 9012 3456", "Alice", "01/30", 1);
+            var card2 = new Card("2345 6789 0123 4567", "Bob", "02/31", 2);
+            var card3 = new Card("3456 7890 1234 5678", "Charlie", "03/32", 3);
+            var card4 = new Card("4567 8901 2345 6789", "Daisy", "04/33", 4);
+            tree.AddPoint(card1);
+            tree.AddPoint(card2);
+            tree.AddPoint(card3);
+            tree.AddPoint(card4);
+
+            // Act
+            tree.Delete(card2);
+
+            // Assert
+            Assert.AreEqual(3, tree.Count);
+            Assert.IsNull(FindNode(tree.Root, card2));
+        }
+
+        private TreePoint<Card>? FindNode(TreePoint<Card>? node, Card key)
+        {
+            if (node == null) return null;
+
+            int comparison = key.CompareTo(node.Data);
+            if (comparison == 0)
+                return node;
+            else if (comparison < 0)
+                return FindNode(node.Left, key);
+            else
+                return FindNode(node.Right, key);
+        }
+    }
 }

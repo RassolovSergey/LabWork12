@@ -1,15 +1,17 @@
 ﻿using ClassLibraryLab10;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace LabWork12
 {
-    public class MyTree<T> where T : IInit, ICloneable, IComparable, ISummable, new()
+    public class MyTree<T> where T : IInit, ICloneable, IComparable, ISummable,  new()
     {
-        private TreePoint<T>? root = null;  // Корень
+        public T[] Collection { get; }
+        public TreePoint<T>? root = null;  // Корень
         private int count = 0;              // Счетчик кол-ва элементов ИСБД
         private int countFindTree = 0;      // Счетчик кол-ва элементов Дерева поиска
 
@@ -17,7 +19,12 @@ namespace LabWork12
         public int CountFindTree => countFindTree;  // Метод вывода кол-ва элементов Дерева поиска
         public TreePoint<T>? Root => root;  // Публичное свойство для получения корня
 
-
+        // Конструктор: без параметра
+        public MyTree()
+        {
+            root = null;
+            count = 0;
+        }
 
         // Конструктор ( Параметр - Длина )
         public MyTree(int length)
@@ -26,6 +33,11 @@ namespace LabWork12
             root = MakeTree(length);
         }
 
+
+        public MyTree(T[] collection)
+        {
+            Collection = collection;
+        }
 
 
         // Приватный конструктор глубокого копирования
@@ -287,13 +299,20 @@ namespace LabWork12
             InOrderTraversal(node.Right, elements);  // Рекурсивный обход правого поддерева
         }
 
-     
+
         // Метод для удаления определенного элемента из дерева поиска
-        public void Delete(T key)
+        public bool Delete(T key)
         {
-            // Вызываем приватный метод Delete, начиная с корня дерева
-            root = Delete(root, key);
-            countFindTree--;
+            TreePoint<T>? result = Delete(root, key); // Вызываем вспомогательный метод
+
+            if (result != null)
+            {
+                root = result;       // Присваиваем новый корень, если он изменился
+                countFindTree--;     // Уменьшаем счетчик элементов дерева
+                return true;         // Возвращаем успешное завершение операции удаления
+            }
+
+            return false;            // Возвращаем неудачное завершение операции удаления
         }
 
         // Вспомогательный метод для удаления определенного элемента из дерева поиска
@@ -347,6 +366,40 @@ namespace LabWork12
             }
             // Возвращаем минимальное значение
             return minv;
+        }
+
+        public T? Find(T data)
+        {
+            TreePoint<T>? parent;
+            TreePoint<T>? result = Find(data, out parent);
+            return result.Data;
+        }
+
+        private TreePoint<T>? Find(T data, out TreePoint<T>? parent)
+        {
+            parent = null;
+            TreePoint<T>? current = root;
+
+            while (current != null)
+            {
+                int cmp = data.CompareTo(current.Data);
+                if (cmp == 0)
+                {
+                    return current;
+                }
+                else if (cmp < 0)
+                {
+                    parent = current;
+                    current = current.Left;
+                }
+                else
+                {
+                    parent = current;
+                    current = current.Right;
+                }
+            }
+
+            return null;
         }
 
     }

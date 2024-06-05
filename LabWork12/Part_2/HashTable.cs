@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LabWork12
 {
-    public class HashTable<T> where T : IInit, ICloneable, new()
+    public class HashTable<T> where T : IInit, ICloneable, IEnumerable<T>, ICollection<T>, new()
     {
         public HPoint<T>?[] table;
         public int Capacity => table.Length;
