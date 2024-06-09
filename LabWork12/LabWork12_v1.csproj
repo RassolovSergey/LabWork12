@@ -61,7 +61,6 @@
     <Compile Include="Part_3\MyTree.cs" />
     <Compile Include="Part_1\PointBiList.cs" />
     <Compile Include="Main Program\Program.cs" />
-    <Compile Include="FromLecture\MyCollection.cs" />
     <Compile Include="Part_4\MyCollectionTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Part_3\TreePoint.cs" />
@@ -71,6 +70,8 @@
     <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="FromLecture\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

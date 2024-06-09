@@ -8,119 +8,6 @@ using System.Threading.Tasks;
 
 namespace LabWork12.Part_4
 {
-    /*
-    public class MyCollectionTree<T> : IEnumerable<T>, ICollection<T> where T : ICloneable, IComparable, IInit, new()
-    {
-        private MyTree<T> tree;
-
-        public MyCollectionTree()
-        {
-            tree = new MyTree<T>(0);
-        }
-
-        public MyCollectionTree(int length)
-        {
-            tree = new MyTree<T>(length);
-        }
-
-        public MyCollectionTree(MyCollectionTree<T> c)
-        {
-            tree = c.tree.DeepCopy();
-        }
-
-        // Реализация интерфейса IEnumerable<T>
-        public IEnumerator<T> GetEnumerator()
-        {
-            return InOrderTraversal(tree.Root).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        // Реализация интерфейса ICollection<T>
-        public int Count => tree.Count;
-
-        public bool IsReadOnly => false;
-
-        public void Add(T item)
-        {
-            tree.AddPoint(item);
-        }
-
-        public void Clear()
-        {
-            tree.DeleteTree();
-        }
-
-        public bool Contains(T item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CopyTo(T[] array, int arrayIndex)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Remove(T item)
-        {
-            throw new NotImplementedException();
-        }
-
-        // Реализация интерфейса IDictionary<int, T>
-        public T this[int key]
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public ICollection<int> Keys => throw new NotImplementedException();
-
-        public ICollection<T> Values => throw new NotImplementedException();
-
-        public void Add(int key, T value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool ContainsKey(int key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Remove(int key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool TryGetValue(int key, out T value)
-        {
-            throw new NotImplementedException();
-        }
-
-        private IEnumerable<T> InOrderTraversal(TreePoint<T>? node)
-        {
-            if (node == null)
-                yield break;
-
-            foreach (var item in InOrderTraversal(node.Left))
-                yield return item;
-
-            yield return node.Data!;
-
-            foreach (var item in InOrderTraversal(node.Right))
-                yield return item;
-        }
-    }
-    */
     internal class MyCollectionTree<T> : MyTree<T>, IEnumerable<T>, ICollection<T> where T : IInit, ICloneable, IComparable, ISummable, new()
     {
         public MyCollectionTree() : base() { }
@@ -148,23 +35,23 @@ namespace LabWork12.Part_4
 
         public void Add(T item)
         {
-            AddPoint(item);
+            base.Add(item);
         }
 
         public void Clear()
         {
-            DeleteTree();
+            base.Clear();
         }
 
         public bool Contains(T item)
         {
-            return Find(item) != null;
+            return base.Find(item) != null;
         }
 
         public void CopyTo(T[] array, int arrayIndex)
         {
             if (array == null)
-                throw new ArgumentNullException(nameof(array));
+                throw new ArgumentException("Ваш массив пуст!");
             if (arrayIndex < 0)
                 throw new ArgumentOutOfRangeException(nameof(arrayIndex), "Индекс массива должен быть неотрицательным");
             if (array.Length - arrayIndex < Count)
@@ -178,9 +65,10 @@ namespace LabWork12.Part_4
 
         public bool Remove(T item)
         {
- 
-            return Delete(item);
+            return base.RemoveISBD(item);
         }
+
+
 
         // Внутренний класс для реализации IEnumerator<T>
         private class MyTreeEnumerator : IEnumerator<T>
@@ -207,27 +95,34 @@ namespace LabWork12.Part_4
 
             public bool MoveNext()
             {
-                while (current != null || stack.Count > 0)
+                if (stack.Count == 0 && root != null && current == null)
                 {
-                    if (current != null)
+                    stack.Push(root);
+                }
+
+                while (stack.Count > 0)
+                {
+                    var node = stack.Pop();
+                    if (node != null)
                     {
-                        stack.Push(current);
-                        current = current.Left;
-                    }
-                    else
-                    {
-                        current = stack.Pop();
-                        TreePoint<T>? node = current;
-                        current = current.Right;
+                        current = node;
+                        stack.Push(node.Right);
+                        stack.Push(node.Left);
                         return true;
                     }
                 }
+
                 return false;
             }
 
             public void Reset()
             {
                 current = null;
+                stack.Clear();
+                if (root != null)
+                {
+                    stack.Push(root);
+                }
             }
         }
     }

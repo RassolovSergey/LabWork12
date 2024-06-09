@@ -1,5 +1,6 @@
 ﻿using ClassLibraryLab10;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LabWork12
 {
-    public class MyTree<T> where T : IInit, ICloneable, IComparable, ISummable,  new()
+    public class MyTree<T> : IEnumerable<T>, ICollection<T>  where T : IInit, ICloneable, IComparable, ISummable,  new()
     {
         public T[] Collection { get; }
         public TreePoint<T>? root = null;  // Корень
@@ -18,6 +19,8 @@ namespace LabWork12
         public int Count => count;  // Метод вывода кол-ва элементов
         public int CountFindTree => countFindTree;  // Метод вывода кол-ва элементов Дерева поиска
         public TreePoint<T>? Root => root;  // Публичное свойство для получения корня
+
+        public bool IsReadOnly => throw new NotImplementedException();
 
         // Конструктор: без параметра
         public MyTree()
@@ -33,12 +36,24 @@ namespace LabWork12
             root = MakeTree(length);
         }
 
-
+        // Конструктор - (Массив -> коллекцию)
         public MyTree(T[] collection)
         {
-            Collection = collection;
+            root = BuildBalancedTree(collection, 0, collection.Length - 1);
+            count = collection.Length;
         }
 
+        private TreePoint<T>? BuildBalancedTree(T[] array, int start, int end)
+        {
+            if (start > end)
+                return null;
+
+            int mid = (start + end) / 2;
+            TreePoint<T> node = new TreePoint<T>(array[mid]);
+            node.Left = BuildBalancedTree(array, start, mid - 1);
+            node.Right = BuildBalancedTree(array, mid + 1, end);
+            return node;
+        }
 
         // Приватный конструктор глубокого копирования
         private MyTree(TreePoint<T>? root, int count)
@@ -46,6 +61,8 @@ namespace LabWork12
             this.root = root;
             this.count = count;
         }
+
+
 
         // Метод для создания глубокой копии дерева
         public MyTree<T> DeepCopy()
@@ -175,9 +192,187 @@ namespace LabWork12
         }
 
 
+        
+        // Метод для создания дерева поиска из текущего дерева
+        public MyTree<T> CreateSearchTree()
+        {
+            // Создаем список для хранения элементов дерева
+            List<T> elements = new List<T>();
 
-        // Метод для удаления дерева из памяти
-        public void DeleteTree()
+            // Выполняем обход в порядке возрастания значений и сохраняем элементы в список
+            InOrderTraversal(root, elements);
+
+            // Создаем новое дерево поиска
+            MyTree<T> searchTree = new MyTree<T>(0);
+
+            // Добавляем каждый элемент из списка в новое дерево поиска
+            foreach (var element in elements)
+            {
+                searchTree.Add(element);
+            }
+
+            // Возвращаем новое дерево поиска
+            countFindTree = count;
+            return searchTree;
+        }
+
+        // Приватный метод для обхода дерева в порядке возрастания значений и сохранения элементов в список
+        private void InOrderTraversal(TreePoint<T>? node, List<T> elements)
+        {
+            if (node == null) { return; }
+
+            InOrderTraversal(node.Left, elements);   // Рекурсивный обход левого поддерева
+            elements.Add(node.Data);                 // Добавление значения текущего узла в список
+            InOrderTraversal(node.Right, elements);  // Рекурсивный обход правого поддерева
+        }
+
+
+        // Метод для поиска минимального элемента в дереве
+        public T MinValue(TreePoint<T>? node)
+        {
+            // Инициализируем переменную для хранения минимального значения
+            T minv = node.Data!;
+            // Проходим по левым потомкам до конца, чтобы найти самый левый узел
+            while (node.Left != null)
+            {
+                minv = node.Left.Data!;
+                node = node.Left;
+            }
+            // Возвращаем минимальное значение
+            return minv;
+        }
+
+
+        // Метод поиска элемента по Data
+        public T? Find(T data)
+        {
+            TreePoint<T>? parent;
+            TreePoint<T>? result = Find(data, out parent);
+            return result.Data;
+        }
+
+        // Приватный - Метод поиска элемента по Data
+        private TreePoint<T>? Find(T data, out TreePoint<T>? parent)
+        {
+            parent = null;
+            TreePoint<T>? current = root;
+
+            while (current != null)
+            {
+                int cmp = data.CompareTo(current.Data);
+                if (cmp == 0)
+                {
+                    return current;
+                }
+                else if (cmp < 0)
+                {
+                    parent = current;
+                    current = current.Left;
+                }
+                else
+                {
+                    parent = current;
+                    current = current.Right;
+                }
+            }
+
+            return null;
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return InOrderTraversal().GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        private IEnumerable<T> InOrderTraversal()
+        {
+            // Создаем стек для хранения узлов
+            Stack<TreePoint<T>?> stack = new Stack<TreePoint<T>?>();
+            TreePoint<T>? current = root;
+
+            // Пока есть узлы для обхода или стек не пустой
+            while (current != null || stack.Count > 0)
+            {
+                // Доходим до самого левого узла и добавляем все узлы на пути в стек
+                while (current != null)
+                {
+                    stack.Push(current);
+                    current = current.Left;
+                }
+
+                // Извлекаем узел с вершины стека
+                current = stack.Pop();
+
+                // Возвращаем значение текущего узла
+                yield return current.Data!;
+
+                // Переходим к правому поддереву
+                current = current.Right;
+            }
+        }
+
+
+        // Метод для добавления нового узла в дерево
+        public void Add(T item)
+        {
+            // Создаем новый узел с заданными данными
+            TreePoint<T> newPoint = new TreePoint<T>(item);
+
+            // Если дерево пустое, новый узел становится корнем
+            if (root == null)
+            {
+                root = newPoint;
+                count++; // Увеличиваем счетчик элементов дерева
+                return;
+            }
+
+            // Инициализируем текущий узел корнем дерева
+            TreePoint<T>? current = root;
+            TreePoint<T>? parent = null;
+
+            // Ищем подходящее место для нового узла
+            while (current != null)
+            {
+                parent = current;
+
+                // Если данные нового узла меньше данных текущего узла, идем в левое поддерево
+                if (item.CompareTo(current.Data) < 0)
+                {
+                    current = current.Left;
+                }
+                // Если данные нового узла больше данных текущего узла, идем в правое поддерево
+                else if (item.CompareTo(current.Data) > 0)
+                {
+                    current = current.Right;
+                }
+                // Если данные нового узла равны данным текущего узла, узел не добавляется (дубликаты не разрешены)
+                else
+                {
+                    return;
+                }
+            }
+
+            // Вставляем новый узел в найденное место
+            if (item.CompareTo(parent.Data) < 0)
+            {
+                parent.Left = newPoint;
+            }
+            else
+            {
+                parent.Right = newPoint;
+            }
+
+            // Увеличиваем счетчик элементов дерева
+            count++;
+        }
+
+        // Метод для рекурсивного удаления узлов дерева
+        public void Clear()
         {
             DeleteNode(root);   // Удаляем все узлы дерева, начиная с корня
             root = null;        // Приравниваем корень к null
@@ -208,107 +403,73 @@ namespace LabWork12
         }
 
 
-
-        // Метод для добавления нового узла в дерево
-        public void AddPoint(T data)
+        // Метод - проверяет, содержится ли элемент item в дереве
+        public bool Contains(T item)
         {
-            // Создаем новый узел с заданными данными
-            TreePoint<T> newPoint = new TreePoint<T>(data);
-
-            // Если дерево пустое, новый узел становится корнем
-            if (root == null)
-            {
-                root = newPoint;
-                count++; // Увеличиваем счетчик элементов дерева
-                return;
-            }
-
-            // Инициализируем текущий узел корнем дерева
-            TreePoint<T>? current = root;
-            TreePoint<T>? parent = null;
-
-            // Ищем подходящее место для нового узла
-            while (current != null)
-            {
-                parent = current;
-
-                // Если данные нового узла меньше данных текущего узла, идем в левое поддерево
-                if (data.CompareTo(current.Data) < 0)
-                {
-                    current = current.Left;
-                }
-                // Если данные нового узла больше данных текущего узла, идем в правое поддерево
-                else if (data.CompareTo(current.Data) > 0)
-                {
-                    current = current.Right;
-                }
-                // Если данные нового узла равны данным текущего узла, узел не добавляется (дубликаты не разрешены)
-                else
-                {
-                    return;
-                }
-            }
-
-            // Вставляем новый узел в найденное место
-            if (data.CompareTo(parent.Data) < 0)
-            {
-                parent.Left = newPoint;
-            }
-            else
-            {
-                parent.Right = newPoint;
-            }
-
-            // Увеличиваем счетчик элементов дерева
-            count++;
+            return Find(item) != null;
         }
 
-        
-        
-        
-        // Метод для создания дерева поиска из текущего дерева
-        public MyTree<T> CreateSearchTree()
+        // Метод - копирования
+        public void CopyTo(T[] array, int arrayIndex)
         {
-            // Создаем список для хранения элементов дерева
             List<T> elements = new List<T>();
+            InOrderTraversalForCopy(root, elements);
 
-            // Выполняем обход в порядке возрастания значений и сохраняем элементы в список
-            InOrderTraversal(root, elements);
-
-            // Создаем новое дерево поиска
-            MyTree<T> searchTree = new MyTree<T>(0);
-
-            // Добавляем каждый элемент из списка в новое дерево поиска
-            foreach (var element in elements)
+            if (array == null)
             {
-                searchTree.AddPoint(element);
+                throw new ArgumentNullException(nameof(array), "Destination array cannot be null.");
             }
 
-            // Возвращаем новое дерево поиска
-            countFindTree = count;
-            return searchTree;
+            if (arrayIndex < 0 || arrayIndex >= array.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex), "Index is out of range.");
+            }
+
+            if (array.Length - arrayIndex < elements.Count)
+            {
+                throw new ArgumentException("The number of elements in the source collection is greater than the available space from arrayIndex to the end of the destination array.");
+            }
+
+            for (int i = 0; i < elements.Count; i++)
+            {
+                array[arrayIndex + i] = elements[i];
+            }
         }
 
-        // Приватный метод для обхода дерева в порядке возрастания значений и сохранения элементов в список
-        private void InOrderTraversal(TreePoint<T>? node, List<T> elements)
+
+        // Приватный метод для обхода дерева в порядке inorder и добавления элементов в список (для метода CopyTo)
+        private void InOrderTraversalForCopy(TreePoint<T>? node, List<T> elements)
         {
             if (node == null) { return; }
 
-            InOrderTraversal(node.Left, elements);   // Рекурсивный обход левого поддерева
-            elements.Add(node.Data);                 // Добавление значения текущего узла в список
-            InOrderTraversal(node.Right, elements);  // Рекурсивный обход правого поддерева
+            InOrderTraversalForCopy(node.Left, elements);   // Рекурсивный обход левого поддерева
+            elements.Add(node.Data);                        // Добавление значения текущего узла в список
+            InOrderTraversalForCopy(node.Right, elements);  // Рекурсивный обход правого поддерева
         }
 
-
-        // Метод для удаления определенного элемента из дерева поиска
-        public bool Delete(T key)
+        public bool Remove(T item)
         {
-            TreePoint<T>? result = Delete(root, key); // Вызываем вспомогательный метод
+            TreePoint<T>? result = Delete(root, item); // Вызываем вспомогательный метод
 
             if (result != null)
             {
                 root = result;       // Присваиваем новый корень, если он изменился
                 countFindTree--;     // Уменьшаем счетчик элементов дерева
+                return true;         // Возвращаем успешное завершение операции удаления
+            }
+
+            return false;            // Возвращаем неудачное завершение операции удаления
+        }
+
+
+        public bool RemoveISBD(T item)
+        {
+            TreePoint<T>? result = Delete(root, item); // Вызываем вспомогательный метод
+
+            if (result != null)
+            {
+                root = result;       // Присваиваем новый корень, если он изменился
+                count--;
                 return true;         // Возвращаем успешное завершение операции удаления
             }
 
@@ -352,55 +513,5 @@ namespace LabWork12
 
             return node;
         }
-
-        // Метод для поиска минимального элемента в дереве
-        public T MinValue(TreePoint<T>? node)
-        {
-            // Инициализируем переменную для хранения минимального значения
-            T minv = node.Data!;
-            // Проходим по левым потомкам до конца, чтобы найти самый левый узел
-            while (node.Left != null)
-            {
-                minv = node.Left.Data!;
-                node = node.Left;
-            }
-            // Возвращаем минимальное значение
-            return minv;
-        }
-
-        public T? Find(T data)
-        {
-            TreePoint<T>? parent;
-            TreePoint<T>? result = Find(data, out parent);
-            return result.Data;
-        }
-
-        private TreePoint<T>? Find(T data, out TreePoint<T>? parent)
-        {
-            parent = null;
-            TreePoint<T>? current = root;
-
-            while (current != null)
-            {
-                int cmp = data.CompareTo(current.Data);
-                if (cmp == 0)
-                {
-                    return current;
-                }
-                else if (cmp < 0)
-                {
-                    parent = current;
-                    current = current.Left;
-                }
-                else
-                {
-                    parent = current;
-                    current = current.Right;
-                }
-            }
-
-            return null;
-        }
-
     }
 }

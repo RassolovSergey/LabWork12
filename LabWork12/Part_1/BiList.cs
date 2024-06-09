@@ -1,5 +1,6 @@
 ﻿using ClassLibraryLab10;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,14 +10,43 @@ using System.Threading.Tasks;
 namespace LabWork12
 {
     // Обобщённый класс двунаправленного списка
-    public class BiList<T> where T : IInit, ICloneable, IList<T>, new()
+    public class BiList<T> : IList<T> where T : IInit, ICloneable, new()
     {
-        public PointBiList<T> beg;      // Начальный узел списка
-        public PointBiList<T> end;      // Конечный узел списка
+        public PointBiList<T> beg;  // Начальный узел списка
+        public PointBiList<T> end;  // Конечный узел списка
         private int count = 0;      // Счетчик элементов
         public int Count => count;  // Функция чтения переменной count
 
-        public T[] Collection { get; }
+        // IList<T>  - Получает значение, указывающее, является ли объект ICollection<T> доступным только для чтения.
+        public bool IsReadOnly => false;
+
+        public T this[int index]
+        {
+            get
+            {
+                if (index < 0 || index >= count)
+                    throw new ArgumentOutOfRangeException(nameof(index));
+
+                PointBiList<T> current = beg;
+                for (int i = 0; i < index; i++)
+                {
+                    current = current.Next;
+                }
+                return current.Data;
+            }
+            set
+            {
+                if (index < 0 || index >= count)
+                    throw new ArgumentOutOfRangeException(nameof(index));
+
+                PointBiList<T> current = beg;
+                for (int i = 0; i < index; i++)
+                {
+                    current = current.Next;
+                }
+                current.Data = value;
+            }
+        }
 
         // Конструктор без параметров: Пустой список
         public BiList()
@@ -24,8 +54,12 @@ namespace LabWork12
             beg = null;     // Инициализация начала списка как null
             end = null;     // Инициализация конца списка как null
         }
-        // Конструктор с параметром:    Только информация
-        public BiList(T data) { }
+
+        // Конструктор с параметром: Только информация
+        public BiList(T data)
+        {
+            Add(data);
+        }
 
         // Конструктор, инициализирующий список случайными элементами
         public BiList(int size)
@@ -33,14 +67,19 @@ namespace LabWork12
             if (size <= 0) throw new ArgumentException("Размер должен быть больше нуля.", nameof(size));
             for (int i = 0; i < size; i++)
             {
-                AddToEnd(MakeRandomData());
+                Add(MakeRandomData());
             }
         }
 
         public BiList(T[] collection)
         {
-            Collection = collection;
+            foreach (var item in collection)
+            {
+                Add(item);
+            }
         }
+
+
 
         // Создание радномного объекта:     data
         public T MakeRandomData()
@@ -73,7 +112,7 @@ namespace LabWork12
                 // Считываем данные с консоли и добавляем их в список
                 T inputData = new T();  // Создаем новый объект
                 inputData.Init();       // Заполняем его вручную    
-                AddToEnd(inputData);    // Добавляем объект в конец списка
+                Add(inputData);    // Добавляем объект в конец списка
             }
         }
 
@@ -88,7 +127,7 @@ namespace LabWork12
             {
                 // Клонирование данных текущего узла и добавление их в новый список
                 T clonedData = (T)current.Data.Clone();
-                newList.AddToEnd(clonedData);
+                newList.Add(clonedData);
 
                 // Переход к следующему узлу в исходном списке
                 current = current.Next;
@@ -123,24 +162,8 @@ namespace LabWork12
             }
         }
 
-        // Метод для добавления элемента в конец списка
-        public void AddToEnd(T data)
-        {
-            T newData = (T)data.Clone();
-            PointBiList<T> newItem = new PointBiList<T>(newData);
-            count++;
-            if (end != null)
-            {
-                end.Next = newItem;
-                newItem.Prev = end;
-                end = newItem;
-            }
-            else
-            {
-                beg = newItem;
-                end = beg;
-            }
-        }
+
+
 
         // Метод поиска элемента списка
         public bool FindItem(T data)
@@ -168,6 +191,11 @@ namespace LabWork12
                 current = current.Next;             // Записываем в текущий следующий объект
             }
         }
+
+
+
+
+
         // Метод удаления узла
         public void Remove(PointBiList<T> nodeToRemove)
         {
@@ -206,6 +234,7 @@ namespace LabWork12
         }
 
 
+        // Удаление четных элементов
         public void RemoveEven()
         {
             int number = 1;                 // Порядковый номер текущего элемента в коллекции
@@ -224,8 +253,115 @@ namespace LabWork12
         }
 
 
-        // Удаление списка из памяти
-        public void Dispose()
+        // Метод поиска длины двунаправленного списка
+        public int Length()
+        {
+            int length = 0;                  // Переменная для хранения длины списка
+            PointBiList<T> current = beg;    // Инициализация current - текущий объект, ставим его в начало
+            while (current != null)          // Перебор всего списка
+            {
+                length++;                    // Увеличение счетчика элементов
+                current = current.Next;      // Переход к следующему узлу
+            }
+            return length;                   // Возвращаем длину списка
+        }
+
+
+
+
+
+        // IList<T> - Определяет индекс заданного элемента коллекции IList<T>
+        public int IndexOf(T item)
+        {
+            int index = 0;
+            PointBiList<T> current = beg;
+            while (current != null)
+            {
+                if (current.Data.Equals(item))
+                {
+                    return index;
+                }
+                current = current.Next;
+                index++;
+            }
+            return -1;
+        }
+
+        // IList<T> - Вставляет элемент в список IList<T> по указанному индексу.
+        public void Insert(int index, T item)
+        {
+            if (index < 0 || index > count)
+                throw new ArgumentOutOfRangeException(nameof(index));
+
+            if (index == count)
+            {
+                Add(item);
+                return;
+            }
+
+            PointBiList<T> newPoint = new PointBiList<T>(item);
+            PointBiList<T> current = beg;
+
+            for (int i = 0; i < index; i++)
+            {
+                current = current.Next;
+            }
+
+            newPoint.Next = current;
+            newPoint.Prev = current.Prev;
+
+            if (current.Prev != null)
+            {
+                current.Prev.Next = newPoint;
+            }
+            else
+            {
+                beg = newPoint;
+            }
+
+            current.Prev = newPoint;
+            count++;
+        }
+
+        // IList<T> - Удаляет элемент IList<T> по указанному индексу.
+        public void RemoveAt(int index)
+        {
+            if (index < 0 || index >= count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            PointBiList<T> current = beg;
+
+            for (int i = 0; i < index; i++)
+            {
+                current = current.Next;
+            }
+
+            Remove(current);
+        }
+
+        // IList<T> - Добавляет элемент в коллекцию ICollection<T>.
+        public void Add(T item) // В конец списка
+        {
+            T newData = (T)item.Clone();
+            PointBiList<T> newItem = new PointBiList<T>(newData);
+            count++;
+            if (end != null)
+            {
+                end.Next = newItem;
+                newItem.Prev = end;
+                end = newItem;
+            }
+            else
+            {
+                beg = newItem;
+                end = beg;
+            }
+        }
+
+        // IList<T> - Удаляет все элементы из коллекции ICollection<T>
+        public void Clear()
         {
             PointBiList<T> current = beg;   // Указатель на начало списка
 
@@ -248,18 +384,61 @@ namespace LabWork12
             count = 0;  // Сбрасываем счетчик элементов
         }
 
-
-        // Метод поиска длины двунаправленного списка
-        public int Length()
+        // IList<T> - Определяет, содержит ли коллекция ICollection<T> указанное значение
+        public bool Contains(T item)
         {
-            int length = 0;                  // Переменная для хранения длины списка
-            PointBiList<T> current = beg;    // Инициализация current - текущий объект, ставим его в начало
-            while (current != null)          // Перебор всего списка
+            return IndexOf(item) != -1;
+        }
+
+        // IList<T> - Копирует элементы коллекции ICollection<T> в массив Array, начиная с указанного индекса массива Array
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            if (array == null)
+                throw new ArgumentNullException(nameof(array));
+            if (arrayIndex < 0)
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+            if (array.Length - arrayIndex < count)
+                throw new ArgumentException("Недостаточно места в целевом массиве.");
+
+            PointBiList<T> current = beg;
+            for (int i = arrayIndex; current != null; i++)
             {
-                length++;                    // Увеличение счетчика элементов
-                current = current.Next;      // Переход к следующему узлу
+                array[i] = current.Data;
+                current = current.Next;
             }
-            return length;                   // Возвращаем длину списка
+        }
+
+        // IList<T> - Удаляет первое вхождение указанного объекта из коллекции ICollection<T>
+        public bool Remove(T item)
+        {
+            PointBiList<T> current = beg;
+            while (current != null)
+            {
+                if (current.Data.Equals(item))
+                {
+                    Remove(current);
+                    return true;
+                }
+                current = current.Next;
+            }
+            return false;
+        }
+
+
+        // Реализация - IEnumerator<T>
+        public IEnumerator<T> GetEnumerator()
+        {
+            PointBiList<T> current = beg;
+            while (current != null)
+            {
+                yield return current.Data;
+                current = current.Next;
+            }
+        }
+        // Реализация - IEnumerator
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

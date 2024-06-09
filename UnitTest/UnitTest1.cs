@@ -219,7 +219,7 @@ namespace UnitTest
             Card card = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
 
             // Act
-            hashTable.AddPoint(card);
+            hashTable.Add(card);
 
             // Assert
             Assert.IsTrue(hashTable.Contains(card), "HashTable should contain the added card.");
@@ -238,8 +238,8 @@ namespace UnitTest
             HashTable<Card> hashTable = new HashTable<Card>();
             Card card1 = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
             Card card2 = new Card("2345 6789 0123 4567", "Jane Doe", "11/24", 2);
-            hashTable.AddPoint(card1);
-            hashTable.AddPoint(card2);
+            hashTable.Add(card1);
+            hashTable.Add(card2);
 
             using (StringWriter sw = new StringWriter())
             {
@@ -263,7 +263,7 @@ namespace UnitTest
             // Arrange
             HashTable<Card> hashTable = new HashTable<Card>();
             Card card = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
-            hashTable.AddPoint(card);
+            hashTable.Add(card);
 
             // Act
             bool result = hashTable.Contains(card);
@@ -279,7 +279,7 @@ namespace UnitTest
             HashTable<Card> hashTable = new HashTable<Card>();
             Card card1 = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
             Card card2 = new Card("2345 6789 0123 4567", "Jane Doe", "11/24", 2);
-            hashTable.AddPoint(card1);
+            hashTable.Add(card1);
 
             // Act
             bool result = hashTable.Contains(card2);
@@ -294,7 +294,7 @@ namespace UnitTest
             // Arrange
             HashTable<Card> hashTable = new HashTable<Card>();
             Card card = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
-            hashTable.AddPoint(card);
+            hashTable.Add(card);
 
             // Act
             Card foundCard = hashTable.Find(card);
@@ -314,7 +314,7 @@ namespace UnitTest
             HashTable<Card> hashTable = new HashTable<Card>();
             Card card1 = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
             Card card2 = new Card("2345 6789 0123 4567", "Jane Doe", "11/24", 2);
-            hashTable.AddPoint(card1);
+            hashTable.Add(card1);
 
             // Act
             Card foundCard = hashTable.Find(card2);
@@ -329,10 +329,10 @@ namespace UnitTest
             // Arrange
             HashTable<Card> hashTable = new HashTable<Card>();
             Card card = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
-            hashTable.AddPoint(card);
+            hashTable.Add(card);
 
             // Act
-            bool result = hashTable.RemoveData(card);
+            bool result = hashTable.Remove(card);
 
             // Assert
             Assert.IsTrue(result, "RemoveData should return true for an existing element.");
@@ -346,10 +346,10 @@ namespace UnitTest
             HashTable<Card> hashTable = new HashTable<Card>();
             Card card1 = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
             Card card2 = new Card("2345 6789 0123 4567", "Jane Doe", "11/24", 2);
-            hashTable.AddPoint(card1);
+            hashTable.Add(card1);
 
             // Act
-            bool result = hashTable.RemoveData(card2);
+            bool result = hashTable.Remove(card2);
 
             // Assert
             Assert.IsFalse(result, "RemoveData should return false for a non-existing element.");
@@ -363,7 +363,7 @@ namespace UnitTest
             Card card = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
 
             // Act
-            bool result = hashTable.RemoveData(card);
+            bool result = hashTable.Remove(card);
 
             // Assert
             Assert.IsFalse(result, "RemoveData should return false for an empty table.");
@@ -376,12 +376,12 @@ namespace UnitTest
             HashTable<Card> hashTable = new HashTable<Card>();
             Card card1 = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
             Card card2 = new Card("1234 5678 9012 3457", "Jane Doe", "11/24", 2);
-            hashTable.AddPoint(card1);
-            hashTable.AddPoint(card2);
+            hashTable.Add(card1);
+            hashTable.Add(card2);
 
             // Act
-            bool result1 = hashTable.RemoveData(card1);
-            bool result2 = hashTable.RemoveData(card2);
+            bool result1 = hashTable.Remove(card1);
+            bool result2 = hashTable.Remove(card2);
 
             // Assert
             Assert.IsTrue(result1, "RemoveData should return true for the first element in the chain.");
@@ -449,8 +449,8 @@ namespace UnitTest
             Card card2 = new Card("2345 6789 0123 4567", "Jane Doe", "11/24", 2);
 
             // Act
-            hashTable.AddPoint(card1);
-            hashTable.AddPoint(card2);
+            hashTable.Add(card1);
+            hashTable.Add(card2);
 
             // Assert
             int index = hashTable.GetIndex(card1);
@@ -471,10 +471,10 @@ namespace UnitTest
             // Arrange
             HashTable<Card> hashTable = new HashTable<Card>();
             Card card = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
-            hashTable.AddPoint(card);
+            hashTable.Add(card);
 
             // Act
-            hashTable.AddPoint(card);
+            hashTable.Add(card);
 
             // Assert
             int index = hashTable.GetIndex(card);
@@ -500,9 +500,9 @@ namespace UnitTest
             Card card3 = new Card("3456 7890 1234 5678", "Jim Doe", "10/23", 3);
 
             // Act
-            hashTable.AddPoint(card1);
-            hashTable.AddPoint(card2);
-            hashTable.AddPoint(card3);
+            hashTable.Add(card1);
+            hashTable.Add(card2);
+            hashTable.Add(card3);
 
             // Assert
             int index = hashTable.GetIndex(card1);
@@ -549,7 +549,7 @@ namespace UnitTest
             Card card = new Card("1234 5678 9012 3456", "Иван Иванов", "12/25", 1);
 
             // Действие
-            bool result = hashTable.RemoveData(card);
+            bool result = hashTable.Remove(card);
 
             // Проверка
             Assert.IsFalse(result, "Метод RemoveData должен возвращать false при удалении из пустой таблицы.");
@@ -563,11 +563,11 @@ namespace UnitTest
             HashTable<Card> hashTable = new HashTable<Card>(1); // Принудительно вызываем коллизии, установив ёмкость в 1
             Card card1 = new Card("1234 5678 9012 3456", "Иван Иванов", "12/25", 1);
             Card card2 = new Card("2345 6789 0123 4567", "Мария Петрова", "11/24", 2);
-            hashTable.AddPoint(card1);
-            hashTable.AddPoint(card2);
+            hashTable.Add(card1);
+            hashTable.Add(card2);
 
             // Действие
-            bool result = hashTable.RemoveData(card1);
+            bool result = hashTable.Remove(card1);
 
             // Проверка
             Assert.IsTrue(result, "Метод RemoveData должен возвращать true для первого элемента в цепочке.");
@@ -583,12 +583,12 @@ namespace UnitTest
             Card card1 = new Card("1234 5678 9012 3456", "Иван Иванов", "12/25", 1);
             Card card2 = new Card("2345 6789 0123 4567", "Мария Петрова", "11/24", 2);
             Card card3 = new Card("3456 7890 1234 5678", "Алексей Смирнов", "10/23", 3);
-            hashTable.AddPoint(card1);
-            hashTable.AddPoint(card2);
-            hashTable.AddPoint(card3);
+            hashTable.Add(card1);
+            hashTable.Add(card2);
+            hashTable.Add(card3);
 
             // Действие
-            bool result = hashTable.RemoveData(card2);
+            bool result = hashTable.Remove(card2);
 
             // Проверка
             Assert.IsTrue(result, "Метод RemoveData должен возвращать true для среднего элемента в цепочке.");
@@ -605,12 +605,12 @@ namespace UnitTest
             Card card1 = new Card("1234 5678 9012 3456", "Иван Иванов", "12/25", 1);
             Card card2 = new Card("2345 6789 0123 4567", "Мария Петрова", "11/24", 2);
             Card card3 = new Card("3456 7890 1234 5678", "Алексей Смирнов", "10/23", 3);
-            hashTable.AddPoint(card1);
-            hashTable.AddPoint(card2);
-            hashTable.AddPoint(card3);
+            hashTable.Add(card1);
+            hashTable.Add(card2);
+            hashTable.Add(card3);
 
             // Действие
-            bool result = hashTable.RemoveData(card3);
+            bool result = hashTable.Remove(card3);
 
             // Проверка
             Assert.IsTrue(result, "Метод RemoveData должен возвращать true для последнего элемента в цепочке.");
@@ -627,14 +627,14 @@ namespace UnitTest
             Card card1 = new Card("1234 5678 9012 3456", "Иван Иванов", "12/25", 1);
             Card card2 = new Card("2345 6789 0123 4567", "Мария Петрова", "11/24", 2);
             Card card3 = new Card("3456 7890 1234 5678", "Алексей Смирнов", "10/23", 3);
-            hashTable.AddPoint(card1);
-            hashTable.AddPoint(card2);
-            hashTable.AddPoint(card3);
+            hashTable.Add(card1);
+            hashTable.Add(card2);
+            hashTable.Add(card3);
 
             // Действие
-            bool result1 = hashTable.RemoveData(card1);
-            bool result2 = hashTable.RemoveData(card2);
-            bool result3 = hashTable.RemoveData(card3);
+            bool result1 = hashTable.Remove(card1);
+            bool result2 = hashTable.Remove(card2);
+            bool result3 = hashTable.Remove(card3);
 
             // Проверка
             Assert.IsTrue(result1, "Метод RemoveData должен возвращать true для первого элемента в цепочке.");
@@ -776,7 +776,7 @@ namespace UnitTest
             Card card = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
 
             // Act
-            list.AddToEnd(card);
+            list.Add(card);
 
             // Assert
             Assert.AreEqual(1, list.Count, "Count should be one.");
@@ -791,8 +791,8 @@ namespace UnitTest
             BiList<Card> list = new BiList<Card>();
             Card card1 = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
             Card card2 = new Card("2345 6789 0123 4567", "Jane Doe", "11/24", 2);
-            list.AddToEnd(card1);
-            list.AddToEnd(card2);
+            list.Add(card1);
+            list.Add(card2);
 
             // Act
             bool foundCard1 = list.FindItem(card1);
@@ -812,8 +812,8 @@ namespace UnitTest
             BiList<Card> list = new BiList<Card>();
             Card card1 = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
             Card card2 = new Card("2345 6789 0123 4567", "Jane Doe", "11/24", 2);
-            list.AddToEnd(card1);
-            list.AddToEnd(card2);
+            list.Add(card1);
+            list.Add(card2);
 
             // Act
             list.Remove(list.beg);
@@ -831,8 +831,8 @@ namespace UnitTest
             BiList<Card> list = new BiList<Card>();
             Card card1 = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
             Card card2 = new Card("2345 6789 0123 4567", "Jane Doe", "11/24", 2);
-            list.AddToEnd(card1);
-            list.AddToEnd(card2);
+            list.Add(card1);
+            list.Add(card2);
 
             // Act
             BiList<Card> clonedList = list.DeepClone();
@@ -853,8 +853,8 @@ namespace UnitTest
             Card card1 = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
             Card card2 = new Card("2345 6789 0123 4567", "Jane Doe", "11/24", 2);
             Card card3 = new Card("3456 7890 1234 5678", "Jake Doe", "10/23", 3);
-            list.AddToEnd(card1);
-            list.AddToEnd(card2);
+            list.Add(card1);
+            list.Add(card2);
 
             // Act
             list.AddAfter(card1, card3);
@@ -1120,9 +1120,9 @@ namespace UnitTest
             Card card3 = new Card("1111 2222 3333 4444", "Alice Brown", "03/24", 3);
 
             // Добавляем карты в дерево
-            myTree.AddPoint(card1);
-            myTree.AddPoint(card2);
-            myTree.AddPoint(card3);
+            myTree.Add(card1);
+            myTree.Add(card2);
+            myTree.Add(card3);
 
             // Act
             double average = myTree.CalculateAverage();
@@ -1143,12 +1143,12 @@ namespace UnitTest
             Card card3 = new Card("1111 2222 3333 4444", "Alice Brown", "03/24", 3);
 
             // Добавляем карты в дерево
-            myTree.AddPoint(card1);
-            myTree.AddPoint(card2);
-            myTree.AddPoint(card3);
+            myTree.Add(card1);
+            myTree.Add(card2);
+            myTree.Add(card3);
 
             // Act
-            myTree.DeleteTree();
+            myTree.Clear();
 
             // Assert
             Assert.AreEqual(0, myTree.Count);  // Проверяем, что количество элементов в дереве равно 0
@@ -1239,7 +1239,7 @@ namespace UnitTest
             int initialCount = tree.Count;
 
             // Act
-            tree.AddPoint(newCard);
+            tree.Add(newCard);
 
             // Assert
             Assert.AreEqual(initialCount + 1, tree.Count);
@@ -1252,7 +1252,7 @@ namespace UnitTest
             var tree = new MyTree<Card>(3);
 
             // Act
-            tree.DeleteTree();
+            tree.Clear();
 
             // Assert
             Assert.AreEqual(0, tree.Count);
@@ -1327,9 +1327,9 @@ namespace UnitTest
         private MyTree<Card> CreateTreeWithCards()
         {
             MyTree<Card> tree = new MyTree<Card>(0);
-            tree.AddPoint(CreateCard("1234 5678 1234 5678", "Alice", "01/28", 1));
-            tree.AddPoint(CreateCard("2345 6789 2345 6789", "Bob", "02/29", 2));
-            tree.AddPoint(CreateCard("3456 7890 3456 7890", "Charlie", "03/30", 3));
+            tree.Add(CreateCard("1234 5678 1234 5678", "Alice", "01/28", 1));
+            tree.Add(CreateCard("2345 6789 2345 6789", "Bob", "02/29", 2));
+            tree.Add(CreateCard("3456 7890 3456 7890", "Charlie", "03/30", 3));
             return tree;
         }
 
@@ -1339,7 +1339,7 @@ namespace UnitTest
             MyTree<Card> tree = CreateTreeWithCards();
 
             // Удаляем листовой узел
-            tree.Delete(CreateCard("3456 7890 3456 7890", "Charlie", "03/30", 3));
+            tree.Remove(CreateCard("3456 7890 3456 7890", "Charlie", "03/30", 3));
 
             // Проверяем, что узел удален
             Assert.IsNull(tree.Root.Right.Right);
@@ -1351,10 +1351,10 @@ namespace UnitTest
             MyTree<Card> tree = CreateTreeWithCards();
 
             // Добавляем узел с одним дочерним элементом
-            tree.AddPoint(CreateCard("4567 8901 4567 8901", "Dave", "04/31", 4));
+            tree.Add(CreateCard("4567 8901 4567 8901", "Dave", "04/31", 4));
 
             // Удаляем узел с одним дочерним элементом
-            tree.Delete(CreateCard("2345 6789 2345 6789", "Bob", "02/29", 2));
+            tree.Remove(CreateCard("2345 6789 2345 6789", "Bob", "02/29", 2));
 
             // Проверяем, что узел удален и заменен дочерним элементом
             Assert.AreEqual("4567 8901 4567 8901", tree.Root.Right.Data.Id);
@@ -1366,11 +1366,11 @@ namespace UnitTest
             MyTree<Card> tree = CreateTreeWithCards();
 
             // Добавляем узлы для создания двух дочерних элементов
-            tree.AddPoint(CreateCard("4567 8901 4567 8901", "Dave", "04/31", 4));
-            tree.AddPoint(CreateCard("5678 9012 5678 9012", "Eve", "05/32", 5));
+            tree.Add(CreateCard("4567 8901 4567 8901", "Dave", "04/31", 4));
+            tree.Add(CreateCard("5678 9012 5678 9012", "Eve", "05/32", 5));
 
             // Удаляем узел с двумя дочерними элементами
-            tree.Delete(CreateCard("2345 6789 2345 6789", "Bob", "02/29", 2));
+            tree.Remove(CreateCard("2345 6789 2345 6789", "Bob", "02/29", 2));
 
             // Проверяем, что узел удален и заменен наименьшим элементом из правого поддерева
             Assert.AreEqual("4567 8901 4567 8901", tree.Root.Right.Data.Id);
@@ -1383,7 +1383,7 @@ namespace UnitTest
             MyTree<Card> tree = CreateTreeWithCards();
 
             // Пытаемся удалить узел, которого нет в дереве
-            tree.Delete(CreateCard("9999 9999 9999 9999", "NonExistent", "00/00", 0));
+            tree.Remove(CreateCard("9999 9999 9999 9999", "NonExistent", "00/00", 0));
 
             // Проверяем, что дерево осталось неизменным
             Assert.AreEqual(3, tree.CountFindTree);
@@ -1401,12 +1401,12 @@ namespace UnitTest
             var card1 = new Card("1234 5678 9012 3456", "Alice", "01/30", 1);
             var card2 = new Card("2345 6789 0123 4567", "Bob", "02/31", 2);
             var card3 = new Card("3456 7890 1234 5678", "Charlie", "03/32", 3);
-            tree.AddPoint(card1);
-            tree.AddPoint(card2);
-            tree.AddPoint(card3);
+            tree.Add(card1);
+            tree.Add(card2);
+            tree.Add(card3);
 
             // Act
-            tree.Delete(card2);
+            tree.Remove(card2);
 
             // Assert
             Assert.AreEqual(2, tree.Count);
@@ -1422,12 +1422,12 @@ namespace UnitTest
             var card2 = new Card("2345 6789 0123 4567", "Bob", "02/31", 2);
             var card3 = new Card("3456 7890 1234 5678", "Charlie", "03/32", 3);
             var card4 = new Card("4567 8901 2345 6789", "Daisy", "04/33", 4);
-            tree.AddPoint(card1);
-            tree.AddPoint(card2);
-            tree.AddPoint(card3);
+            tree.Add(card1);
+            tree.Add(card2);
+            tree.Add(card3);
 
             // Act
-            tree.Delete(card4);
+            tree.Remove(card4);
 
             // Assert
             Assert.AreEqual(3, tree.Count);
@@ -1443,11 +1443,11 @@ namespace UnitTest
             var tree = new MyTree<Card>(0);
             var card1 = new Card("1234 5678 9012 3456", "Alice", "01/30", 1);
             var card2 = new Card("2345 6789 0123 4567", "Bob", "02/31", 2);
-            tree.AddPoint(card1);
-            tree.AddPoint(card2);
+            tree.Add(card1);
+            tree.Add(card2);
 
             // Act
-            tree.Delete(card1);
+            tree.Remove(card1);
 
             // Assert
             Assert.AreEqual(1, tree.Count);
@@ -1464,13 +1464,13 @@ namespace UnitTest
             var card2 = new Card("2345 6789 0123 4567", "Bob", "02/31", 2);
             var card3 = new Card("3456 7890 1234 5678", "Charlie", "03/32", 3);
             var card4 = new Card("4567 8901 2345 6789", "Daisy", "04/33", 4);
-            tree.AddPoint(card1);
-            tree.AddPoint(card2);
-            tree.AddPoint(card3);
-            tree.AddPoint(card4);
+            tree.Add(card1);
+            tree.Add(card2);
+            tree.Add(card3);
+            tree.Add(card4);
 
             // Act
-            tree.Delete(card2);
+            tree.Remove(card2);
 
             // Assert
             Assert.AreEqual(3, tree.Count);

@@ -1,5 +1,6 @@
 ﻿using ClassLibraryLab10;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,11 +8,13 @@ using System.Threading.Tasks;
 
 namespace LabWork12
 {
-    public class HashTable<T> where T : IInit, ICloneable, IEnumerable<T>, ICollection<T>, new()
+    public class HashTable<T> : IEnumerable<T>, ICollection<T> where T : IInit, ICloneable, IEnumerable<T>, new()
     {
         public HPoint<T>?[] table;
         public int Capacity => table.Length;
         public int Count { get; private set; } // Свойство для отслеживания количества элементов
+
+        public bool IsReadOnly => false;
 
         public HashTable(int length = 10)
         {
@@ -37,32 +40,6 @@ namespace LabWork12
                         }
                     }
                 }
-            }
-        }
-
-        public void AddPoint(T data)
-        {
-            T dataCopy = (T)data.Clone(); // Создаем копию объекта перед добавлением
-            int index = GetIndex(dataCopy);
-
-            if (table[index] == null)
-            {
-                table[index] = new HPoint<T>(dataCopy);
-                Count++; // Увеличиваем счетчик при добавлении нового элемента
-            }
-            else
-            {
-                HPoint<T>? current = table[index];
-                while (current != null)
-                {
-                    if (current.Data.Equals(dataCopy)) { return; }
-                    if (current.Next == null) break;
-                    current = current.Next;
-                }
-
-                current.Next = new HPoint<T>(dataCopy);
-                current.Next.Prev = current;
-                Count++; // Увеличиваем счетчик при добавлении нового элемента в цепочку
             }
         }
 
@@ -102,15 +79,84 @@ namespace LabWork12
             return default;
         }
 
-        public bool RemoveData(T data)
+        public int GetIndex(T data)
+        {
+            return Math.Abs(data.GetHashCode()) % Capacity;
+        }
+
+
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            foreach (var item in table)
+            {
+                if (item != null)
+                {
+                    yield return item.Data;
+                    var current = item.Next;
+                    while (current != null)
+                    {
+                        yield return current.Data;
+                        current = current.Next;
+                    }
+                }
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public void Add(T item)
+        {
+            T dataCopy = (T)item.Clone(); // Создаем копию объекта перед добавлением
+            int index = GetIndex(dataCopy);
+
+            if (table[index] == null)
+            {
+                table[index] = new HPoint<T>(dataCopy);
+                Count++; // Увеличиваем счетчик при добавлении нового элемента
+            }
+            else
+            {
+                HPoint<T>? current = table[index];
+                while (current != null)
+                {
+                    if (current.Data.Equals(dataCopy)) { return; }
+                    if (current.Next == null) break;
+                    current = current.Next;
+                }
+
+                current.Next = new HPoint<T>(dataCopy);
+                current.Next.Prev = current;
+                Count++; // Увеличиваем счетчик при добавлении нового элемента в цепочку
+            }
+        }
+
+        public void Clear()
+        {
+            Array.Clear(table, 0, table.Length);
+            Count = 0;
+        }
+
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            foreach (var item in this)
+            {
+                array[arrayIndex++] = item;
+            }
+        }
+
+        public bool Remove(T item)
         {
             HPoint<T>? current;
-            int index = GetIndex(data);
+            int index = GetIndex(item);
             if (table[index] == null)
             {
                 return false;
             }
-            if (table[index].Data.Equals(data))
+            if (table[index].Data.Equals(item))
             {
                 if (table[index].Next == null)
                 {
@@ -129,7 +175,7 @@ namespace LabWork12
                 current = table[index];
                 while (current != null)
                 {
-                    if (current.Data.Equals(data))
+                    if (current.Data.Equals(item))
                     {
                         HPoint<T>? prev = current.Prev;
                         HPoint<T>? next = current.Next;
@@ -142,11 +188,6 @@ namespace LabWork12
                 }
             }
             return false;
-        }
-
-        public int GetIndex(T data)
-        {
-            return Math.Abs(data.GetHashCode()) % Capacity;
         }
     }
 }

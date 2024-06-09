@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LabWork12
 {
-    public class HPoint<T>
+    public class HPoint<T> 
     {
         public T? Data { get; set; }            // Поле с информацией об объекте
         public HPoint<T>? Next { get; set; }    // Поле - ссылка на следующий элемент

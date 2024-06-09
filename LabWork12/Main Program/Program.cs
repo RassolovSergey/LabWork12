@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -83,7 +84,7 @@ namespace LabWork12
                             {
                                 timeCard = new Card();
                                 timeCard.RandomInit();
-                                hashTable.AddPoint(timeCard);
+                                hashTable.Add(timeCard);
                             }
                             break;
                         case 3:
@@ -93,7 +94,7 @@ namespace LabWork12
                                 Console.WriteLine($"Введите элемент для удаления:");
                                 timeCard = new Card();
                                 timeCard.Init(); // Инициализация объекта Card для удаления
-                                bool isRemoved = hashTable.RemoveData(timeCard);
+                                bool isRemoved = hashTable.Remove(timeCard);
                                 if (isRemoved)
                                 {
                                     Console.WriteLine($"Элемент {timeCard} успешно удален.");
@@ -206,7 +207,7 @@ namespace LabWork12
                             break;
                         case 5:
                             // Удаление списка из памяти
-                            myBiList.Dispose();
+                            myBiList.Clear();
                             break;
                         case 6:
                             // Демонстрация клонирования списка
@@ -335,7 +336,7 @@ namespace LabWork12
                         case 1:
                             // Добавление в конец списка ( ДСЦ )
                             timeCard.RandomInit();
-                            biList.AddToEnd(timeCard);
+                            biList.Add(timeCard);
                             Console.WriteLine("Элемент добавлен!");
                             break;
                         case 2:
@@ -599,7 +600,7 @@ namespace LabWork12
                                         else
                                         {
                                             Console.WriteLine("\nУдаление дерева...");
-                                            myTree.DeleteTree();
+                                            myTree.Clear();
                                         }
                                         break;
                                     case 2:
@@ -610,7 +611,7 @@ namespace LabWork12
                                         else
                                         {
                                             Console.WriteLine("\nУдаление дерева...");
-                                            searchTree.DeleteTree();
+                                            searchTree.Clear();
                                             countFindTree = 0;
                                         }
                                         break;
@@ -653,7 +654,7 @@ namespace LabWork12
                                 Card timeCard = new Card();
                                 timeCard.Init();
                                 int countTime = searchTree.Count;
-                                searchTree.Delete(timeCard);
+                                searchTree.Remove(timeCard);
                                 if (searchTree.Count < countTime)
                                 {
                                     Console.WriteLine("Элемет удалён.");
@@ -693,57 +694,189 @@ namespace LabWork12
         public static void Print_FirstMenu4()
         {
             Console.WriteLine("\n\n============== Меню работы с обобщенной коллекцией =============");
-            Console.WriteLine("1 - Пример работы");
+            Console.WriteLine("============ Коллекция на базе ИСБД и Дерева поиска ============");
+            Console.WriteLine("1 - Создать коллекцию");
+            Console.WriteLine("2 - Добавление объекта");
+            Console.WriteLine("3 - Вывод количества объектов");
+            Console.WriteLine("4 - Демонстрация копирования");
+            Console.WriteLine("5 - Удалить объект из коллекции");
+            Console.WriteLine("6 - Удалить коллекцию");
+            Console.WriteLine("7 - Печать");
             Console.WriteLine("0 - Назад");
+            Console.WriteLine("================================================================");
         }
 
-        /*
+
         // Фукция обработки меню  ( Первое: 4 ) - Обработка
         public static void Process_FirstMenu4()
         {
-            // Создание коллекции карт
-            MyCollectionTree<Card> cardCollection = new MyCollectionTree<Card>();
 
-            Card timeCard1 = new Card();
-            Card timeCard2 = new Card();
-            Card timeCard3 = new Card();
+            MyCollectionTree<Card> myCollection = new MyCollectionTree<Card>();
+            MyCollectionTree<Card> myCollectionCopy = new MyCollectionTree<Card>();
 
-            // Добавление карт в коллекцию
-            timeCard1.RandomInit();
-            cardCollection.Add(timeCard1);
-            timeCard2.RandomInit();
-            cardCollection.Add(timeCard2);
-            timeCard3.RandomInit();
-            cardCollection.Add(timeCard3);
+            bool flag4Menu = true;
+            int size;
 
-            // Вывод элементов коллекции карт
-            Console.WriteLine("Элементы коллекции карт:");
-            foreach (var card in cardCollection)
+            while (flag4Menu)
             {
-                Console.WriteLine(card);
+                try
+                {
+                    Print_FirstMenu4();
+                    int choice = (int)InputHelper.InputUintNumber("Выберите действие: \t"); // Считываем выбор пользователя
+                    switch (choice)
+                    {
+                        case 1:
+
+                            bool flagMinMenu = true;
+
+                            while (flagMinMenu)
+                            {
+                                Console.WriteLine("====================== Создание коллекции ======================");
+                                Console.WriteLine("1 - Создать пустую коллекцию");
+                                Console.WriteLine("2 - Создать коллекцию с указанной длинной");
+                                Console.WriteLine("3 - Создать коллекцию с использованием массива элементов");
+                                Console.WriteLine("0 - Назад");
+                                Console.WriteLine("================================================================");
+
+                                int choiceLvl2 = (int)InputHelper.InputUintNumber("Выберите действие: \t"); // Считываем выбор пользователя
+                                switch (choiceLvl2)
+                                {
+                                    case 1:
+                                        myCollection = new MyCollectionTree<Card>();
+                                        Console.WriteLine("Коллекция создана!");
+                                        break;
+                                    case 2:
+                                        size = (int)InputHelper.InputUintNumber("Введите желаемую длинну коллекции: \t");
+                                        myCollection = new MyCollectionTree<Card>(size);
+                                        Console.WriteLine("Коллекция создана!");
+                                        break;
+                                    case 3:
+                                        size = (int)InputHelper.InputUintNumber("Введите желаемую длинну массива: \t");
+                                        Card[] cardArray = new Card[size];
+                                        for (int i = 0; i < size; i++)
+                                        {
+                                            Card card = new Card();
+                                            card.RandomInit();
+                                            cardArray[i] = card;
+                                        }
+                                        myCollection = new MyCollectionTree<Card>(cardArray);
+                                        Console.WriteLine("Коллекция создана!");
+                                        break;
+                                    case 0:
+                                        flagMinMenu = false;
+                                        break;
+                                    default:
+                                        PrintError("Ошибка! Такого пункта не существует.");
+                                        break;
+                                }
+                            }
+                            break;
+                        case 2:
+                            if (myCollection != null)
+                            {
+                                Card timeCard = new Card();
+                                timeCard.RandomInit();
+                                myCollection.Add(timeCard);
+                                Console.WriteLine("Объект добавлен! (сгенерировано ДСЧ)");
+                            }
+                            else
+                            {
+                                PrintError("Коллекция отсутствует!");
+                            }
+                            break;
+                        case 3:
+                            Console.WriteLine($"Кол-во объектов в коллекции: {myCollection.Count}"); ;
+                            break;
+                        case 4:
+                            if (myCollection.Count > 0 && myCollection != null)
+                            {
+                                Console.WriteLine("===== Демонстрация копирования а массив (CopyTo) =====");
+                                Console.WriteLine($"\n\nИсходное дерево:");
+                                myCollection.PrintTree();
+
+
+                                // Создание массива для копирования
+                                Card[] cardArray = new Card[myCollection.Count];
+
+                                // Копирование элементов коллекции в массив
+                                myCollection.CopyTo(cardArray, 0);
+
+                                // Вывод содержимого массива на консоль для демонстрации
+                                Console.WriteLine("Содержимое массива после копирования: \n");
+
+
+                                foreach (Card card in cardArray)
+                                {
+                                    card.Print();
+                                    Console.WriteLine();
+                                }
+                            }
+                            else
+                            {
+                                PrintError("Ваша коллекция пуста!");
+                            }
+                            break;
+                        case 5:
+                            // Удалить объект из коллекции
+                            if (myCollection.Count > 0)
+                            {
+                                Console.WriteLine("Введите объект для удаления: \t");
+                                Card timeCard = new Card();
+                                timeCard.Init();
+                                myCollection.Remove(timeCard);
+                            }
+                            else
+                            {
+                                PrintError("Ваша коллекция пуста!");
+                            }
+                            break;
+                        case 6:
+                            // Удалить коллекцию
+                            if (myCollection.Count > 0)
+                            {
+                                myCollection.Clear();
+                                Console.WriteLine("Коллекция удалена!");
+                            }
+                            else
+                            {
+                                PrintError("Ваша коллекция пуста!");
+                            }
+                            break;
+                        case 7:
+                            if (myCollection.Count > 0)
+                            {
+                                Console.WriteLine("Ваше дерево:");
+                                myCollection.PrintTree();
+
+                                Console.WriteLine("Вывод при помощи (foreach): ");
+                                Console.WriteLine("");
+                                foreach (var item in myCollection)
+                                {
+                                    item.Print();
+                                    Console.WriteLine();
+                                }
+                            }
+                            else
+                            {
+                                PrintError("Ваша коллекция пуста!");
+                            }
+                            break;
+                        case 0:
+                            flag4Menu = false;
+                            break;
+                        default:
+                            PrintError("Ошибка! Такого пункта не существует.");
+                            break;
+                    }
+                }
+                // Вывод исключений
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Ошибка: {ex.Message}");
+                }
             }
-
-            // Вывод количества карт в коллекции
-            Console.WriteLine($"Количество карт в коллекции: {cardCollection.Count}");
-            Console.WriteLine();
-
-            // Добавление новой карты в коллекцию
-            Card newCard = new Card();
-            newCard.Init(); // Инициализация новой карты с помощью пользовательского ввода
-            cardCollection.Add(newCard);
-
-            // Вывод обновленных элементов коллекции карт
-            Console.WriteLine("Обновленные элементы коллекции карт:");
-            foreach (var card in cardCollection)
-            {
-                Console.WriteLine(card);
-            }
-
-            // Вывод обновленного количества карт в коллекции
-            Console.WriteLine($"Обновленное количество карт в коллекции: {cardCollection.Count}");
-            Console.WriteLine();
         }
-        */
+
 
         static void Main(string[] args)
         {
@@ -775,7 +908,7 @@ namespace LabWork12
                                 Process_FirstMenu3(); // Вывод Второстпенного меню - 3
                                 break;
                             case 4:
-                                //Process_FirstMenu4(); // Вывод Второстпенного меню - 4
+                                Process_FirstMenu4(); // Вывод Второстпенного меню - 4
                                 break;
                             case 0:
                                 flagMainMenu = false; // Завершение работы программы...
