@@ -50,7 +50,7 @@ namespace LabWork12
 
         public override int GetHashCode()
         {
-            unchecked // Overflow is fine, just wrap
+            unchecked
             {
                 int hash = 17;
                 hash = hash * 23 + (Data != null ? Data.GetHashCode() : 0);

@@ -5,6 +5,7 @@ using ClassLibraryLab10;
 using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Collections;
 
 namespace UnitTest
 {
@@ -962,112 +963,215 @@ namespace UnitTest
     public class TreePointTests
     {
         [TestMethod]
-        public void ToString_WithNonDefaultData_ShouldReturnDataString()
+        public void Constructor_ValidData_ShouldInitializeProperties()
         {
             // Arrange
-            var data = 5;
-            var treePoint = new TreePoint<int>(data);
+            var card = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
+
+            // Act
+            var treePoint = new TreePoint<Card>(card);
+
+            // Assert
+            Assert.IsNotNull(treePoint);
+            Assert.AreEqual(card, treePoint.Data);
+            Assert.IsNull(treePoint.Left);
+            Assert.IsNull(treePoint.Right);
+        }
+
+        [TestMethod]
+        public void ToString_ValidData_ShouldReturnDataString()
+        {
+            // Arrange
+            var card = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
+            var treePoint = new TreePoint<Card>(card);
 
             // Act
             var result = treePoint.ToString();
 
             // Assert
-            Assert.AreEqual(data.ToString(), result, "ToString should return the string representation of Data.");
-        }
-        [TestMethod]
-        public void Constructor_WithData_ShouldInitializeWithGivenData()
-        {
-            // Arrange
-            int data = 5;
-            var point = new TreePoint<int>(data);
-
-            // Assert
-            Assert.AreEqual(data, point.Data);
-            Assert.IsNull(point.Left);
-            Assert.IsNull(point.Right);
+            Assert.AreEqual(card.ToString(), result);
         }
 
-
         [TestMethod]
-        public void ToString_DataIsNotNull_ShouldReturnDataToString()
+        public void ToString_NullData_ShouldReturnEmptyString()
         {
             // Arrange
-            int data = 5;
-            var point = new TreePoint<int>(data);
+            var treePoint = new TreePoint<Card>(null);
 
             // Act
-            var result = point.ToString();
+            var result = treePoint.ToString();
 
             // Assert
-            Assert.AreEqual(data.ToString(), result);
+            Assert.AreEqual(string.Empty, result);
         }
 
         [TestMethod]
-        public void Equals_SameData_ShouldReturnTrue()
+        public void Equals_SameObject_ShouldReturnTrue()
         {
             // Arrange
-            var point1 = new TreePoint<int>(5);
-            var point2 = new TreePoint<int>(5);
+            var card = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
+            var treePoint1 = new TreePoint<Card>(card);
+            var treePoint2 = new TreePoint<Card>(card);
 
             // Act
-            var result = point1.Equals(point2);
+            var result = treePoint1.Equals(treePoint2);
 
             // Assert
             Assert.IsTrue(result);
         }
 
         [TestMethod]
-        public void Equals_DifferentData_ShouldReturnFalse()
+        public void Equals_DifferentObject_ShouldReturnFalse()
         {
             // Arrange
-            var point1 = new TreePoint<int>(5);
-            var point2 = new TreePoint<int>(10);
+            var card1 = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
+            var card2 = new Card("6543 2109 8765 4321", "Jane Smith", "11/24", 2);
+            var treePoint1 = new TreePoint<Card>(card1);
+            var treePoint2 = new TreePoint<Card>(card2);
 
             // Act
-            var result = point1.Equals(point2);
+            var result = treePoint1.Equals(treePoint2);
 
             // Assert
             Assert.IsFalse(result);
         }
 
         [TestMethod]
-        public void Equals_Null_ShouldReturnFalse()
+        public void Equals_NullObject_ShouldReturnFalse()
         {
             // Arrange
-            var point = new TreePoint<int>(5);
+            var card = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
+            var treePoint = new TreePoint<Card>(card);
 
             // Act
-            var result = point.Equals(null);
+            var result = treePoint.Equals(null);
 
             // Assert
             Assert.IsFalse(result);
         }
 
         [TestMethod]
-        public void GetHashCode_SameData_ShouldReturnSameHashCode()
+        public void Equals_DifferentType_ShouldReturnFalse()
         {
             // Arrange
-            var point1 = new TreePoint<int>(5);
-            var point2 = new TreePoint<int>(5);
+            var card = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
+            var treePoint = new TreePoint<Card>(card);
+            var differentTypeObject = new object();
 
             // Act
-            var hash1 = point1.GetHashCode();
-            var hash2 = point2.GetHashCode();
+            var result = treePoint.Equals(differentTypeObject);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void GetHashCode_SameObject_ShouldReturnSameHash()
+        {
+            // Arrange
+            var card = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
+            var treePoint1 = new TreePoint<Card>(card);
+            var treePoint2 = new TreePoint<Card>(card);
+
+            // Act
+            var hash1 = treePoint1.GetHashCode();
+            var hash2 = treePoint2.GetHashCode();
 
             // Assert
             Assert.AreEqual(hash1, hash2);
         }
 
         [TestMethod]
-        public void GetHashCode_DifferentData_ShouldReturnDifferentHashCode()
+        public void GetHashCode_DifferentObject_ShouldReturnDifferentHash()
         {
             // Arrange
-            var point1 = new TreePoint<int>(5);
-            var point2 = new TreePoint<int>(10);
+            var card1 = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
+            var card2 = new Card("6543 2109 8765 4321", "Jane Smith", "11/24", 2);
+            var treePoint1 = new TreePoint<Card>(card1);
+            var treePoint2 = new TreePoint<Card>(card2);
 
             // Act
-            var hash1 = point1.GetHashCode();
-            var hash2 = point2.GetHashCode();
+            var hash1 = treePoint1.GetHashCode();
+            var hash2 = treePoint2.GetHashCode();
+
+            // Assert
+            Assert.AreNotEqual(hash1, hash2);
+        }
+
+        [TestMethod]
+        public void GetHashCode_NullData_ShouldReturnConsistentHash()
+        {
+            // Arrange
+            var treePoint1 = new TreePoint<Card>(null);
+            var treePoint2 = new TreePoint<Card>(null);
+
+            // Act
+            var hash1 = treePoint1.GetHashCode();
+            var hash2 = treePoint2.GetHashCode();
+
+            // Assert
+            Assert.AreEqual(hash1, hash2);
+        }
+
+        [TestMethod]
+        public void GetHashCode_BothLeftAndRightNull_ShouldReturnSameHash()
+        {
+            // Arrange
+            var treePoint1 = new TreePoint<int>(10);
+            var treePoint2 = new TreePoint<int>(10);
+
+            // Act
+            var hash1 = treePoint1.GetHashCode();
+            var hash2 = treePoint2.GetHashCode();
+
+            // Assert
+            Assert.AreEqual(hash1, hash2);
+        }
+
+        [TestMethod]
+        public void GetHashCode_LeftNotNull_ShouldReturnDifferentHash()
+        {
+            // Arrange
+            var treePoint1 = new TreePoint<int>(10);
+            treePoint1.Left = new TreePoint<int>(5);
+            var treePoint2 = new TreePoint<int>(10);
+
+            // Act
+            var hash1 = treePoint1.GetHashCode();
+            var hash2 = treePoint2.GetHashCode();
+
+            // Assert
+            Assert.AreNotEqual(hash1, hash2);
+        }
+
+        [TestMethod]
+        public void GetHashCode_RightNotNull_ShouldReturnDifferentHash()
+        {
+            // Arrange
+            var treePoint1 = new TreePoint<int>(10);
+            treePoint1.Right = new TreePoint<int>(15);
+            var treePoint2 = new TreePoint<int>(10);
+
+            // Act
+            var hash1 = treePoint1.GetHashCode();
+            var hash2 = treePoint2.GetHashCode();
+
+            // Assert
+            Assert.AreNotEqual(hash1, hash2);
+        }
+
+        [TestMethod]
+        public void GetHashCode_BothLeftAndRightNotNull_ShouldReturnDifferentHash()
+        {
+            // Arrange
+            var treePoint1 = new TreePoint<int>(10);
+            treePoint1.Left = new TreePoint<int>(5);
+            treePoint1.Right = new TreePoint<int>(15);
+            var treePoint2 = new TreePoint<int>(10);
+
+            // Act
+            var hash1 = treePoint1.GetHashCode();
+            var hash2 = treePoint2.GetHashCode();
 
             // Assert
             Assert.AreNotEqual(hash1, hash2);
@@ -1075,419 +1179,680 @@ namespace UnitTest
     }
 
     [TestClass]
-    public class MyTreeTests
+    public class MyTreetests01
     {
+        private MyTree<Card> tree;
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            tree = new MyTree<Card>();
+        }
+
         [TestMethod]
-        public void MyTreeConstructor_Test()
+        public void Constructor_Length_ShouldInitializeTreeWithSpecifiedLength()
         {
             // Arrange
             int length = 5;
 
             // Act
-            MyTree<Card> myTree = new MyTree<Card>(length);
+            var treeWithLength = new MyTree<Card>(length);
 
             // Assert
-            Assert.IsNotNull(myTree);
-            Assert.AreEqual(length, myTree.Count);
-            Assert.IsNotNull(myTree.Root);
+            Assert.IsNotNull(treeWithLength);
+            Assert.AreEqual(length, treeWithLength.Count);
         }
 
+        private int GetHeight(TreePoint<Card>? node)
+        {
+            if (node == null)
+                return 0;
+
+            int leftHeight = GetHeight(node.Left);
+            int rightHeight = GetHeight(node.Right);
+
+            return Math.Max(leftHeight, rightHeight) + 1;
+        }
 
         [TestMethod]
-        public void MyTreeDeepCopy_Test()
+        public void Add_NewCard_ShouldIncreaseCount()
         {
             // Arrange
-            MyTree<Card> myTree = new MyTree<Card>(5);
+            Card card = new Card("1234 5678 9012 3456", "John Doe", "06/25", 1);
 
             // Act
-            MyTree<Card> copyTree = myTree.DeepCopy();
+            tree.Add(card);
 
             // Assert
-            Assert.IsNotNull(copyTree);
-            Assert.AreNotSame(myTree, copyTree);
-            Assert.AreEqual(myTree.Count, copyTree.Count);
+            Assert.AreEqual(1, tree.Count);
         }
 
         [TestMethod]
-        public void MyTree_CalculateAverage()
+        public void Add_DuplicateCard_ShouldNotIncreaseCount()
         {
             // Arrange
-            MyTree<Card> myTree = new MyTree<Card>(0);
-
-            // Создаем несколько карт с известными значениями номера
-            Card card1 = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
-            Card card2 = new Card("9876 5432 1098 7654", "Jane Smith", "05/23", 2);
-            Card card3 = new Card("1111 2222 3333 4444", "Alice Brown", "03/24", 3);
-
-            // Добавляем карты в дерево
-            myTree.Add(card1);
-            myTree.Add(card2);
-            myTree.Add(card3);
+            Card card1 = new Card("1234 5678 9012 3456", "John Doe", "06/25", 1);
+            Card card2 = new Card("1234 5678 9012 3456", "John Doe", "06/25", 1);
 
             // Act
-            double average = myTree.CalculateAverage();
+            tree.Add(card1);
+            tree.Add(card2);
 
             // Assert
-            Assert.AreEqual(2.0, average); // Среднее значение для номеров 1, 2, 3 должно быть 2.0
+            Assert.AreEqual(1, tree.Count);
         }
 
         [TestMethod]
-        public void MyTree_DeleteTree()
+        public void Find_ExistingCard_ShouldReturnCard()
         {
             // Arrange
-            MyTree<Card> myTree = new MyTree<Card>(0);
-
-            // Создаем несколько карт с известными значениями номера
-            Card card1 = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
-            Card card2 = new Card("9876 5432 1098 7654", "Jane Smith", "05/23", 2);
-            Card card3 = new Card("1111 2222 3333 4444", "Alice Brown", "03/24", 3);
-
-            // Добавляем карты в дерево
-            myTree.Add(card1);
-            myTree.Add(card2);
-            myTree.Add(card3);
+            Card card = new Card("1234 5678 9012 3456", "John Doe", "06/25", 1);
+            tree.Add(card);
 
             // Act
-            myTree.Clear();
+            var foundCard = tree.Find(card);
 
             // Assert
-            Assert.AreEqual(0, myTree.Count);  // Проверяем, что количество элементов в дереве равно 0
-            Assert.IsNull(myTree.Root);         // Проверяем, что корень дерева равен null
-        }
-
-        private bool IsSearchTree(TreePoint<Card> node)
-        {
-            if (node == null) return true;
-
-            // Проверяем, что в левом поддереве все значения меньше текущего узла
-            if (node.Left != null && node.Left.Data.CompareTo(node.Data) >= 0)
-                return false;
-
-            // Проверяем, что в правом поддереве все значения больше текущего узла
-            if (node.Right != null && node.Right.Data.CompareTo(node.Data) <= 0)
-                return false;
-
-            // Рекурсивно проверяем поддеревья
-            return IsSearchTree(node.Left) && IsSearchTree(node.Right);
+            Assert.IsNotNull(foundCard);
+            Assert.AreEqual(card, foundCard);
         }
 
         [TestMethod]
-        public void Constructor_ShouldCreateTreeWithGivenLength()
+        public void Count_EmptyTree_ShouldReturnZero()
         {
             // Arrange
-            int length = 5;
-            var tree = new MyTree<Card>(length);
 
             // Act
             int count = tree.Count;
 
             // Assert
-            Assert.AreEqual(length, count);
+            Assert.AreEqual(0, count);
         }
+    }
 
+    [TestClass]
+    public class MyTreeTests02
+    {
         [TestMethod]
-        public void PrintTree_ShouldPrintTree()
+        public void Constructor_WithCollection_ShouldBuildBalancedTree()
         {
             // Arrange
-            var tree = new MyTree<Card>(3);
-            using (var sw = new StringWriter())
+            Card[] cards = GenerateCardsArray(5); // Generating an array of 5 cards
+
+            // Act
+            var tree = new MyTree<Card>(cards);
+
+            // Assert
+            Assert.IsNotNull(tree);
+            Assert.AreEqual(cards.Length, tree.Count);
+            Assert.IsTrue(IsBalanced(tree.Root));
+            Assert.IsTrue(IsSorted(tree.Root));
+        }
+
+        private Card[] GenerateCardsArray(int length)
+        {
+            Card[] cards = new Card[length];
+            for (int i = 0; i < length; i++)
             {
-                Console.SetOut(sw);
-
-                // Act
-                tree.PrintTree();
-
-                // Assert
-                var result = sw.ToString().Trim();
-                Assert.IsFalse(string.IsNullOrWhiteSpace(result));
+                cards[i] = new Card($"1234 5678 9012 {i:D4}", $"User {i}", $"{(i % 12 + 1):D2}/{30 + i % 20:D2}", i + 1);
             }
+            Array.Sort(cards); // Ensure the array is sorted for balanced tree construction
+            return cards;
+        }
+
+        private bool IsBalanced(TreePoint<Card>? node)
+        {
+            return GetHeight(node) != -1;
+        }
+
+        private int GetHeight(TreePoint<Card>? node)
+        {
+            if (node == null)
+                return 0;
+
+            int leftHeight = GetHeight(node.Left);
+            if (leftHeight == -1) return -1;
+
+            int rightHeight = GetHeight(node.Right);
+            if (rightHeight == -1) return -1;
+
+            if (Math.Abs(leftHeight - rightHeight) > 1)
+                return -1;
+
+            return Math.Max(leftHeight, rightHeight) + 1;
+        }
+
+        private bool IsSorted(TreePoint<Card>? node)
+        {
+            return IsSorted(node, null, null);
+        }
+
+        private bool IsSorted(TreePoint<Card>? node, Card? min, Card? max)
+        {
+            if (node == null)
+                return true;
+
+            if ((min != null && node.Data.CompareTo(min) <= 0) || (max != null && node.Data.CompareTo(max) >= 0))
+                return false;
+
+            return IsSorted(node.Left, min, node.Data) && IsSorted(node.Right, node.Data, max);
+        }
+    }
+
+    [TestClass]
+    public class MyTreeTests03
+    {
+        [TestMethod]
+        public void RemoveISBD_ShouldRemoveExistingItem()
+        {
+            // Arrange
+            Card[] cards = GenerateCardsArray(5);
+            var tree = new MyTree<Card>(cards);
+            var itemToRemove = cards[2]; // Choose an item to remove
+
+            // Act
+            bool result = tree.RemoveISBD(itemToRemove);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(4, tree.Count);
+            Assert.IsFalse(TreeContains(tree.Root, itemToRemove));
+            Assert.IsTrue(IsBalanced(tree.Root));
+            Assert.IsTrue(IsSorted(tree.Root));
         }
 
         [TestMethod]
-        public void DeepCopy_ShouldCreateExactCopy()
+        public void RemoveISBD_ShouldHandleRemovingRoot()
         {
             // Arrange
-            var originalTree = new MyTree<Card>(3);
-            var copiedTree = originalTree.DeepCopy();
+            Card[] cards = GenerateCardsArray(5);
+            var tree = new MyTree<Card>(cards);
+            var rootItem = cards[2]; // Root item in a balanced tree
 
-            // Act & Assert
-            Assert.IsFalse(ReferenceEquals(originalTree, copiedTree));
+            // Act
+            bool result = tree.RemoveISBD(rootItem);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(4, tree.Count);
+            Assert.IsFalse(TreeContains(tree.Root, rootItem));
+            Assert.IsTrue(IsBalanced(tree.Root));
+            Assert.IsTrue(IsSorted(tree.Root));
+        }
+
+        private Card[] GenerateCardsArray(int length)
+        {
+            Card[] cards = new Card[length];
+            for (int i = 0; i < length; i++)
+            {
+                cards[i] = new Card($"1234 5678 9012 {i:D4}", $"User {i}", $"{(i % 12 + 1):D2}/{30 + i % 20:D2}", i + 1);
+            }
+            Array.Sort(cards); // Ensure the array is sorted for balanced tree construction
+            return cards;
+        }
+
+        private bool TreeContains(TreePoint<Card>? node, Card item)
+        {
+            if (node == null)
+                return false;
+
+            if (node.Data.Equals(item))
+                return true;
+
+            if (item.CompareTo(node.Data) < 0)
+                return TreeContains(node.Left, item);
+            else
+                return TreeContains(node.Right, item);
+        }
+
+        private bool IsBalanced(TreePoint<Card>? node)
+        {
+            return GetHeight(node) != -1;
+        }
+
+        private int GetHeight(TreePoint<Card>? node)
+        {
+            if (node == null)
+                return 0;
+
+            int leftHeight = GetHeight(node.Left);
+            if (leftHeight == -1) return -1;
+
+            int rightHeight = GetHeight(node.Right);
+            if (rightHeight == -1) return -1;
+
+            if (Math.Abs(leftHeight - rightHeight) > 1)
+                return -1;
+
+            return Math.Max(leftHeight, rightHeight) + 1;
+        }
+
+        private bool IsSorted(TreePoint<Card>? node)
+        {
+            return IsSorted(node, null, null);
+        }
+
+        private bool IsSorted(TreePoint<Card>? node, Card? min, Card? max)
+        {
+            if (node == null)
+                return true;
+
+            if ((min != null && node.Data.CompareTo(min) <= 0) || (max != null && node.Data.CompareTo(max) >= 0))
+                return false;
+
+            return IsSorted(node.Left, min, node.Data) && IsSorted(node.Right, node.Data, max);
+        }
+    }
+
+    [TestClass]
+    public class MyTreeTests04
+    {
+        [TestMethod]
+        public void CopyTo_ShouldCopyElementsSuccessfully()
+        {
+            // Arrange
+            Card[] cards = GenerateCardsArray(5);
+            var tree = new MyTree<Card>(cards);
+            Card[] targetArray = new Card[5];
+
+            // Act
+            tree.CopyTo(targetArray, 0);
+
+            // Assert
+            CollectionAssert.AreEqual(cards, targetArray);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void CopyTo_ShouldThrowArgumentNullException_WhenArrayIsNull()
+        {
+            // Arrange
+            Card[] cards = GenerateCardsArray(5);
+            var tree = new MyTree<Card>(cards);
+
+            // Act
+            tree.CopyTo(null, 0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CopyTo_ShouldThrowArgumentOutOfRangeException_WhenArrayIndexIsOutOfRange()
+        {
+            // Arrange
+            Card[] cards = GenerateCardsArray(5);
+            var tree = new MyTree<Card>(cards);
+            Card[] targetArray = new Card[5];
+
+            // Act
+            tree.CopyTo(targetArray, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CopyTo_ShouldThrowArgumentOutOfRangeException_WhenArrayIndexIsTooHigh()
+        {
+            // Arrange
+            Card[] cards = GenerateCardsArray(5);
+            var tree = new MyTree<Card>(cards);
+            Card[] targetArray = new Card[5];
+
+            // Act
+            tree.CopyTo(targetArray, 5);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void CopyTo_ShouldThrowArgumentException_WhenArrayIsTooSmall()
+        {
+            // Arrange
+            Card[] cards = GenerateCardsArray(5);
+            var tree = new MyTree<Card>(cards);
+            Card[] targetArray = new Card[4];
+
+            // Act
+            tree.CopyTo(targetArray, 0);
+        }
+
+        private Card[] GenerateCardsArray(int length)
+        {
+            Card[] cards = new Card[length];
+            for (int i = 0; i < length; i++)
+            {
+                cards[i] = new Card($"1234 5678 9012 {i:D4}", $"User {i}", $"{(i % 12 + 1):D2}/{30 + i % 20:D2}", i + 1);
+            }
+            Array.Sort(cards); // Ensure the array is sorted for balanced tree construction
+            return cards;
+        }
+    }
+
+    [TestClass]
+    public class MyTreeTests05
+    {
+        [TestMethod]
+        public void GetEnumerator_ShouldReturnElementsInOrder()
+        {
+            // Arrange
+            Card[] cards = GenerateCardsArray(5);
+            var tree = new MyTree<Card>(cards);
+
+            // Act
+            List<Card> result = new List<Card>();
+            foreach (var card in tree)
+            {
+                result.Add(card);
+            }
+
+            // Assert
+            CollectionAssert.AreEqual(cards, result);
+        }
+
+        [TestMethod]
+        public void IEnumerable_GetEnumerator_ShouldReturnElementsInOrder()
+        {
+            // Arrange
+            Card[] cards = GenerateCardsArray(5);
+            var tree = new MyTree<Card>(cards);
+
+            // Act
+            List<Card> result = new List<Card>();
+            IEnumerable enumerableTree = (IEnumerable)tree;
+            foreach (var card in enumerableTree)
+            {
+                result.Add((Card)card);
+            }
+
+            // Assert
+            CollectionAssert.AreEqual(cards, result);
+        }
+
+        private Card[] GenerateCardsArray(int length)
+        {
+            Card[] cards = new Card[length];
+            for (int i = 0; i < length; i++)
+            {
+                cards[i] = new Card($"1234 5678 9012 {i:D4}", $"User {i}", $"{(i % 12 + 1):D2}/{30 + i % 20:D2}", i + 1);
+            }
+            Array.Sort(cards); // Ensure the array is sorted for balanced tree construction
+            return cards;
+        }
+    }
+
+    [TestClass]
+    public class MyTreeTests06
+    {
+        [TestMethod]
+        public void DeepCopy_ShouldCreateExactCopyOfTree()
+        {
+            // Arrange
+            Card[] cards = GenerateCardsArray(5);
+            var originalTree = new MyTree<Card>(cards);
+
+            // Act
+            MyTree<Card> copiedTree = originalTree.DeepCopy();
+
+            // Assert
             Assert.AreEqual(originalTree.Count, copiedTree.Count);
+            CollectionAssert.AreEqual(GetTreeElementsInOrder(originalTree), GetTreeElementsInOrder(copiedTree));
         }
 
         [TestMethod]
-        public void CalculateAverage_ShouldReturnCorrectAverage()
+        public void DeepCopy_ShouldCreateIndependentCopy()
         {
             // Arrange
-            var tree = new MyTree<Card>(3);
-            double expectedAverage = CalculateExpectedAverage(tree.Root);
+            Card[] cards = GenerateCardsArray(5);
+            var originalTree = new MyTree<Card>(cards);
+            MyTree<Card> copiedTree = originalTree.DeepCopy();
 
             // Act
-            double average = tree.CalculateAverage();
+            copiedTree.Remove(cards[0]);
 
             // Assert
-            Assert.AreEqual(expectedAverage, average, 0.001);
+            Assert.AreNotEqual(originalTree.Count, copiedTree.Count);
+            CollectionAssert.AreEqual(GetTreeElementsInOrder(originalTree), cards); // Original tree remains unchanged
+            CollectionAssert.DoesNotContain(GetTreeElementsInOrder(copiedTree), cards[0]); // Copied tree has one less element
         }
 
-        [TestMethod]
-        public void AddPoint_ShouldAddNewNodeToTree()
+        private Card[] GenerateCardsArray(int length)
         {
-            // Arrange
-            var tree = new MyTree<Card>(3);
-            var newCard = new Card();
-            newCard.RandomInit();
-            int initialCount = tree.Count;
-
-            // Act
-            tree.Add(newCard);
-
-            // Assert
-            Assert.AreEqual(initialCount + 1, tree.Count);
+            Card[] cards = new Card[length];
+            for (int i = 0; i < length; i++)
+            {
+                cards[i] = new Card($"1234 5678 9012 {i:D4}", $"User {i}", $"{(i % 12 + 1):D2}/{30 + i % 20:D2}", i + 1);
+            }
+            Array.Sort(cards); // Ensure the array is sorted for balanced tree construction
+            return cards;
         }
 
+        private List<Card> GetTreeElementsInOrder(MyTree<Card> tree)
+        {
+            List<Card> elements = new List<Card>();
+            foreach (var card in tree)
+            {
+                elements.Add(card);
+            }
+            return elements;
+        }
+    }
+
+    [TestClass]
+    public class MyTreeTests07
+    {
         [TestMethod]
-        public void DeleteTree_ShouldRemoveAllNodes()
+        public void Clear_ShouldRemoveAllElements()
         {
             // Arrange
-            var tree = new MyTree<Card>(3);
+            var tree = new MyTree<Card>(GenerateCardsArray(5));
 
             // Act
             tree.Clear();
 
             // Assert
             Assert.AreEqual(0, tree.Count);
-            Assert.IsNull(tree.Root);
+            Assert.IsNull(tree.root);
         }
 
         [TestMethod]
-        public void CreateSearchTree_ShouldCreateBinarySearchTree()
+        public void Contains_ShouldReturnTrueIfElementExists()
         {
             // Arrange
-            var tree = new MyTree<Card>(5);
-            var searchTree = tree.CreateSearchTree();
+            var card = new Card("1234 5678 9012 0001", "User 1", "01/25", 100);
+            var tree = new MyTree<Card>(new Card[] { card });
 
             // Act
-            bool isBST = IsBinarySearchTree(searchTree.Root);
+            bool contains = tree.Contains(card);
 
             // Assert
-            Assert.AreEqual(tree.Count, searchTree.Count);
-            Assert.IsTrue(isBST);
+            Assert.IsTrue(contains);
         }
 
-        private double CalculateExpectedAverage(TreePoint<Card> node)
+        private Card[] GenerateCardsArray(int length)
         {
-            if (node == null) return 0;
-            var (sum, count) = CalculateSumAndCount(node);
-            return sum / count;
-        }
-
-        private (double, int) CalculateSumAndCount(TreePoint<Card> node)
-        {
-            if (node == null) return (0, 0);
-
-            var (leftSum, leftCount) = CalculateSumAndCount(node.Left);
-            var (rightSum, rightCount) = CalculateSumAndCount(node.Right);
-
-            double nodeValue = 0;
-
-            if (node.Data is Card card)
+            Card[] cards = new Card[length];
+            for (int i = 0; i < length; i++)
             {
-                nodeValue = card.num.number;
+                cards[i] = new Card($"1234 5678 9012 {i:D4}", $"User {i}", $"{(i % 12 + 1):D2}/{30 + i % 20:D2}", i + 1);
             }
-
-            double totalSum = leftSum + rightSum + nodeValue;
-            int totalCount = leftCount + rightCount + 1;
-
-            return (totalSum, totalCount);
-        }
-
-        private bool IsBinarySearchTree(TreePoint<Card> node, Card min = null, Card max = null)
-        {
-            if (node == null) return true;
-
-            if ((min != null && node.Data.CompareTo(min) <= 0) || (max != null && node.Data.CompareTo(max) >= 0))
-            {
-                return false;
-            }
-
-            return IsBinarySearchTree(node.Left, min, node.Data) && IsBinarySearchTree(node.Right, node.Data, max);
+            Array.Sort(cards); // Ensure the array is sorted for balanced tree construction
+            return cards;
         }
     }
 
     [TestClass]
-    public class MyTreeTests_01
-    {
-        // Вспомогательный метод для создания объекта Card
-        private Card CreateCard(string id, string name, string time, int number)
-        {
-            return new Card(id, name, time, number);
-        }
-
-        // Вспомогательный метод для создания дерева с картами
-        private MyTree<Card> CreateTreeWithCards()
-        {
-            MyTree<Card> tree = new MyTree<Card>(0);
-            tree.Add(CreateCard("1234 5678 1234 5678", "Alice", "01/28", 1));
-            tree.Add(CreateCard("2345 6789 2345 6789", "Bob", "02/29", 2));
-            tree.Add(CreateCard("3456 7890 3456 7890", "Charlie", "03/30", 3));
-            return tree;
-        }
-
-        [TestMethod]
-        public void TestDeleteLeafNode()
-        {
-            MyTree<Card> tree = CreateTreeWithCards();
-
-            // Удаляем листовой узел
-            tree.Remove(CreateCard("3456 7890 3456 7890", "Charlie", "03/30", 3));
-
-            // Проверяем, что узел удален
-            Assert.IsNull(tree.Root.Right.Right);
-        }
-
-        [TestMethod]
-        public void TestDeleteNodeWithOneChild()
-        {
-            MyTree<Card> tree = CreateTreeWithCards();
-
-            // Добавляем узел с одним дочерним элементом
-            tree.Add(CreateCard("4567 8901 4567 8901", "Dave", "04/31", 4));
-
-            // Удаляем узел с одним дочерним элементом
-            tree.Remove(CreateCard("2345 6789 2345 6789", "Bob", "02/29", 2));
-
-            // Проверяем, что узел удален и заменен дочерним элементом
-            Assert.AreEqual("4567 8901 4567 8901", tree.Root.Right.Data.Id);
-        }
-
-        [TestMethod]
-        public void TestDeleteNodeWithTwoChildren()
-        {
-            MyTree<Card> tree = CreateTreeWithCards();
-
-            // Добавляем узлы для создания двух дочерних элементов
-            tree.Add(CreateCard("4567 8901 4567 8901", "Dave", "04/31", 4));
-            tree.Add(CreateCard("5678 9012 5678 9012", "Eve", "05/32", 5));
-
-            // Удаляем узел с двумя дочерними элементами
-            tree.Remove(CreateCard("2345 6789 2345 6789", "Bob", "02/29", 2));
-
-            // Проверяем, что узел удален и заменен наименьшим элементом из правого поддерева
-            Assert.AreEqual("4567 8901 4567 8901", tree.Root.Right.Data.Id);
-            Assert.AreEqual("5678 9012 5678 9012", tree.Root.Right.Right.Data.Id);
-        }
-
-        [TestMethod]
-        public void TestDeleteNonExistentNode()
-        {
-            MyTree<Card> tree = CreateTreeWithCards();
-
-            // Пытаемся удалить узел, которого нет в дереве
-            tree.Remove(CreateCard("9999 9999 9999 9999", "NonExistent", "00/00", 0));
-
-            // Проверяем, что дерево осталось неизменным
-            Assert.AreEqual(3, tree.CountFindTree);
-        }
-    }
-
-    [TestClass]
-    public class MyTreeTests_02
+    public class MyTreeTests08
     {
         [TestMethod]
-        public void Delete_NodeExists_NodeRemoved()
+        public void Add_ShouldAddElementToTree()
         {
             // Arrange
-            var tree = new MyTree<Card>(0);
-            var card1 = new Card("1234 5678 9012 3456", "Alice", "01/30", 1);
-            var card2 = new Card("2345 6789 0123 4567", "Bob", "02/31", 2);
-            var card3 = new Card("3456 7890 1234 5678", "Charlie", "03/32", 3);
+            var tree = new MyTree<Card>();
+            var card1 = new Card("1234 5678 9012 0001", "User 1", "01/25", 100);
+            var card2 = new Card("1234 5678 9012 0002", "User 2", "02/25", 200);
+            var card3 = new Card("1234 5678 9012 0003", "User 3", "03/25", 300);
+
+            // Act
             tree.Add(card1);
             tree.Add(card2);
             tree.Add(card3);
-
-            // Act
-            tree.Remove(card2);
-
-            // Assert
-            Assert.AreEqual(2, tree.Count);
-            Assert.IsNull(FindNode(tree.Root, card2));
-        }
-
-        [TestMethod]
-        public void Delete_NodeDoesNotExist_TreeUnchanged()
-        {
-            // Arrange
-            var tree = new MyTree<Card>(0);
-            var card1 = new Card("1234 5678 9012 3456", "Alice", "01/30", 1);
-            var card2 = new Card("2345 6789 0123 4567", "Bob", "02/31", 2);
-            var card3 = new Card("3456 7890 1234 5678", "Charlie", "03/32", 3);
-            var card4 = new Card("4567 8901 2345 6789", "Daisy", "04/33", 4);
-            tree.Add(card1);
-            tree.Add(card2);
-            tree.Add(card3);
-
-            // Act
-            tree.Remove(card4);
 
             // Assert
             Assert.AreEqual(3, tree.Count);
-            Assert.IsNotNull(FindNode(tree.Root, card1));
-            Assert.IsNotNull(FindNode(tree.Root, card2));
-            Assert.IsNotNull(FindNode(tree.Root, card3));
+            Assert.IsTrue(tree.Contains(card1));
+            Assert.IsTrue(tree.Contains(card2));
+            Assert.IsTrue(tree.Contains(card3));
+        }
+
+
+        [TestMethod]
+        public void Add_ShouldMaintainBinarySearchTreeProperty()
+        {
+            // Arrange
+            var tree = new MyTree<Card>();
+            var card1 = new Card("1234 5678 9012 0001", "User 1", "01/25", 100);
+            var card2 = new Card("1234 5678 9012 0002", "User 2", "02/25", 200);
+            var card3 = new Card("1234 5678 9012 0003", "User 3", "03/25", 300);
+
+            // Act
+            tree.Add(card2); // Insert in random order
+            tree.Add(card1);
+            tree.Add(card3);
+
+            // Assert
+            Assert.AreEqual(3, tree.Count);
+
+            // Check inorder traversal to ensure binary search tree property is maintained
+            var cardsInOrder = new Card[] { card1, card2, card3 };
+            int i = 0;
+            foreach (var node in tree)
+            {
+                Assert.AreEqual(cardsInOrder[i], node);
+                i++;
+            }
         }
 
         [TestMethod]
-        public void Delete_NodeIsRoot_NodeRemoved()
+        public void Add_ShouldHandleEmptyTree()
         {
             // Arrange
-            var tree = new MyTree<Card>(0);
-            var card1 = new Card("1234 5678 9012 3456", "Alice", "01/30", 1);
-            var card2 = new Card("2345 6789 0123 4567", "Bob", "02/31", 2);
-            tree.Add(card1);
-            tree.Add(card2);
+            var tree = new MyTree<Card>();
+            var card = new Card("1234 5678 9012 0001", "User 1", "01/25", 100);
 
             // Act
-            tree.Remove(card1);
+            tree.Add(card);
 
             // Assert
             Assert.AreEqual(1, tree.Count);
-            Assert.IsNull(FindNode(tree.Root, card1));
-            Assert.IsNotNull(FindNode(tree.Root, card2));
+            Assert.IsTrue(tree.Contains(card));
+        }
+    }
+
+    [TestClass]
+    public class MyTreeTests09
+    {
+
+        [TestMethod]
+        public void MakeTree_ShouldCreateTreeWithSpecifiedLength()
+        {
+            // Arrange
+            int length = 5;
+            var tree = new MyTree<Card>(length);
+
+            // Act
+
+            // Assert
+            Assert.AreEqual(length, tree.Count);
         }
 
         [TestMethod]
-        public void Delete_NodeWithTwoChildren_NodeRemoved()
+        public void CalculateAverage_ShouldCalculateCorrectAverage()
         {
             // Arrange
-            var tree = new MyTree<Card>(0);
-            var card1 = new Card("1234 5678 9012 3456", "Alice", "01/30", 1);
-            var card2 = new Card("2345 6789 0123 4567", "Bob", "02/31", 2);
-            var card3 = new Card("3456 7890 1234 5678", "Charlie", "03/32", 3);
-            var card4 = new Card("4567 8901 2345 6789", "Daisy", "04/33", 4);
-            tree.Add(card1);
-            tree.Add(card2);
-            tree.Add(card3);
-            tree.Add(card4);
+            var tree = new MyTree<Card>();
+            var cards = new List<Card>
+            {
+                new Card("1234 5678 9012 0001", "User 1", "01/25", 100),
+                new Card("1234 5678 9012 0002", "User 2", "02/25", 200),
+                new Card("1234 5678 9012 0003", "User 3", "03/25", 300),
+                new Card("1234 5678 9012 0004", "User 4", "04/25", 400),
+                new Card("1234 5678 9012 0005", "User 5", "05/25", 500)
+            };
+
+            foreach (var card in cards)
+            {
+                tree.Add(card);
+            }
+
+            double expectedAverage = (100 + 200 + 300 + 400 + 500) / 5.0;
 
             // Act
-            tree.Remove(card2);
+            double actualAverage = tree.CalculateAverage();
 
             // Assert
-            Assert.AreEqual(3, tree.Count);
-            Assert.IsNull(FindNode(tree.Root, card2));
+            Assert.AreEqual(expectedAverage, actualAverage, 0.001);
         }
 
-        private TreePoint<Card>? FindNode(TreePoint<Card>? node, Card key)
+        [TestMethod]
+        public void CreateSearchTree_ShouldCreateSearchTreeFromCurrentTree()
         {
-            if (node == null) return null;
+            // Arrange
+            var tree = new MyTree<Card>();
+            var cards = new List<Card>
+            {
+                new Card("1234 5678 9012 0001", "User 1", "01/25", 100),
+                new Card("1234 5678 9012 0002", "User 2", "02/25", 200),
+                new Card("1234 5678 9012 0003", "User 3", "03/25", 300),
+                new Card("1234 5678 9012 0004", "User 4", "04/25", 400),
+                new Card("1234 5678 9012 0005", "User 5", "05/25", 500)
+            };
 
-            int comparison = key.CompareTo(node.Data);
-            if (comparison == 0)
-                return node;
-            else if (comparison < 0)
-                return FindNode(node.Left, key);
-            else
-                return FindNode(node.Right, key);
+            foreach (var card in cards)
+            {
+                tree.Add(card);
+            }
+
+            // Act
+            var searchTree = tree.CreateSearchTree();
+
+            // Assert
+            Assert.AreEqual(tree.Count, searchTree.Count);
+
+            foreach (var card in cards)
+            {
+                Assert.IsTrue(searchTree.Contains(card));
+            }
+        }
+    }
+
+    [TestClass]
+    public class MyTreeTests
+    {
+        [TestMethod]
+        public void PrintTree_ShouldPrintTree()
+        {
+            // Arrange
+            var tree = new MyTree<Card>();
+            var cards = new List<Card>
+            {
+                new Card("1234 5678 9012 0001", "User 1", "01/25", 100),
+                new Card("1234 5678 9012 0002", "User 2", "02/25", 200),
+                new Card("1234 5678 9012 0003", "User 3", "03/25", 300),
+                new Card("1234 5678 9012 0004", "User 4", "04/25", 400),
+                new Card("1234 5678 9012 0005", "User 5", "05/25", 500)
+            };
+
+            foreach (var card in cards)
+            {
+                tree.Add(card);
+            }
+
+            // Act
+            StringWriter stringWriter = new StringWriter();
+            Console.SetOut(stringWriter);
+            tree.PrintTree();
+            string printedTree = stringWriter.ToString();
+
+            // Assert
+            Assert.IsNotNull(printedTree);
+            Console.SetOut(Console.Out);
         }
     }
 }
