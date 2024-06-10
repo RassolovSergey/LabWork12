@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LabWork12.Part_4
 {
-    internal class MyCollectionTree<T> : MyTree<T>, IEnumerable<T>, ICollection<T> where T : IInit, ICloneable, IComparable, ISummable, new()
+    public class MyCollectionTree<T> : MyTree<T>, IEnumerable<T>, ICollection<T> where T : IInit, ICloneable, IComparable, ISummable, new()
     {
         public MyCollectionTree() : base() { }
 

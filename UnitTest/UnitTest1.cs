@@ -1,11 +1,13 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using LabWork12;
+using LabWork12.Part_4;
 using ClassLibraryLab10;
 using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Collections;
+using System.Linq;
 
 namespace UnitTest
 {
@@ -741,223 +743,282 @@ namespace UnitTest
     }
 
     [TestClass]
-    public class BiListTests
+    public class BiListTests01
     {
-        [TestMethod]
-        public void TestConstructor()
-        {
-            // Arrange & Act
-            BiList<Card> list = new BiList<Card>();
+        private BiList<Card> list;
 
-            // Assert
-            Assert.IsNotNull(list, "BiList object should be created.");
-            Assert.IsNull(list.beg, "Begin of the list should be null.");
-            Assert.IsNull(list.end, "End of the list should be null.");
-            Assert.AreEqual(0, list.Count, "Count should be zero.");
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            list = new BiList<Card>();
         }
 
         [TestMethod]
-        public void TestConstructorWithSize()
+        public void TestConstructorWithNoParameters()
         {
-            // Arrange
-            int size = 5;
-
-            // Act
-            BiList<Card> list = new BiList<Card>(size);
-
-            // Assert
-            Assert.AreEqual(size, list.Count, "Count should be equal to the initialized size.");
+            Assert.AreEqual(0, list.Count);
+            Assert.IsNull(list.beg);
+            Assert.IsNull(list.end);
         }
 
         [TestMethod]
-        public void TestAddToEnd()
+        public void TestConstructorWithData()
         {
-            // Arrange
-            BiList<Card> list = new BiList<Card>();
-            Card card = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
+            var card = new Card();
+            list = new BiList<Card>(card);
 
-            // Act
+            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual(card, list.beg.Data);
+            Assert.AreEqual(card, list.end.Data);
+        }
+
+        [TestMethod]
+        public void TestConstructorWithArray()
+        {
+            var cards = new[] { new Card(), new Card(), new Card() };
+            list = new BiList<Card>(cards);
+
+            Assert.AreEqual(cards.Length, list.Count);
+            CollectionAssert.AreEqual(cards, list.ToList());
+        }
+
+        [TestMethod]
+        public void TestAdd()
+        {
+            var card = new Card();
             list.Add(card);
 
-            // Assert
-            Assert.AreEqual(1, list.Count, "Count should be one.");
-            Assert.AreEqual(card, list.beg.Data, "Data of the first element should match.");
-            Assert.AreEqual(card, list.end.Data, "Data of the last element should match.");
-        }
-
-        [TestMethod]
-        public void TestFindItem()
-        {
-            // Arrange
-            BiList<Card> list = new BiList<Card>();
-            Card card1 = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
-            Card card2 = new Card("2345 6789 0123 4567", "Jane Doe", "11/24", 2);
-            list.Add(card1);
-            list.Add(card2);
-
-            // Act
-            bool foundCard1 = list.FindItem(card1);
-            bool foundCard2 = list.FindItem(card2);
-            bool foundCard3 = list.FindItem(new Card("3456 7890 1234 5678", "Jake Doe", "10/23", 3));
-
-            // Assert
-            Assert.IsTrue(foundCard1, "Card1 should be found.");
-            Assert.IsTrue(foundCard2, "Card2 should be found.");
-            Assert.IsFalse(foundCard3, "Card3 should not be found.");
+            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual(card, list.beg.Data);
+            Assert.AreEqual(card, list.end.Data);
         }
 
         [TestMethod]
         public void TestRemove()
         {
-            // Arrange
-            BiList<Card> list = new BiList<Card>();
-            Card card1 = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
-            Card card2 = new Card("2345 6789 0123 4567", "Jane Doe", "11/24", 2);
+            var card1 = new Card();
+            var card2 = new Card();
             list.Add(card1);
             list.Add(card2);
 
-            // Act
-            list.Remove(list.beg);
-
-            // Assert
-            Assert.AreEqual(1, list.Count, "Count should be one after removal.");
-            Assert.AreEqual(card2, list.beg.Data, "Data of the remaining element should match.");
-            Assert.AreEqual(card2, list.end.Data, "Data of the remaining element should match.");
+            Assert.IsTrue(list.Remove(card1));
+            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual(card2, list.beg.Data);
+            Assert.AreEqual(card2, list.end.Data);
         }
 
         [TestMethod]
-        public void TestDeepClone()
+        public void TestContains()
         {
-            // Arrange
-            BiList<Card> list = new BiList<Card>();
-            Card card1 = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
-            Card card2 = new Card("2345 6789 0123 4567", "Jane Doe", "11/24", 2);
+            var card = new Card();
+            list.Add(card);
+
+            Assert.IsTrue(list.Contains(card));
+        }
+
+        [TestMethod]
+        public void TestInsert()
+        {
+            var card1 = new Card();
+            var card2 = new Card();
+            var card3 = new Card();
             list.Add(card1);
             list.Add(card2);
 
-            // Act
-            BiList<Card> clonedList = list.DeepClone();
+            list.Insert(1, card3);
 
-            // Assert
-            Assert.AreEqual(list.Count, clonedList.Count, "Counts should be equal.");
-            Assert.AreNotSame(list.beg, clonedList.beg, "Begin nodes should not be the same instance.");
-            Assert.AreNotSame(list.end, clonedList.end, "End nodes should not be the same instance.");
-            Assert.AreEqual(list.beg.Data, clonedList.beg.Data, "Data of the first element should match.");
-            Assert.AreEqual(list.end.Data, clonedList.end.Data, "Data of the last element should match.");
+            Assert.AreEqual(3, list.Count);
+            Assert.AreEqual(card1, list.beg.Data);
+            Assert.AreEqual(card3, list.beg.Next.Data);
+            Assert.AreEqual(card2, list.end.Data);
+        }
+
+        [TestMethod]
+        public void TestRemoveAt()
+        {
+            var card1 = new Card();
+            var card2 = new Card();
+            list.Add(card1);
+            list.Add(card2);
+
+            list.RemoveAt(0);
+
+            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual(card2, list.beg.Data);
+        }
+
+        [TestMethod]
+        public void TestClear()
+        {
+            var card1 = new Card();
+            var card2 = new Card();
+            list.Add(card1);
+            list.Add(card2);
+
+            list.Clear();
+
+            Assert.AreEqual(0, list.Count);
+            Assert.IsNull(list.beg);
+            Assert.IsNull(list.end);
+        }
+
+        [TestMethod]
+        public void TestCopyTo()
+        {
+            var cards = new[] { new Card(), new Card(), new Card() };
+            list = new BiList<Card>(cards);
+
+            var array = new Card[5];
+            list.CopyTo(array, 1);
+
+            CollectionAssert.AreEqual(new Card[] { null, cards[0], cards[1], cards[2], null }, array);
+        }
+
+        [TestMethod]
+        public void TestEnumerator()
+        {
+            var cards = new[] { new Card(), new Card(), new Card() };
+            list = new BiList<Card>(cards);
+
+            var enumeratedCards = list.ToList();
+
+            CollectionAssert.AreEqual(cards, enumeratedCards);
         }
 
         [TestMethod]
         public void TestAddAfter()
         {
-            // Arrange
-            BiList<Card> list = new BiList<Card>();
-            Card card1 = new Card("1234 5678 9012 3456", "John Doe", "12/25", 1);
-            Card card2 = new Card("2345 6789 0123 4567", "Jane Doe", "11/24", 2);
-            Card card3 = new Card("3456 7890 1234 5678", "Jake Doe", "10/23", 3);
+            var card1 = new Card();
+            var card2 = new Card();
+            var card3 = new Card();
             list.Add(card1);
             list.Add(card2);
 
-            // Act
             list.AddAfter(card1, card3);
 
-            // Assert
-            Assert.AreEqual(3, list.Count, "Count should be three after adding.");
-            Assert.AreEqual(card3, list.beg.Next.Data, "Data of the middle element should match.");
+            Assert.AreEqual(3, list.Count);
+            Assert.AreEqual(card3, list.beg.Next.Data);
         }
 
         [TestMethod]
         public void TestRemoveEven()
         {
-            // Arrange
-            BiList<Card> list = new BiList<Card>(4);
-            Card card1 = list.beg.Data;
-            Card card2 = list.beg.Next.Data;
-            Card card3 = list.beg.Next.Next.Data;
-            Card card4 = list.beg.Next.Next.Next.Data;
+            var cards = new[] { new Card(), new Card(), new Card(), new Card(), new Card() };
+            list = new BiList<Card>(cards);
 
-            // Act
             list.RemoveEven();
 
-            // Assert
-            Assert.AreEqual(2, list.Count, "Count should be two after removing even elements.");
-            Assert.IsTrue(list.FindItem(card1), "First card should still be in the list.");
-            Assert.IsFalse(list.FindItem(card2), "Second card should be removed.");
-            Assert.IsTrue(list.FindItem(card3), "Third card should still be in the list.");
-            Assert.IsFalse(list.FindItem(card4), "Fourth card should be removed.");
+            Assert.AreEqual(3, list.Count);
+            CollectionAssert.AreEqual(new[] { cards[0], cards[2], cards[4] }, list.ToList());
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void TestConstructorWithZeroSizeThrowsException()
+        public void TestLength()
         {
-            // Arrange
-            int size = 0;
+            var cards = new[] { new Card(), new Card(), new Card() };
+            list = new BiList<Card>(cards);
 
-            // Act
-            BiList<Card> list = new BiList<Card>(size);
-
-            // Assert is handled by ExpectedException
+            Assert.AreEqual(3, list.Length());
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void TestConstructorWithNegativeSizeThrowsException()
+        public void TestMakeRandomItem()
         {
-            // Arrange
-            int size = -1;
+            var randomItem = list.MakeRandomItem();
 
-            // Act
-            BiList<Card> list = new BiList<Card>(size);
-
-            // Assert is handled by ExpectedException
+            Assert.IsNotNull(randomItem);
+            Assert.IsInstanceOfType(randomItem, typeof(BiList<Card>));
         }
 
         [TestMethod]
-        public void TestConstructorWithZeroSizeThrowsExceptionWithCorrectMessage()
+        public void TestDeepClone()
         {
-            // Arrange
-            int size = 0;
-            string expectedMessage = "Размер должен быть больше нуля.";
+            var cards = new[] { new Card(), new Card(), new Card() };
+            list = new BiList<Card>(cards);
+            var clone = list.DeepClone();
 
-            // Act
-            try
-            {
-                BiList<Card> list = new BiList<Card>(size);
-            }
-            catch (ArgumentException ex)
-            {
-                // Assert
-                StringAssert.Contains(ex.Message, expectedMessage);
-                return;
-            }
-
-            Assert.Fail("Expected ArgumentException was not thrown.");
+            Assert.AreEqual(list.Count, clone.Count);
+            CollectionAssert.AreEqual(list.ToList(), clone.ToList());
         }
-
-        [TestMethod]
-        public void TestConstructorWithNegativeSizeThrowsExceptionWithCorrectMessage()
-        {
-            // Arrange
-            int size = -1;
-            string expectedMessage = "Размер должен быть больше нуля.";
-
-            // Act
-            try
-            {
-                BiList<Card> list = new BiList<Card>(size);
-            }
-            catch (ArgumentException ex)
-            {
-                // Assert
-                StringAssert.Contains(ex.Message, expectedMessage);
-                return;
-            }
-
-            Assert.Fail("Expected ArgumentException was not thrown.");
-        }
-
-
     }
+
+    [TestClass]
+    public class BiListTests02
+    {
+        private BiList<Card> list;
+
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            list = new BiList<Card>();
+        }
+
+        [TestMethod]
+        public void TestIndexerGet()
+        {
+            var card1 = new Card();
+            var card2 = new Card();
+            list.Add(card1);
+            list.Add(card2);
+
+            Assert.AreEqual(card1, list[0]);
+            Assert.AreEqual(card2, list[1]);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void TestIndexerGet_OutOfRange()
+        {
+            var card = list[0]; // Should throw ArgumentOutOfRangeException
+        }
+
+        [TestMethod]
+        public void TestIndexerSet()
+        {
+            var card1 = new Card();
+            var card2 = new Card();
+            var card3 = new Card();
+            list.Add(card1);
+            list.Add(card2);
+
+            list[1] = card3;
+
+            Assert.AreEqual(card3, list[1]);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void TestIndexerSet_OutOfRange()
+        {
+            list[0] = new Card(); // Should throw ArgumentOutOfRangeException
+        }
+
+        [TestMethod]
+        public void TestConstructorWithSize()
+        {
+            const int size = 5;
+            list = new BiList<Card>(size);
+
+            Assert.AreEqual(size, list.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void TestConstructorWithSize_NegativeSize()
+        {
+            var list = new BiList<Card>(-1); // Should throw ArgumentException
+        }
+
+        [TestMethod]
+        public void TestMakeRandomData()
+        {
+            var randomData = list.MakeRandomData();
+
+            Assert.IsNotNull(randomData);
+            // Add more assertions based on the behavior of RandomInit()
+        }
+    }
+
 
     [TestClass]
     public class TreePointTests
@@ -1823,7 +1884,7 @@ namespace UnitTest
     }
 
     [TestClass]
-    public class MyTreeTests
+    public class MyTreeTests10
     {
         [TestMethod]
         public void PrintTree_ShouldPrintTree()
@@ -1853,6 +1914,249 @@ namespace UnitTest
             // Assert
             Assert.IsNotNull(printedTree);
             Console.SetOut(Console.Out);
+        }
+    }
+
+    [TestClass]
+    public class MyCollectionTreeTests
+    {
+        [TestMethod]
+        public void Add_ShouldAddElements()
+        {
+            // Arrange
+            var tree = new MyCollectionTree<Card>();
+            var card = new Card("1234 5678 9012 0001", "User 1", "01/25", 100);
+
+            // Act
+            tree.Add(card);
+
+            // Assert
+            Assert.AreEqual(1, tree.Count);
+            Assert.IsTrue(tree.Contains(card));
+        }
+
+        [TestMethod]
+        public void Clear_ShouldRemoveAllElements()
+        {
+            // Arrange
+            var tree = new MyCollectionTree<Card>();
+            var cards = new List<Card>
+            {
+                new Card("1234 5678 9012 0001", "User 1", "01/25", 100),
+                new Card("1234 5678 9012 0002", "User 2", "02/25", 200),
+                new Card("1234 5678 9012 0003", "User 3", "03/25", 300)
+            };
+
+            foreach (var card in cards)
+            {
+                tree.Add(card);
+            }
+
+            // Act
+            tree.Clear();
+
+            // Assert
+            Assert.AreEqual(0, tree.Count);
+        }
+
+        [TestMethod]
+        public void Contains_ShouldReturnTrueForExistingElement()
+        {
+            // Arrange
+            var tree = new MyCollectionTree<Card>();
+            var card = new Card("1234 5678 9012 0001", "User 1", "01/25", 100);
+            tree.Add(card);
+
+            // Act
+            var contains = tree.Contains(card);
+
+            // Assert
+            Assert.IsTrue(contains);
+        }
+
+        [TestMethod]
+        public void CopyTo_ShouldCopyElementsToArray()
+        {
+            // Arrange
+            var tree = new MyCollectionTree<Card>();
+            var cards = new List<Card>
+            {
+                new Card("1234 5678 9012 0001", "User 1", "01/25", 100),
+                new Card("1234 5678 9012 0002", "User 2", "02/25", 200),
+                new Card("1234 5678 9012 0003", "User 3", "03/25", 300)
+            };
+
+            foreach (var card in cards)
+            {
+                tree.Add(card);
+            }
+
+            var array = new Card[3];
+
+            // Act
+            tree.CopyTo(array, 0);
+
+            // Assert
+            CollectionAssert.AreEqual(cards, array);
+        }
+
+        [TestMethod]
+        public void GetEnumerator_ShouldEnumerateElements()
+        {
+            // Arrange
+            var tree = new MyCollectionTree<Card>();
+            var cards = new List<Card>
+            {
+                new Card("1234 5678 9012 0001", "User 1", "01/25", 100),
+                new Card("1234 5678 9012 0002", "User 2", "02/25", 200),
+                new Card("1234 5678 9012 0003", "User 3", "03/25", 300)
+            };
+
+            foreach (var card in cards)
+            {
+                tree.Add(card);
+            }
+
+            // Act
+            var enumeratedCards = new List<Card>();
+            foreach (var card in tree)
+            {
+                enumeratedCards.Add(card);
+            }
+
+            // Assert
+            CollectionAssert.AreEquivalent(cards, enumeratedCards);
+        }
+
+        [TestMethod]
+        public void EnumeratorReset_ShouldResetEnumerator()
+        {
+            // Arrange
+            var tree = new MyCollectionTree<Card>();
+            var card = new Card("1234 5678 9012 0001", "User 1", "01/25", 100);
+            tree.Add(card);
+
+            var enumerator = tree.GetEnumerator();
+
+            // Act
+            enumerator.MoveNext();
+            enumerator.Reset();
+            var movedNextAfterReset = enumerator.MoveNext();
+
+            // Assert
+            Assert.IsTrue(movedNextAfterReset);
+            Assert.AreEqual(card, enumerator.Current);
+        }
+
+        [TestMethod]
+        public void Constructor_WithIntParameter_ShouldInitializeTree()
+        {
+            // Arrange
+            int initData = 3;
+            var expectedCount = initData;
+
+            // Act
+            var tree = new MyCollectionTree<Card>(initData);
+
+            // Assert
+            Assert.AreEqual(expectedCount, tree.Count);
+        }
+
+        [TestMethod]
+        public void Constructor_WithArrayParameter_ShouldInitializeTreeWithElements()
+        {
+            // Arrange
+            var cards = new Card[]
+            {
+                new Card("1234 5678 9012 0001", "User 1", "01/25", 100),
+                new Card("1234 5678 9012 0002", "User 2", "02/25", 200),
+                new Card("1234 5678 9012 0003", "User 3", "03/25", 300)
+            };
+
+            // Act
+            var tree = new MyCollectionTree<Card>(cards);
+
+            // Assert
+            Assert.AreEqual(cards.Length, tree.Count);
+
+            foreach (var card in cards)
+            {
+                Assert.IsTrue(tree.Contains(card));
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Ваш массив пуст!")]
+        public void CopyTo_NullArray_ShouldThrowArgumentException()
+        {
+            // Arrange
+            var tree = new MyCollectionTree<Card>(new Card[]
+            {
+                new Card("1234 5678 9012 0001", "User 1", "01/25", 100),
+                new Card("1234 5678 9012 0002", "User 2", "02/25", 200),
+                new Card("1234 5678 9012 0003", "User 3", "03/25", 300)
+            });
+
+            // Act
+            tree.CopyTo(null, 0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Индекс массива должен быть неотрицательным")]
+        public void CopyTo_NegativeIndex_ShouldThrowArgumentOutOfRangeException()
+        {
+            // Arrange
+            var tree = new MyCollectionTree<Card>(new Card[]
+            {
+                new Card("1234 5678 9012 0001", "User 1", "01/25", 100),
+                new Card("1234 5678 9012 0002", "User 2", "02/25", 200),
+                new Card("1234 5678 9012 0003", "User 3", "03/25", 300)
+            });
+            var targetArray = new Card[3];
+
+            // Act
+            tree.CopyTo(targetArray, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Данный массив недостаточно велик для размещения элементов")]
+        public void CopyTo_InsufficientArraySize_ShouldThrowArgumentException()
+        {
+            // Arrange
+            var tree = new MyCollectionTree<Card>(new Card[]
+            {
+                new Card("1234 5678 9012 0001", "User 1", "01/25", 100),
+                new Card("1234 5678 9012 0002", "User 2", "02/25", 200),
+                new Card("1234 5678 9012 0003", "User 3", "03/25", 300)
+            });
+            var targetArray = new Card[2]; // Array size is smaller than tree count
+
+            // Act
+            tree.CopyTo(targetArray, 0);
+        }
+
+        [TestMethod]
+        public void IEnumerable_GetEnumerator_ShouldEnumerateAllElements()
+        {
+            // Arrange
+            var cards = new Card[]
+            {
+                new Card("1234 5678 9012 0001", "User 1", "01/25", 100),
+                new Card("1234 5678 9012 0002", "User 2", "02/25", 200),
+                new Card("1234 5678 9012 0003", "User 3", "03/25", 300)
+            };
+            var tree = new MyCollectionTree<Card>(cards);
+
+            // Act
+            var enumeratedCards = new List<Card>();
+            IEnumerable enumerableTree = (IEnumerable)tree;
+            foreach (Card card in enumerableTree)
+            {
+                enumeratedCards.Add(card);
+            }
+
+            // Assert
+            CollectionAssert.AreEqual(cards, enumeratedCards);
         }
     }
 }
