@@ -760,7 +760,7 @@ namespace LabWork12
                             if (myCollection != null)
                             {
                                 Card timeCard = new Card();
-                                timeCard.RandomInit();
+                                timeCard.Init();
                                 myCollection.Add(timeCard);
                                 Console.WriteLine("Объект добавлен! (сгенерировано ДСЧ)");
                             }

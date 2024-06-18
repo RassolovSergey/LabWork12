@@ -460,12 +460,12 @@ namespace LabWork12
 
         public bool Remove(T item)
         {
-            TreePoint<T>? result = Delete(root, item); // Вызываем вспомогательный метод
+            bool isRemoved;
+            root = Delete(root, item, out isRemoved); // Вызываем вспомогательный метод и обновляем корень
 
-            if (result != null)
+            if (isRemoved)
             {
-                root = result;       // Присваиваем новый корень, если он изменился
-                countFindTree--;     // Уменьшаем счетчик элементов дерева
+                countFindTree--;
                 return true;         // Возвращаем успешное завершение операции удаления
             }
 
@@ -473,13 +473,14 @@ namespace LabWork12
         }
 
 
+
         public bool RemoveISBD(T item)
         {
-            TreePoint<T>? result = Delete(root, item); // Вызываем вспомогательный метод
+            bool isRemoved;
+            root = Delete(root, item, out isRemoved); // Вызываем вспомогательный метод и обновляем корень
 
-            if (result != null)
+            if (isRemoved)
             {
-                root = result;       // Присваиваем новый корень, если он изменился
                 count--;
                 return true;         // Возвращаем успешное завершение операции удаления
             }
@@ -488,8 +489,10 @@ namespace LabWork12
         }
 
         // Вспомогательный метод для удаления определенного элемента из дерева поиска
-        public TreePoint<T>? Delete(TreePoint<T>? node, T key)
+        public TreePoint<T>? Delete(TreePoint<T>? node, T key, out bool isRemoved)
         {
+            isRemoved = false;
+
             // Если дерево пустое или узел для удаления не найден, возвращаем узел без изменений
             if (node == null)
             {
@@ -499,15 +502,17 @@ namespace LabWork12
             // Рекурсивно ищем узел для удаления
             if (key.CompareTo(node.Data) < 0)
             {
-                node.Left = Delete(node.Left, key);     // Рекурсивное удаление в левом поддереве
+                node.Left = Delete(node.Left, key, out isRemoved);     // Рекурсивное удаление в левом поддереве
             }
             else if (key.CompareTo(node.Data) > 0)
             {
-                node.Right = Delete(node.Right, key);   // Рекурсивное удаление в правом поддереве
+                node.Right = Delete(node.Right, key, out isRemoved);   // Рекурсивное удаление в правом поддереве
             }
             else
             {
                 // Узел для удаления найден
+                isRemoved = true;  // Устанавливаем флаг удаления в true
+
                 if (node.Left == null)
                 {
                     return node.Right;                  // Если у узла нет левого потомка, возвращаем правого потомка
@@ -519,10 +524,11 @@ namespace LabWork12
 
                 // Узел для удаления имеет обоих потомков
                 node.Data = MinValue(node.Right);       // Находим минимальное значение в правом поддереве
-                node.Right = Delete(node.Right, node.Data); // Удаляем найденное минимальное значение из правого поддерева
+                node.Right = Delete(node.Right, node.Data, out isRemoved); // Удаляем найденное минимальное значение из правого поддерева
             }
 
             return node;
         }
+
     }
 }

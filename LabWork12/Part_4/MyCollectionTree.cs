@@ -16,19 +16,16 @@ namespace LabWork12.Part_4
 
         public MyCollectionTree(T[] collection) : base(collection) { }
 
-        // Реализация интерфейса - IEnumerable<T>
         public IEnumerator<T> GetEnumerator()
         {
             return new MyTreeEnumerator(this);
         }
 
-        // Реализация интерфейса - IEnumerable
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
 
-        // Реализация интерфейса - ICollection<T>
         public int Count => base.Count;
 
         public bool IsReadOnly => false;
@@ -68,14 +65,12 @@ namespace LabWork12.Part_4
             return base.RemoveISBD(item);
         }
 
-
-
-        // Внутренний класс для реализации IEnumerator<T>
         private class MyTreeEnumerator : IEnumerator<T>
         {
             private TreePoint<T>? root;
             private TreePoint<T>? current;
             private Stack<TreePoint<T>> stack;
+            private bool disposed = false; // флаг для отслеживания освобождения
 
             public MyTreeEnumerator(MyCollectionTree<T> collection)
             {
@@ -90,7 +85,23 @@ namespace LabWork12.Part_4
 
             public void Dispose()
             {
-                // Оставляем пустым
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            protected virtual void Dispose(bool disposing)
+            {
+                if (!disposed)
+                {
+                    if (disposing)
+                    {
+                        // Освобождаем управляемые ресурсы
+                        stack.Clear();
+                    }
+                    // Освобождаем неуправляемые ресурсы, если есть
+
+                    disposed = true;
+                }
             }
 
             public bool MoveNext()
@@ -123,6 +134,11 @@ namespace LabWork12.Part_4
                 {
                     stack.Push(root);
                 }
+            }
+
+            ~MyTreeEnumerator()
+            {
+                Dispose(false);
             }
         }
     }
