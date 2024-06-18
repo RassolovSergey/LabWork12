@@ -474,7 +474,6 @@ namespace LabWork12
             MyTree<Card> myTree = new MyTree<Card>(0);      // Дерево для дальнейшей работы (базовое значение - 0)
             MyTree<Card> searchTree = new MyTree<Card>(0);  // Дерево поиска для дальнейшей работы (базовое значение - 0)
             int size;
-            int countFindTree = 0;  // Счетчик кол-ва элементов Дерева поиска
 
             while (flag)
             {
@@ -487,7 +486,7 @@ namespace LabWork12
                     switch (choice)
                     {
                         case 1: //
-                            // Формирование дерева
+                                // Формирование дерева
                             size = (int)InputHelper.InputUintNumber("Введите желаемую длину списка: \t");
                             myTree = new MyTree<Card>(size);
                             break;
@@ -495,7 +494,6 @@ namespace LabWork12
                             if (myTree.Count > 0)
                             {
                                 // Демонстрация глубокого копирования
-
                                 Console.WriteLine("Исходное дерево:");
                                 myTree.PrintTree();
 
@@ -541,7 +539,7 @@ namespace LabWork12
                                         }
                                         break;
                                     case 2:
-                                        if (countFindTree <= 0)
+                                        if (searchTree.Count <= 0)
                                         {
                                             PrintError("Ошибка: Ваше дерево не содержит элементов!");
                                         }
@@ -604,7 +602,7 @@ namespace LabWork12
                                         }
                                         break;
                                     case 2:
-                                        if (countFindTree <= 0)
+                                        if (searchTree.Count <= 0)
                                         {
                                             PrintError("Ошибка: Ваше дерево не содержит элементов!");
                                         }
@@ -612,7 +610,6 @@ namespace LabWork12
                                         {
                                             Console.WriteLine("\nУдаление дерева...");
                                             searchTree.Clear();
-                                            countFindTree = 0;
                                         }
                                         break;
                                     case 0:
@@ -639,7 +636,6 @@ namespace LabWork12
                                 // Вывод дерева поиска
                                 Console.WriteLine("\nДерево поиска:");
                                 searchTree.PrintTree();
-                                countFindTree = myTree.Count;
                             }
                             else
                             {
@@ -647,24 +643,13 @@ namespace LabWork12
                             }
                             break;
                         case 7:
-                            // Удаление элемент с заданым ключом из дерева поиска
-                            if (countFindTree > 0)
+                            // Удаление элемента с заданным ключом из дерева поиска
+                            if (searchTree.Count > 0)
                             {
-                                Console.WriteLine("Введите элемент для удаления:");
+                                Console.WriteLine("Введите данные элемента для удаления:");
                                 Card timeCard = new Card();
                                 timeCard.Init();
-                                int countTime = searchTree.Count;
-                                searchTree.Remove(timeCard);
-                                if (searchTree.Count < countTime)
-                                {
-                                    Console.WriteLine("Элемет удалён.");
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Ошибка: Элемент не найден!");
-                                }
-                                Console.WriteLine();
-                                countFindTree--;
+                                bool wasRemoved = searchTree.Remove(timeCard);
                             }
                             else
                             {

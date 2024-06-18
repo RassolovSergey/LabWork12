@@ -79,8 +79,6 @@ namespace LabWork12
             }
         }
 
-
-
         // Создание радномного объекта:     data
         public T MakeRandomData()
         {
@@ -163,8 +161,6 @@ namespace LabWork12
         }
 
 
-
-
         // Метод поиска элемента списка
         public bool FindItem(T data)
         {
@@ -191,9 +187,6 @@ namespace LabWork12
                 current = current.Next;             // Записываем в текущий следующий объект
             }
         }
-
-
-
 
 
         // Метод удаления узла

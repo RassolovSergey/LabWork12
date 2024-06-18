@@ -251,6 +251,7 @@ namespace LabWork12
             return result.Data;
         }
 
+
         // Приватный - Метод поиска элемента по Data
         private TreePoint<T>? Find(T data, out TreePoint<T>? parent)
         {
@@ -376,7 +377,17 @@ namespace LabWork12
         {
             DeleteNode(root);   // Удаляем все узлы дерева, начиная с корня
             root = null;        // Приравниваем корень к null
-            count = 0;          // Сбрасываем счетчик
+            count = 0;          // Сбрасываем счетчик 
+            GC.Collect();       // Запускаем сборщик мусора
+            GC.WaitForPendingFinalizers();  // Ожидаем завершения всех финализаторов, чтобы гарантировать полное освобождение памяти
+        }
+
+        // Метод для рекурсивного удаления узлов дерева
+        public void ClearF()
+        {
+            DeleteNode(root);   // Удаляем все узлы дерева, начиная с корня
+            root = null;        // Приравниваем корень к null
+            countFindTree = 0;          // Сбрасываем 
             GC.Collect();       // Запускаем сборщик мусора
             GC.WaitForPendingFinalizers();  // Ожидаем завершения всех финализаторов, чтобы гарантировать полное освобождение памяти
         }
